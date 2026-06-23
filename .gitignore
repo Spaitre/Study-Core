@@ -1,0 +1,11 @@
+node_modules
+dist
+dist-ssr
+*.local
+.vscode
+.DS_Store
+
+# Base de datos SQLite (se regenera importando los JSON)
+data/cerebro.db
+data/cerebro.db-shm
+data/cerebro.db-wal

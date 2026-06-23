@@ -1,0 +1,1691 @@
+{
+  "materias": [
+    {
+      "id": "microbiologia",
+      "nombre": "Microbiología",
+      "icono": "🦠",
+      "temas": [
+        {
+          "id": "micro-itu",
+          "nombre": "Infecciones del Tracto Urinario",
+          "preguntas": [
+            {
+              "pregunta": "Mujer de 24 años, sexualmente activa, con disuria, urgencia y polaquiuria de 2 días y dolor suprapúbico, SIN fiebre ni síntomas sistémicos. Uroanálisis: nitritos positivos y esterasa leucocitaria positiva. ¿Agente etiológico más probable?",
+              "opciones": [
+                "Escherichia coli (UPEC)",
+                "Staphylococcus saprophyticus",
+                "Proteus mirabilis",
+                "Klebsiella pneumoniae"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Es una CISTITIS no complicada: infección LOCAL de vejiga con disuria, urgencia, polaquiuria y dolor suprapúbico SIN fiebre. E. coli uropatógena (UPEC) es el agente más frecuente. Los nitritos positivos son el sello distintivo (especificidad ~95%) y la esterasa leucocitaria refleja la inflamación. La ausencia de fiebre la diferencia de la pielonefritis."
+            },
+            {
+              "pregunta": "En la cistitis no complicada, ¿cuál es el hallazgo del uroanálisis con mayor especificidad (~95%) que orienta a infección bacteriana?",
+              "opciones": [
+                "Nitritos positivos",
+                "Proteinuria",
+                "Cilindros hialinos",
+                "Glucosuria"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Los nitritos positivos son el sello distintivo de la cistitis bacteriana, con especificidad cercana al 95% (las enterobacterias reducen nitratos a nitritos). La esterasa leucocitaria positiva acompaña indicando piuria. El gold standard de confirmación es el urocultivo >10⁵ UFC/mL."
+            },
+            {
+              "pregunta": "¿Cuál es el estudio considerado gold standard para el diagnóstico de la cistitis?",
+              "opciones": [
+                "Urocultivo >10⁵ UFC/mL",
+                "Uroanálisis con tira reactiva",
+                "Hemocultivo x2",
+                "Ultrasonido renal"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El gold standard es el urocultivo con >10⁵ UFC/mL, que identifica el agente y su sensibilidad. El uroanálisis (nitritos y esterasa leucocitaria) es el estudio más usado en la práctica por su rapidez, pero el cultivo confirma."
+            },
+            {
+              "pregunta": "Mujer con cistitis no complicada por E. coli. ¿Tratamiento de primera línea?",
+              "opciones": [
+                "Nitrofurantoína oral 50-100 mg cada 6 h por 7 días",
+                "Ciprofloxacino 500 mg cada 12 h por 14 días",
+                "Ceftriaxona IV 1-2 g cada 12 h",
+                "Azitromicina 500 mg dosis única"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La nitrofurantoína es de primera línea en la cistitis no complicada: alcanza altas concentraciones en vejiga, con baja toxicidad y baja resistencia. Se da 50-100 mg cada 6 h por 7 días. Alternativa: TMP/SMX 160/800 mg cada 12 h por 3 días."
+            },
+            {
+              "pregunta": "¿Por qué la nitrofurantoína es ideal para la cistitis pero NO para la pielonefritis?",
+              "opciones": [
+                "Alcanza concentración alta en vejiga pero no en el parénquima renal",
+                "Es bactericida solo contra grampositivos",
+                "Solo actúa con pH alcalino",
+                "Se inactiva con la fiebre"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La nitrofurantoína logra concentraciones urinarias/vesicales altas con baja toxicidad, ideal para la infección LOCAL de vejiga (cistitis). Sin embargo, NO alcanza concentraciones terapéuticas en el parénquima renal ni en sangre, por lo que está CONTRAINDICADA en la pielonefritis."
+            },
+            {
+              "pregunta": "Paciente diabético con cateterismo vesical prolongado desarrolla cistitis; el urocultivo aísla Klebsiella pneumoniae. ¿Qué diferencia su tratamiento respecto a E. coli?",
+              "opciones": [
+                "Requiere 7-10 días por mayor resistencia antimicrobiana",
+                "Se trata con dosis única de azitromicina",
+                "Está contraindicada toda nitrofurantoína",
+                "Requiere siempre manejo intrahospitalario"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Klebsiella pneumoniae causa cistitis similar a E. coli pero con mayor resistencia antimicrobiana, por lo que requiere 7-10 días (vs 7 en E. coli). Tiene mayor recurrencia post-tratamiento. Se asocia a catéter prolongado y diabetes."
+            },
+            {
+              "pregunta": "Hombre de 55 años con litiasis renal previa, disuria y HEMATURIA macroscópica. Uroanálisis: pH alcalino, cristales de estruvita y nitritos positivos. ¿Agente causal más probable?",
+              "opciones": [
+                "Proteus mirabilis",
+                "Escherichia coli",
+                "Chlamydia trachomatis",
+                "Enterococcus faecalis"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Proteus mirabilis produce ureasa, alcaliniza la orina y precipita CÁLCULOS DE ESTRUVITA. Se presenta con hematuria macroscópica + pH alcalino + cristales de estruvita, una tríada diferencial clara. Riesgo de pielonefritis xantogranulomatosa si asciende con obstrucción."
+            },
+            {
+              "pregunta": "¿Cuál es el mecanismo por el que Proteus mirabilis favorece la formación de cálculos de estruvita?",
+              "opciones": [
+                "Producción de ureasa que alcaliniza la orina",
+                "Secreción de toxina Shiga",
+                "Producción de beta-lactamasa",
+                "Invasión intracelular obligada"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Proteus mirabilis es productor de UREASA: hidroliza la urea a amonio, eleva el pH urinario (orina alcalina) y precipita cristales de fosfato-amonio-magnesio (estruvita), que forman cálculos. Por ello cursa con pH alcalino y cristales de estruvita característicos."
+            },
+            {
+              "pregunta": "Complicación destructiva con pérdida irreversible de función renal que puede aparecer en infecciones por Proteus con obstrucción crónica:",
+              "opciones": [
+                "Pielonefritis xantogranulomatosa (XGP)",
+                "Glomerulonefritis postestreptocócica",
+                "Síndrome de Guillain-Barré",
+                "Necrosis tubular aguda por aminoglucósidos"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Si Proteus asciende al riñón con obstrucción crónica por cálculos de estruvita, puede desarrollarse pielonefritis xantogranulomatosa (XGP), forma destructiva con pérdida irreversible de la función renal. Requiere evaluación urológica y, frecuentemente, manejo quirúrgico."
+            },
+            {
+              "pregunta": "Además del antibiótico, ¿qué medida adicional es clave en la cistitis recurrente por Proteus mirabilis con litiasis?",
+              "opciones": [
+                "Evaluación urológica por cálculos y acidificación de la orina (ácido ascórbico)",
+                "Alcalinizar la orina con bicarbonato",
+                "Restringir totalmente los líquidos",
+                "Profilaxis antiviral prolongada"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En Proteus con litiasis se requiere evaluación urológica para los cálculos de estruvita y acidificación de la orina (p. ej. con ácido ascórbico), ya que el medio alcalino favorece la precipitación de los cristales. La cistitis recurrente puede necesitar profilaxis prolongada."
+            },
+            {
+              "pregunta": "Mujer de 30 años con fiebre de 39.5°C, escalofríos, dolor en flanco unilateral y puñopercusión (CVA) positiva, con disuria. Uroanálisis: nitritos positivos y CILINDROS LEUCOCITARIOS. ¿Diagnóstico más probable?",
+              "opciones": [
+                "Pielonefritis aguda",
+                "Cistitis no complicada",
+                "Uretritis gonocócica",
+                "Litiasis renal no complicada"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Es una PIELONEFRITIS: infección SISTÉMICA del parénquima renal. La FIEBRE ALTA la diferencia de la cistitis. Los CILINDROS LEUCOCITARIOS indican lesión tubular renal (ausentes en cistitis) y la puñopercusión positiva es el hallazgo cardinal. Bacteriemia en 20-30%."
+            },
+            {
+              "pregunta": "El hallazgo de CILINDROS DE LEUCOCITOS en orina, ausente en la cistitis, en la pielonefritis indica:",
+              "opciones": [
+                "Lesión a nivel tubular renal",
+                "Contaminación de la muestra",
+                "Cálculo ureteral obstructivo",
+                "Infección de transmisión sexual"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Los cilindros de leucocitos se forman en los túbulos renales, por lo que su presencia indica afectación del parénquima/túbulos (pielonefritis) y no una infección limitada a la vejiga (cistitis). Es un hallazgo diferencial clave."
+            },
+            {
+              "pregunta": "En la pielonefritis aguda, ¿cuál es el gold standard diagnóstico microbiológico?",
+              "opciones": [
+                "Hemocultivo x2 (positivo en 20-30%)",
+                "Tira reactiva de orina",
+                "Coprocultivo",
+                "PCR de exudado faríngeo"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la pielonefritis, el hemocultivo x2 es el gold standard (positivo en 20-30%, refleja bacteriemia/severidad). El uroanálisis con nitritos y cilindros leucocitarios es el estudio más usado, junto con laboratorio que muestra leucocitosis severa y PCR elevada."
+            },
+            {
+              "pregunta": "Mujer con pielonefritis aguda no complicada manejada de forma ambulatoria. ¿Antibiótico de elección y cuál está CONTRAINDICADO?",
+              "opciones": [
+                "Elección: ciprofloxacino oral; contraindicado: nitrofurantoína",
+                "Elección: nitrofurantoína; contraindicado: ciprofloxacino",
+                "Elección: azitromicina; contraindicado: ceftriaxona",
+                "Elección: penicilina V; contraindicado: cefalexina"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la pielonefritis ambulatoria, las fluoroquinolonas (ciprofloxacino 500-750 mg cada 12 h por 7-14 días) son primera línea. La nitrofurantoína está CONTRAINDICADA porque no alcanza concentración en el parénquima renal. En hospitalizados se usa ceftriaxona IV."
+            },
+            {
+              "pregunta": "Paciente con pielonefritis que requiere hospitalización. ¿Antibiótico parenteral de primera línea?",
+              "opciones": [
+                "Ceftriaxona IV 1-2 g cada 12 h por 7-14 días",
+                "Nitrofurantoína oral 100 mg cada 6 h por 7 días",
+                "Metronidazol IV 500 mg cada 8 h por 7 días",
+                "Vancomicina IV 15-20 mg/kg cada 12 h por 7 días"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la pielonefritis hospitalizada, la ceftriaxona IV (cefalosporina de 3ª generación) es de primera línea por 7-14 días. La alternativa ambulatoria son las fluoroquinolonas. La nitrofurantoína está contraindicada por no penetrar el parénquima renal."
+            },
+            {
+              "pregunta": "Complicación a largo plazo de una pielonefritis aguda con cicatrización renal permanente:",
+              "opciones": [
+                "Hipertensión arterial e insuficiencia renal crónica",
+                "Megacolon tóxico",
+                "Fiebre reumática aguda",
+                "Encefalitis"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La pielonefritis puede dejar cicatrización renal permanente, con riesgo de HTA e insuficiencia renal crónica a largo plazo, especialmente en episodios recurrentes o complicados. De ahí la importancia del tratamiento oportuno."
+            },
+            {
+              "pregunta": "Paciente diabético con pielonefritis por Proteus, hidronefrosis por cálculo ureteral obstructivo y datos de sepsis. Además del antibiótico, ¿qué intervención es TAN importante como el tratamiento antimicrobiano?",
+              "opciones": [
+                "Drenaje urgente (nefrostomía percutánea)",
+                "Aumentar la dosis de nitrofurantoína",
+                "Corticoides intravenosos",
+                "Diálisis profiláctica"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la pielonefritis obstructiva, la obstrucción genera hidronefrosis y acumulación de pus. El drenaje urgente (nefrostomía percutánea) es TAN importante como el antibiótico: previene la sepsis fulminante en 48-72 h. Luego, antibióticos + remoción del cálculo + acidificación."
+            },
+            {
+              "pregunta": "Si una pielonefritis obstructiva por estruvita persiste 2-4 semanas sin drenaje adecuado, ¿qué entidad destructiva puede desarrollarse?",
+              "opciones": [
+                "Pielonefritis xantogranulomatosa (XGP)",
+                "Cistitis intersticial",
+                "Nefropatía por IgA",
+                "Riñón en esponja"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La obstrucción ureteral mantenida lleva a acumulación de pus; si persiste 2-4 semanas puede evolucionar a pielonefritis xantogranulomatosa (XGP), forma destructiva con pérdida irreversible de la función renal. Por eso el drenaje quirúrgico es prioritario."
+            },
+            {
+              "pregunta": "Mujer de 22 años con disuria leve y secreción uretral clara-mucopurulenta de inicio insidioso (incubación 7-21 días), SIN urgencia ni polaquiuria; el Gram NO muestra gonococos. ¿Agente causal más probable?",
+              "opciones": [
+                "Chlamydia trachomatis",
+                "Neisseria gonorrhoeae",
+                "Escherichia coli",
+                "Proteus mirabilis"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Chlamydia trachomatis (intracelular obligada, serovares D-K) causa uretritis insidiosa con incubación larga (7-21 días), disuria leve y secreción clara-mucopurulenta, SIN urgencia ni polaquiuria. La ausencia de gonococos en el Gram la apoya. Asintomática en 50% de mujeres."
+            },
+            {
+              "pregunta": "¿Cuál es el gold standard diagnóstico de la uretritis por Chlamydia trachomatis?",
+              "opciones": [
+                "PCR/NAAT de uretra",
+                "Cultivo en agar sangre",
+                "Tinción de Gram",
+                "Serología IgG única"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El gold standard de Chlamydia es la PCR/NAAT de uretra (sensibilidad ~95%), ya que es intracelular obligada y difícil de cultivar. El frotis con Gram se usa para descartar gonococos (su ausencia apoya el diagnóstico de Chlamydia)."
+            },
+            {
+              "pregunta": "Respecto al tratamiento de la uretritis por Chlamydia trachomatis, ¿cuál es la conducta correcta?",
+              "opciones": [
+                "Azitromicina y tratar también a la pareja sexual",
+                "Penicilina G sin tratar a la pareja",
+                "Nitrofurantoína por 7 días",
+                "Solo observación por ser autolimitada"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La azitromicina es de primera línea (también cubre Mycoplasma genitalium); la doxiciclina es alternativa pero está contraindicada en embarazadas. El tratamiento de la pareja sexual es OBLIGATORIO (contactos <60 días). Chlamydia tiene resistencia a β-lactámicos."
+            },
+            {
+              "pregunta": "Complicación de la infección no tratada por Chlamydia trachomatis en la mujer:",
+              "opciones": [
+                "Enfermedad inflamatoria pélvica e infertilidad tubárica",
+                "Megacolon tóxico",
+                "Síndrome de Waterhouse-Friderichsen",
+                "Osteomielitis vertebral"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Chlamydia es asintomática en el 50% de las mujeres pero puede ascender y causar enfermedad inflamatoria pélvica (EIP), con riesgo de infertilidad tubárica. Por eso es clave el tratamiento de la paciente y su pareja aun en casos leves."
+            },
+            {
+              "pregunta": "¿Por qué los β-lactámicos (penicilinas/cefalosporinas) son inefectivos contra Chlamydia trachomatis?",
+              "opciones": [
+                "Es una bacteria intracelular obligada con ciclo particular",
+                "Produce beta-lactamasa de espectro extendido",
+                "Carece por completo de ADN",
+                "Tiene cápsula de polisacárido gruesa"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Chlamydia trachomatis es intracelular obligada (serovares D-K) y presenta resistencia a β-lactámicos en la práctica, por lo que penicilinas y cefalosporinas son inefectivas. El tratamiento son macrólidos (azitromicina) o tetraciclinas (doxiciclina)."
+            },
+            {
+              "pregunta": "Hombre de 25 años con disuria intensa y secreción uretral purulenta amarillo-verdosa abundante de inicio rápido (2-7 días). El Gram muestra diplococos gramnegativos intracelulares ('habas de café'). ¿Agente causal?",
+              "opciones": [
+                "Neisseria gonorrhoeae",
+                "Chlamydia trachomatis",
+                "Escherichia coli",
+                "Trichomonas vaginalis"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Es una uretritis gonocócica por Neisseria gonorrhoeae: presentación fulminante con disuria intensa, secreción purulenta amarilla e incubación corta (2-7 días). El Gram muestra diplococos gramnegativos intracelulares en 'habas de café', característicos."
+            },
+            {
+              "pregunta": "¿Cuál es el tratamiento de elección de la uretritis gonocócica según el esquema dual recomendado?",
+              "opciones": [
+                "Ceftriaxona IM + azitromicina oral",
+                "Azitromicina oral en monoterapia",
+                "Ciprofloxacino oral en monoterapia",
+                "Penicilina G IM dosis única"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El tratamiento de elección es la TERAPIA DUAL: ceftriaxona IM (250-500 mg dosis única) + azitromicina 1 g dosis única. Es mandatoria por la creciente resistencia antimicrobiana y porque cubre la coinfección por Chlamydia (20-40%). La pareja debe tratarse."
+            },
+            {
+              "pregunta": "¿Por qué en la gonorrea se usa terapia dual (ceftriaxona + azitromicina) en lugar de monoterapia?",
+              "opciones": [
+                "Por la resistencia antimicrobiana emergente y la frecuente coinfección por Chlamydia",
+                "Porque el gonococo es intracelular obligado",
+                "Porque la azitromicina sola causa el síndrome de Guillain-Barré",
+                "Para acortar el tratamiento a 1 hora"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La terapia dual es mandatoria por la CRISIS de resistencia antimicrobiana del gonococo (resistencia a penicilina >50%, fluoroquinolonas ~25%, cefalosporinas amenazadas) y porque la coinfección con Chlamydia ocurre en 20-40%; la azitromicina cubre ambas y previene resistencia."
+            },
+            {
+              "pregunta": "Forma sistémica de la infección gonocócica diseminada (DGI) que puede comprometer articulaciones, endocardio y meninges:",
+              "opciones": [
+                "Artritis séptica, endocarditis y meningitis",
+                "Glomerulonefritis postestreptocócica",
+                "Fiebre reumática aguda",
+                "Síndrome hemolítico urémico"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Neisseria gonorrhoeae puede diseminarse (DGI) y producir artritis SÉPTICA, endocarditis y meningitis, por lo que el cuadro puede incluir artralgias. Esto refuerza la necesidad de tratamiento dual oportuno y de tratar a la pareja sexual."
+            },
+            {
+              "pregunta": "Característica clínica que diferencia la uretritis gonocócica de la causada por Chlamydia:",
+              "opciones": [
+                "Secreción purulenta abundante e incubación corta (2-7 días)",
+                "Secreción clara con incubación de 7-21 días",
+                "Ausencia total de secreción",
+                "Asociación con cálculos de estruvita"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La uretritis gonocócica es fulminante: disuria intensa, secreción purulenta amarillo-verdosa abundante e incubación CORTA (2-7 días). La de Chlamydia es insidiosa, con secreción clara-mucopurulenta leve e incubación LARGA (7-21 días). Esta distinción orienta el diagnóstico clínico."
+            },
+            {
+              "pregunta": "Tratamiento alternativo de la cistitis no complicada cuando no se emplea nitrofurantoína:",
+              "opciones": [
+                "TMP/SMX 160/800 mg cada 12 h por 3 días",
+                "Ceftriaxona IV 1-2 g cada 24 h por 14 días",
+                "Aciclovir oral 400 mg cada 8 h por 7 días",
+                "Metronidazol 500 mg cada 8 h por 10 días"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La alternativa de primera línea a la nitrofurantoína en la cistitis no complicada es trimetoprim-sulfametoxazol (TMP/SMX) 160/800 mg cada 12 h por 3 días, siempre que la resistencia local sea baja. Las fluoroquinolonas y cefalosporinas se reservan para cuadros más graves."
+            },
+            {
+              "pregunta": "Hallazgo clínico que distingue la cistitis por Proteus mirabilis de la causada por E. coli:",
+              "opciones": [
+                "Hematuria macroscópica con cristales de estruvita y pH alcalino",
+                "Ausencia total de disuria",
+                "Secreción uretral purulenta",
+                "Fiebre alta con cilindros leucocitarios"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "A diferencia de E. coli, la cistitis por Proteus mirabilis se asocia a HEMATURIA macroscópica, cristales de estruvita y pH urinario alcalino, por su producción de ureasa. Ambas comparten disuria, urgencia y polaquiuria sin fiebre, pero estos hallazgos orientan a Proteus."
+            }
+          ]
+        },
+        {
+          "id": "micro-respiratorio",
+          "nombre": "Infecciones del Sistema Respiratorio",
+          "preguntas": [
+            {
+              "pregunta": "Niño de 8 años con inicio SÚBITO de fiebre de 39.5°C, odinofagia severa, amígdalas con exudados blanco-amarillentos y adenopatía cervical, SIN tos. ¿Agente causal más probable?",
+              "opciones": [
+                "Streptococcus pyogenes (grupo A)",
+                "Virus de Epstein-Barr",
+                "Rinovirus",
+                "Haemophilus influenzae"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Streptococcus pyogenes (GAS) es el patógeno bacteriano más común de faringitis. El INICIO SÚBITO + FIEBRE ALTA + EXUDADOS + AUSENCIA DE TOS es el sello diferencial frente a la faringitis viral (gradual y con tos)."
+            },
+            {
+              "pregunta": "¿Qué dato clínico ayuda a diferenciar una faringitis estreptocócica de una viral?",
+              "opciones": [
+                "Ausencia de tos con inicio súbito y fiebre alta",
+                "Presencia de tos y rinorrea prominentes",
+                "Conjuntivitis bilateral",
+                "Inicio gradual en varios días"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La faringitis por GAS cursa con inicio SÚBITO, fiebre alta, exudados y AUSENCIA de tos. La presencia de tos, rinorrea o conjuntivitis orienta a etiología viral. Estos criterios (tipo Centor) guían la sospecha clínica."
+            },
+            {
+              "pregunta": "¿Cuál es la prueba diagnóstica más usada y su confirmación en la faringitis estreptocócica?",
+              "opciones": [
+                "Test rápido de estreptococo; si es negativo con alta sospecha, cultivo en agar sangre",
+                "Hemocultivo x2 de rutina",
+                "PCR viral múltiple",
+                "Radiografía de cuello"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El test rápido de estreptococo (sensibilidad 85-95%, resultado en minutos) es el más usado; un resultado positivo es diagnóstico. Si es negativo pero hay alta sospecha, se realiza cultivo de garganta en agar sangre (hemólisis beta), el gold standard."
+            },
+            {
+              "pregunta": "¿Tratamiento de elección de la faringitis estreptocócica?",
+              "opciones": [
+                "Penicilina V oral 500 mg cada 6 h por 10 días",
+                "Azitromicina oral 500 mg cada 24 h por 3 días",
+                "Amoxicilina-ácido clavulánico 875/125 mg cada 12 h por 5 días",
+                "Vancomicina IV 15-20 mg/kg cada 12 h por 10 días"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La penicilina V (250-500 mg cada 6 h) por 10 días es de elección. En alérgicos se usa eritromicina o cefalexina por 10 días. El cumplimiento completo previene complicaciones post-infecciosas."
+            },
+            {
+              "pregunta": "¿Por qué la penicilina debe completarse 10 días aunque el paciente mejore en 48 h?",
+              "opciones": [
+                "Para prevenir fiebre reumática aguda y glomerulonefritis postestreptocócica",
+                "Para evitar el síndrome de Guillain-Barré",
+                "Para erradicar el estado de portador de Salmonella",
+                "Porque la penicilina tarda 10 días en absorberse"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El tratamiento completo de 10 días previene complicaciones post-infecciosas: FIEBRE REUMÁTICA AGUDA (con carditis valvular permanente) y GLOMERULONEFRITIS POSTESTREPTOCÓCICA, aunque el paciente mejore sintomáticamente en 48 h."
+            },
+            {
+              "pregunta": "Complicación NO supurativa de la faringitis por S. pyogenes con afectación valvular cardiaca permanente:",
+              "opciones": [
+                "Fiebre reumática aguda",
+                "Mastoiditis",
+                "Absceso pulmonar",
+                "Megacolon tóxico"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La fiebre reumática aguda es una complicación post-estreptocócica que puede dejar carditis valvular permanente. La otra complicación clásica es la glomerulonefritis postestreptocócica. La penicilina por 10 días las previene."
+            },
+            {
+              "pregunta": "Manifestación de la faringitis estreptocócica que cursa con 'lengua en frambuesa':",
+              "opciones": [
+                "Escarlatina",
+                "Difteria",
+                "Mononucleosis",
+                "Herpangina"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La escarlatina, por cepas de S. pyogenes productoras de toxina eritrogénica, cursa con exantema y 'lengua en frambuesa'. Acompaña al cuadro faríngeo y refuerza el diagnóstico estreptocócico."
+            },
+            {
+              "pregunta": "Lactante de 18 meses con otalgia intensa, fiebre de 39°C y antecedente de IVRS viral previo. Otoscopia: tímpano eritematoso, abombado y opaco. ¿Agente más frecuente?",
+              "opciones": [
+                "Streptococcus pneumoniae",
+                "Pseudomonas aeruginosa",
+                "Staphylococcus aureus",
+                "Mycoplasma pneumoniae"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La otitis media aguda (OMA) suele ocurrir tras una IVRS viral por superinfección bacteriana. Streptococcus pneumoniae es el agente más frecuente. La otoscopia con tímpano eritematoso, abombado y opaco es el hallazgo diagnóstico clínico."
+            },
+            {
+              "pregunta": "¿Cuál es el gold standard diagnóstico de la otitis media aguda?",
+              "opciones": [
+                "Otoscopia + timpanometría tipo B (acumulación de fluido)",
+                "Cultivo de exudado nasal",
+                "Radiografía de senos paranasales",
+                "Audiometría tonal"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El gold standard es la otoscopia + timpanometría tipo B (que evidencia acumulación de fluido en oído medio). En la práctica, la otoscopia directa que muestra tímpano eritematoso y abombado es lo más usado para el diagnóstico clínico."
+            },
+            {
+              "pregunta": "¿Antibiótico de elección de la OMA por S. pneumoniae cuando se decide tratar?",
+              "opciones": [
+                "Amoxicilina a dosis altas 40-45 mg/kg/día cada 12 h por 10 días",
+                "Azitromicina 10 mg/kg/día cada 24 h por 3 días",
+                "Ciprofloxacino 20-30 mg/kg/día cada 12 h por 7 días",
+                "Vancomicina IV 15 mg/kg cada 6 h por 10 días"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La amoxicilina a dosis altas (40-45 mg/kg/día) por 10 días es de elección para la OMA por neumococo. La duración siempre es de 10 días por el riesgo de recurrencia/resistencia con tratamientos cortos."
+            },
+            {
+              "pregunta": "Niño de 3 años con OMA leve, unilateral, sin otorrea y buen estado general. ¿Conducta inicial recomendada?",
+              "opciones": [
+                "Observación 48-72 h con analgesia; antibiótico solo si no mejora",
+                "Antibiótico intravenoso inmediato",
+                "Miringotomía urgente",
+                "Corticoide sistémico"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En niños ≥2 años con OMA leve, unilateral y sin otorrea se recomienda OBSERVACIÓN 48-72 h con analgesia (80% resuelve sin antibiótico); si no mejora, se inicia antibiótico. Esta conducta busca reducir el uso innecesario de antimicrobianos."
+            },
+            {
+              "pregunta": "¿En cuál de estas situaciones está indicado el antibiótico INMEDIATO en la OMA?",
+              "opciones": [
+                "Menor de 6 meses, OMA bilateral o síntomas severos",
+                "Niño de 5 años con cuadro leve unilateral",
+                "Adolescente sin fiebre",
+                "Cualquier OMA, siempre"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El antibiótico inmediato se indica en <6 meses, OMA bilateral o síntomas severos (otalgia intensa, fiebre alta, otorrea). En niños ≥2 años con cuadro leve puede observarse 48-72 h. La duración del tratamiento es siempre 10 días."
+            },
+            {
+              "pregunta": "Niño con OMA que no mejora con amoxicilina; se sospecha Haemophilus influenzae no tipable productor de beta-lactamasa. ¿Antibiótico mandatorio?",
+              "opciones": [
+                "Amoxicilina-ácido clavulánico",
+                "Amoxicilina a dosis estándar",
+                "Penicilina V",
+                "Azitromicina"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "H. influenzae no tipable (NTHi) produce beta-lactamasa en 20-30%, generando resistencia a amoxicilina. La amoxicilina-ácido clavulánico es mandatoria (el clavulanato inhibe la beta-lactamasa). Duración 10 días."
+            },
+            {
+              "pregunta": "Complicación importante de la OMA por extensión local que puede llevar a meningitis o sepsis:",
+              "opciones": [
+                "Mastoiditis aguda",
+                "Pielonefritis",
+                "Endocarditis de válvula tricúspide",
+                "Síndrome de Reiter"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La complicación local importante de la OMA es la MASTOIDITIS AGUDA, con riesgo de progresar a meningitis o sepsis. Por ello se vigila la evolución y se completa el tratamiento de 10 días."
+            },
+            {
+              "pregunta": "Patógeno de OMA con presentación clínica MÁS LEVE, que produce beta-lactamasa en >90% de los casos y está aumentando en frecuencia:",
+              "opciones": [
+                "Moraxella catarrhalis",
+                "Streptococcus pyogenes",
+                "Streptococcus pneumoniae",
+                "Klebsiella pneumoniae"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Moraxella catarrhalis (diplococo gramnegativo) causa OMA más leve, produce beta-lactamasa en >90% (resistencia a amoxicilina) y está aumentando en frecuencia. Requiere amoxicilina-ácido clavulánico por 10 días."
+            },
+            {
+              "pregunta": "¿Por qué hoy el Haemophilus influenzae tipo b (Hib) es raro como causa de OMA?",
+              "opciones": [
+                "Por la vacunación contra Hib",
+                "Porque se volvió sensible a penicilina",
+                "Porque dejó de producir beta-lactamasa",
+                "Porque solo afecta a adultos"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Antes Hib (tipable) era dominante en OMA, pero ahora es RARO gracias a la vacuna Hib. Hoy predominan los H. influenzae NO tipables (NTHi) y otros agentes como neumococo y Moraxella."
+            },
+            {
+              "pregunta": "Hombre de 60 años con inicio SÚBITO de fiebre de 40°C con escalofríos, tos productiva con esputo 'herrumbroso' y dolor pleurítico. Radiografía: consolidación lobar. ¿Agente causal más probable?",
+              "opciones": [
+                "Streptococcus pneumoniae",
+                "Mycoplasma pneumoniae",
+                "Legionella pneumophila",
+                "Chlamydophila pneumoniae"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "S. pneumoniae es el patógeno #1 de la NAC TÍPICA: inicio súbito + fiebre alta + tos productiva con esputo 'herrumbre' + consolidación LOBAR. El hemocultivo es positivo en 20-30% (severidad)."
+            },
+            {
+              "pregunta": "¿Cuál es el estudio gold standard para el diagnóstico de la neumonía adquirida en la comunidad?",
+              "opciones": [
+                "Radiografía de tórax",
+                "Hemocultivo único",
+                "Espirometría",
+                "Tinción de Gram de orina"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El gold standard de la NAC es la radiografía de tórax (infiltrado lobar de consolidación en la neumonía típica; intersticial bilateral en la atípica). Se complementa con hemocultivo x2 y laboratorio (leucocitosis, PCR/procalcitonina)."
+            },
+            {
+              "pregunta": "Paciente con NAC por neumococo, leve-moderada, manejo ambulatorio. ¿Tratamiento de elección?",
+              "opciones": [
+                "Amoxicilina oral 1 g cada 8 h por 5-7 días",
+                "Vancomicina IV 15-20 mg/kg cada 12 h por 14 días",
+                "Nitrofurantoína oral 100 mg cada 6 h por 7 días",
+                "Aciclovir oral 400 mg cada 8 h por 7 días"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la NAC leve-moderada ambulatoria por neumococo, la amoxicilina oral (1 g cada 8 h por 5-7 días) es de elección, pues el neumococo conserva pared celular y responde a β-lactámicos. La duración es corta por la buena respuesta."
+            },
+            {
+              "pregunta": "Paciente con NAC severa por neumococo que requiere hospitalización. ¿Esquema parenteral apropiado?",
+              "opciones": [
+                "Ceftriaxona IV ± vancomicina IV",
+                "Amoxicilina oral en monoterapia",
+                "Azitromicina más nitrofurantoína",
+                "Metronidazol IV"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la NAC severa hospitalizada se usa ceftriaxona IV ± vancomicina IV por 7-14 días. El hemocultivo positivo (20-30%) indica severidad; las complicaciones incluyen sepsis/shock, derrame pleural, absceso y meningitis neumocócica."
+            },
+            {
+              "pregunta": "Medida preventiva frente a la neumonía neumocócica en adultos mayores de 65 años y pacientes de riesgo:",
+              "opciones": [
+                "Vacunación con PCV13/PPSV23",
+                "Profilaxis con azitromicina diaria",
+                "Vacuna BCG",
+                "Inmunoglobulina mensual"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La vacunación antineumocócica (PCV13/PPSV23) previene la enfermedad neumocócica en adultos >65 años y pacientes con factores de riesgo. La epidemiología de la NAC está cambiando precisamente por la vacunación."
+            },
+            {
+              "pregunta": "Paciente con EPOC que desarrolla neumonía típica más leve e insidiosa, con patrón peribronquial multilobar. Se sospecha Haemophilus influenzae. ¿Tratamiento ambulatorio mandatorio?",
+              "opciones": [
+                "Amoxicilina-ácido clavulánico",
+                "Amoxicilina a dosis estándar",
+                "Azitromicina en monoterapia",
+                "Penicilina V"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "H. influenzae causa neumonía típica más leve, hoy típicamente en EPOC/asma. Por la resistencia creciente a amoxicilina, la amoxicilina-ácido clavulánico es mandatoria. Patrón radiológico basal/peribronquial, frecuentemente bilateral/multilobar; duración 5-7 días."
+            },
+            {
+              "pregunta": "Estudiante de 20 años con tos SECA persistente de 2-3 semanas, fiebre moderada, cefalea y mialgias. Radiografía: infiltrado intersticial reticulonodular bilateral más extenso que los síntomas. Crioaglutininas positivas. ¿Tratamiento de elección?",
+              "opciones": [
+                "Azitromicina (macrólido)",
+                "Amoxicilina",
+                "Ceftriaxona",
+                "Penicilina V"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Es una neumonía ATÍPICA por Mycoplasma pneumoniae: inicio gradual, tos seca, síntomas sistémicos e infiltrado intersticial bilateral desproporcionado (discrepancia clínico-radiológica) con crioaglutininas positivas. Carece de pared celular, por lo que se trata con macrólido (azitromicina)."
+            },
+            {
+              "pregunta": "¿Por qué los β-lactámicos son INÚTILES contra Mycoplasma pneumoniae?",
+              "opciones": [
+                "Porque carece de pared celular",
+                "Porque produce beta-lactamasa de espectro extendido",
+                "Porque es un virus",
+                "Porque tiene cápsula gruesa"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Mycoplasma pneumoniae CARECE de pared celular, blanco de los β-lactámicos, por lo que amoxicilina y cefalosporinas son inútiles. El tratamiento son macrólidos (azitromicina), doxiciclina o fluoroquinolonas (levofloxacino)."
+            },
+            {
+              "pregunta": "Hallazgo de laboratorio sugestivo de Mycoplasma pneumoniae que puede asociarse a anemia hemolítica subclínica:",
+              "opciones": [
+                "Crioaglutininas (IgM contra antígeno I de los eritrocitos)",
+                "Anticuerpos antinucleares",
+                "Factor reumatoide",
+                "Anticuerpos anti-membrana basal"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Las crioaglutininas (IgM frente al antígeno I de los eritrocitos) son altamente sugestivas de Mycoplasma y pueden causar anemia hemolítica subclínica. La PCR de Mycoplasma tiene sensibilidad >90%."
+            },
+            {
+              "pregunta": "Concepto de 'discrepancia clínico-radiológica' característico de la neumonía atípica por Mycoplasma:",
+              "opciones": [
+                "Hallazgos radiológicos mucho más extensos que los síntomas clínicos leves",
+                "Síntomas severos con radiografía normal",
+                "Consolidación lobar con paciente asintomático",
+                "Derrame pleural masivo siempre presente"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En Mycoplasma, la radiografía muestra infiltrados intersticiales bilaterales MUCHO MÁS extensos de lo que sugiere la clínica leve del paciente: esta discrepancia clínico-radiológica es un dato diferencial clave. Se asocia a brotes en escuelas/universidades/cuarteles."
+            },
+            {
+              "pregunta": "¿Cuál combinación corresponde a la neumonía TÍPICA frente a la ATÍPICA?",
+              "opciones": [
+                "Típica: tos productiva herrumbrosa, consolidación lobar, hemocultivo positivo / Atípica: tos seca, intersticial bilateral, crioaglutininas",
+                "Típica: tos seca y crioaglutininas / Atípica: consolidación lobar y hemocultivo positivo",
+                "Ambas con consolidación lobar idéntica",
+                "Típica solo en jóvenes / Atípica solo en ancianos"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La neumonía TÍPICA (neumococo, H. influenzae): inicio súbito, tos productiva herrumbrosa, dolor pleurítico, consolidación lobar, hemocultivo positivo 20-30% y respuesta a β-lactámicos. La ATÍPICA (Mycoplasma): inicio gradual, tos seca, infiltrado intersticial bilateral, crioaglutininas positivas y resistencia a β-lactámicos."
+            },
+            {
+              "pregunta": "Respecto a la respuesta al tratamiento, ¿qué es cierto al comparar neumonía típica y atípica?",
+              "opciones": [
+                "La típica mejora rápido (24-72 h); la atípica más lenta (1-2 semanas)",
+                "Ambas mejoran en minutos",
+                "La atípica nunca mejora",
+                "La típica tarda meses en responder"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La neumonía típica responde rápido a los antibióticos (mejora en 24-72 h), mientras que la atípica por Mycoplasma mejora de forma más lenta (1-2 semanas). En ambas la duración del tratamiento ronda los 5-7 días."
+            },
+            {
+              "pregunta": "Alternativa terapéutica en la OMA por H. influenzae o Moraxella catarrhalis cuando se requiere una opción distinta a la amoxicilina-ácido clavulánico:",
+              "opciones": [
+                "Cefuroxima axetil",
+                "Nitrofurantoína",
+                "Vancomicina oral",
+                "Aciclovir"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Para la OMA por H. influenzae no tipable o Moraxella catarrhalis (productores de beta-lactamasa), la amoxicilina-ácido clavulánico es de elección y la cefuroxima axetil (15-20 mg/kg/día) es la alternativa. La duración siempre es de 10 días."
+            },
+            {
+              "pregunta": "Respecto a la distribución radiológica, ¿qué patrón corresponde a la neumonía típica frente a la atípica?",
+              "opciones": [
+                "Típica: infiltrado lobar unilateral/apical; atípica: intersticial bilateral",
+                "Típica: bilateral difusa; atípica: lobar apical",
+                "Ambas idénticas y siempre apicales",
+                "Típica sin alteraciones radiológicas"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La neumonía típica (neumococo) muestra un infiltrado LOBAR/segmentario, típicamente unilateral/apical; la atípica (Mycoplasma) muestra infiltrado INTERSTICIAL reticulonodular, típicamente bilateral. La H. influenzae tiende a un patrón peribronquial multilobar."
+            }
+          ]
+        },
+        {
+          "id": "micro-gastro",
+          "nombre": "Infecciones Gastrointestinales",
+          "preguntas": [
+            {
+              "pregunta": "Paciente de zona endémica con diarrea acuosa masiva en 'agua de arroz', vómitos copiosos y deshidratación rápida con hipotensión, SIN sangre, moco ni fiebre. ¿Agente causal más probable?",
+              "opciones": [
+                "Vibrio cholerae",
+                "Shigella flexneri",
+                "Campylobacter jejuni",
+                "Salmonella enterica"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Vibrio cholerae (bacilo gramnegativo curvo) causa el cuadro más severo: diarrea SECRETORIA masiva en 'agua de arroz' con deshidratación fulminante. La AUSENCIA de fiebre y sangre la diferencia de las diarreas invasivas."
+            },
+            {
+              "pregunta": "El patrón de heces en 'agua de arroz' es patognomónico de:",
+              "opciones": [
+                "Cólera (Vibrio cholerae)",
+                "Disentería por Shigella",
+                "Salmonelosis",
+                "Diarrea por Campylobacter"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Las heces en 'agua de arroz' (líquidas, claras, con moco) son patognomónicas del cólera y permiten el diagnóstico clínico de un solo vistazo. Reflejan la diarrea secretoria masiva por enterotoxina."
+            },
+            {
+              "pregunta": "¿Cuál es el mecanismo de la diarrea del cólera?",
+              "opciones": [
+                "Enterotoxina que eleva el cAMP y provoca secreción de agua y electrolitos",
+                "Invasión de la mucosa con destrucción celular",
+                "Producción de toxina Shiga",
+                "Obstrucción mecánica del intestino"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La enterotoxina colérica eleva el cAMP intracelular en los enterocitos, provocando secreción masiva de agua y electrolitos hacia la luz intestinal (diarrea SECRETORIA), sin invasión ni inflamación, por lo que no hay fiebre ni sangre."
+            },
+            {
+              "pregunta": "¿Cuál es el gold standard diagnóstico microbiológico del cólera?",
+              "opciones": [
+                "Cultivo de heces en agar TCBS",
+                "Hemocultivo x2",
+                "Serología IgG",
+                "Radiografía de abdomen"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El gold standard es el cultivo de heces en agar TCBS (24-48 h); la PCR es más rápida (2-6 h). En la práctica, el patrón clínico 'agua de arroz' es prácticamente diagnóstico. El laboratorio muestra electrolitos severamente alterados."
+            },
+            {
+              "pregunta": "¿Cuál es el pilar del tratamiento del cólera?",
+              "opciones": [
+                "Rehidratación (SRO de la OMS, o cristaloides IV si hay shock)",
+                "Antibiótico (doxiciclina) como medida principal",
+                "Loperamida para detener la diarrea",
+                "Corticoides intravenosos"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El tratamiento PRINCIPAL es la REHIDRATACIÓN. La solución de rehidratación oral (SRO) de la OMS cura ~90% de los casos. Si hay shock se usan cristaloides IV (Ringer lactato/SSN). Los antibióticos son opcionales."
+            },
+            {
+              "pregunta": "En el cólera, los antibióticos (doxiciclina/ciprofloxacino) se consideran:",
+              "opciones": [
+                "Opcionales: acortan ~25% la duración pero no previenen la muerte si la rehidratación es adecuada",
+                "Mandatorios para evitar la muerte",
+                "Contraindicados absolutamente",
+                "El único tratamiento eficaz"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Los antibióticos en el cólera son OPCIONALES: la doxiciclina (300 mg dosis única) o el ciprofloxacino acortan la duración ~25% y reducen el volumen de heces, pero NO previenen la muerte si la rehidratación es adecuada, que es lo que salva la vida."
+            },
+            {
+              "pregunta": "La ausencia de fiebre en el cólera refleja que se trata de una diarrea:",
+              "opciones": [
+                "Secretoria (inflamación local, no sistémica)",
+                "Invasiva con bacteriemia",
+                "De causa viral exclusivamente",
+                "Por toxina Shiga"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El cólera es una diarrea SECRETORIA por enterotoxina, sin invasión de la mucosa, por eso cursa SIN fiebre ni sangre. Esto la diferencia de las diarreas invasivas (Campylobacter, Shigella, Salmonella), que sí provocan fiebre y respuesta sistémica."
+            },
+            {
+              "pregunta": "Principal causa de muerte en el cólera no tratado:",
+              "opciones": [
+                "Shock hipovolémico e hipopotasemia por deshidratación",
+                "Perforación intestinal",
+                "Encefalitis",
+                "Insuficiencia hepática fulminante"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La muerte en el cólera se debe al shock hipovolémico e hipopotasemia por la pérdida masiva de agua y electrolitos. La rehidratación oportuna (SRO o IV) previene casi todas las muertes; de ahí su prioridad sobre el antibiótico."
+            },
+            {
+              "pregunta": "Turista que regresa de México con diarrea acuosa moderada, cólicos y sin sangre, con deshidratación leve. ¿Agente causal clásico?",
+              "opciones": [
+                "E. coli enterotoxigénica (ETEC)",
+                "Shigella sonnei",
+                "Vibrio cholerae",
+                "Salmonella typhi"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La E. coli enterotoxigénica (ETEC) causa la clásica 'diarrea del viajero': diarrea secretoria similar al cólera pero LEVE, sin sangre, con deshidratación leve-moderada. El antecedente de viaje es la clave diferencial."
+            },
+            {
+              "pregunta": "¿Cómo se compara la diarrea por ETEC con la del cólera?",
+              "opciones": [
+                "Es secretoria similar pero mucho más leve, sin deshidratación fulminante",
+                "Es invasiva con sangre y fiebre alta",
+                "Produce 'agua de arroz' idéntica y mortal",
+                "Causa megacolon tóxico"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "ETEC produce una diarrea secretoria por enterotoxinas similar a la del cólera, pero mucho MÁS LEVE: evacuaciones frecuentes acuosas, deshidratación leve-moderada (no fulminante). El antecedente de viajero es clave."
+            },
+            {
+              "pregunta": "¿Tratamiento de la diarrea del viajero por ETEC?",
+              "opciones": [
+                "Rehidratación oral; ciprofloxacino o azitromicina solo si es severa",
+                "Antibiótico intravenoso siempre",
+                "Cristaloides IV obligatorios en todos",
+                "Aciclovir oral"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La SRO es suficiente en la mayoría de los casos de ETEC. Los antibióticos (ciprofloxacino 500 mg cada 12 h por 3 días, o azitromicina) solo se usan si los síntomas son severos, acortando el cuadro a 1-2 días."
+            },
+            {
+              "pregunta": "Paciente con diarrea sanguinolenta con moco, cólicos severos, fiebre de 39.5°C y mialgias, con antecedente de consumo de pollo mal cocido. Cultivo en agar selectivo a 42°C: bacilo curvo gramnegativo. ¿Tratamiento de elección?",
+              "opciones": [
+                "Azitromicina (macrólido)",
+                "Ciprofloxacino empírico",
+                "Amoxicilina-ácido clavulánico",
+                "Metronidazol"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Es gastroenteritis invasiva por Campylobacter jejuni (patógeno #1 en EE.UU.): diarrea con sangre/moco, fiebre alta y síntomas sistémicos, asociada a pollo y mascotas. Por la resistencia común a fluoroquinolonas, la AZITROMICINA es de primera línea."
+            },
+            {
+              "pregunta": "¿Por qué NO se usan fluoroquinolonas empíricas en la infección por Campylobacter jejuni?",
+              "opciones": [
+                "Por su resistencia común a fluoroquinolonas",
+                "Porque carece de pared celular",
+                "Porque son inactivas contra gramnegativos",
+                "Porque provocan megacolon tóxico"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Campylobacter presenta resistencia COMÚN a fluoroquinolonas, por lo que no se usan de forma empírica; solo si las sensibilidades la demuestran. La azitromicina (macrólido) es la primera línea cuando se requiere antibiótico."
+            },
+            {
+              "pregunta": "Complicación neurológica tardía (2-3 semanas después) característica de la infección por Campylobacter jejuni:",
+              "opciones": [
+                "Síndrome de Guillain-Barré",
+                "Encefalitis herpética",
+                "Meningitis bacteriana",
+                "Esclerosis múltiple"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Campylobacter jejuni se asocia clásicamente al SÍNDROME DE GUILLAIN-BARRÉ (debilidad ascendente, riesgo de parálisis respiratoria) 2-3 semanas después de la infección, por mimetismo molecular."
+            },
+            {
+              "pregunta": "Cuadro abdominal que puede simular apendicitis en la infección por Campylobacter por dolor severo en fosa iliaca derecha:",
+              "opciones": [
+                "Pseudoapendicitis",
+                "Megacolon tóxico",
+                "Vólvulo sigmoideo",
+                "Diverticulitis"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Los cólicos abdominales severos de Campylobacter pueden producir pseudoapendicitis (dolor severo en fosa iliaca derecha), que puede llevar a exploración quirúrgica errónea. El antecedente de contacto con aves/mascotas orienta el diagnóstico."
+            },
+            {
+              "pregunta": "Paciente con diarrea sanguinolenta moderada, fiebre y antecedente de consumo de huevos y contacto con reptiles. Se aísla Salmonella enterica no typhi. ¿Conducta correcta respecto a los antibióticos?",
+              "opciones": [
+                "NO se recomiendan de rutina, pues pueden prolongar el estado de portador",
+                "Son mandatorios para prevenir megacolon tóxico",
+                "Solo se trata con metronidazol",
+                "Requiere vancomicina IV siempre"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la salmonelosis no typhoidal no complicada, los antibióticos NO se recomiendan de rutina porque pueden PROLONGAR el shedding bacteriano y aumentar la recurrencia. El tratamiento es rehidratación; solo se usan antibióticos si es severa o el paciente está inmunodeprimido."
+            },
+            {
+              "pregunta": "¿En qué casos SÍ se indican antibióticos en la gastroenteritis por Salmonella no typhi?",
+              "opciones": [
+                "Cuadro severo o paciente inmunodeprimido",
+                "Todos los pacientes, de rutina",
+                "Solo en niños sanos con cuadro leve",
+                "Nunca, bajo ninguna circunstancia"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Los antibióticos (ciprofloxacino o ceftriaxona si hospitalizado) se reservan para cuadros severos o pacientes inmunodeprimidos, por el riesgo de bacteriemia. En el inmunocompetente no complicado se evitan por prolongar el estado de portador."
+            },
+            {
+              "pregunta": "A diferencia de E. coli O157:H7, la Salmonella no typhoidal:",
+              "opciones": [
+                "No produce HUS típicamente (no tiene toxina Shiga)",
+                "Siempre produce síndrome hemolítico urémico",
+                "Causa diarrea acuosa en 'agua de arroz'",
+                "Es resistente a todos los antibióticos"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La Salmonella no typhoidal NO causa síndrome hemolítico urémico (HUS) típicamente, porque no produce toxina Shiga (a diferencia de E. coli O157:H7 y Shigella dysenteriae). Su principal complicación es la bacteriemia, rara en inmunocompetentes."
+            },
+            {
+              "pregunta": "Respecto a la duración, la gastroenteritis por Salmonella no typhi suele ser:",
+              "opciones": [
+                "Más larga (5-7 días) que la de Campylobacter",
+                "De solo unas horas",
+                "Crónica de meses siempre",
+                "Idéntica al cólera en duración"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La salmonelosis no typhoidal suele durar 5-7 días, típicamente más prolongada que la de Campylobacter. El antecedente de aves/huevos/reptiles es clave para el diagnóstico."
+            },
+            {
+              "pregunta": "Paciente en hacinamiento con diarrea sanguinolenta profusa (10-20 evacuaciones/día), TENESMO marcado, cólicos severos y fiebre. ¿Agente causal más probable?",
+              "opciones": [
+                "Shigella",
+                "Vibrio cholerae",
+                "ETEC",
+                "Salmonella typhi"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Shigella causa la gastroenteritis invasiva MÁS severa: diarrea sanguinolenta profusa con TENESMO marcado y toxemia, asociada a hacinamiento y mala higiene (prisiones, campamentos). Transmisión fecal-oral."
+            },
+            {
+              "pregunta": "El TENESMO (sensación de urgencia continua con escasa defecación) es un sello distintivo de:",
+              "opciones": [
+                "Disentería por Shigella",
+                "Cólera",
+                "Diarrea del viajero por ETEC",
+                "Salmonelosis no complicada"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El tenesmo (urgencia continua de defecar con escasa eliminación) es el sello distintivo de la disentería por Shigella, reflejo de la inflamación rectal severa. Acompaña a la diarrea sanguinolenta profusa con moco."
+            },
+            {
+              "pregunta": "A diferencia de Salmonella (donde es opcional), en la infección por Shigella el antibiótico es:",
+              "opciones": [
+                "Mandatorio: reduce duración/severidad y previene complicaciones",
+                "Contraindicado siempre",
+                "Innecesario en todos los casos",
+                "Solo tópico"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En Shigella el antibiótico (ciprofloxacino de primera línea; alternativas azitromicina o ceftriaxona) es MANDATORIO: reduce la duración y severidad y previene complicaciones como el megacolon tóxico. Esto contrasta con Salmonella, donde suele evitarse."
+            },
+            {
+              "pregunta": "Complicación crítica de la disentería por Shigella con dilatación del colon y riesgo de perforación/peritonitis:",
+              "opciones": [
+                "Megacolon tóxico",
+                "Síndrome de Guillain-Barré",
+                "Pielonefritis xantogranulomatosa",
+                "Fiebre reumática"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El megacolon tóxico (dilatación del colon con riesgo de perforación/peritonitis) es una complicación crítica de la shigelosis, considerada urgencia quirúrgica. El antibiótico mandatorio ayuda a prevenirla."
+            },
+            {
+              "pregunta": "¿Qué especie/serotipo de Shigella produce toxina Shiga y puede causar síndrome hemolítico urémico (HUS)?",
+              "opciones": [
+                "Shigella dysenteriae serotipo 1",
+                "Shigella sonnei exclusivamente",
+                "Ninguna Shigella produce toxina",
+                "Todas las Salmonella"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Shigella dysenteriae serotipo 1 produce toxina Shiga y puede causar síndrome hemolítico urémico (HUS), complicación rara pero grave. Es una segunda complicación de la shigelosis, además del megacolon tóxico."
+            },
+            {
+              "pregunta": "¿Cuál es la diferencia fisiopatológica clave entre diarrea secretoria e invasiva?",
+              "opciones": [
+                "Secretoria: sin fiebre ni sangre por enterotoxina; invasiva: fiebre, sangre y moco por daño de mucosa",
+                "Secretoria: siempre con sangre; invasiva: nunca",
+                "Invasiva: solo con rehidratación; secretoria: solo antibiótico",
+                "No hay diferencia clínica"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La diarrea SECRETORIA (Vibrio, ETEC) se debe a enterotoxinas: acuosa, sin sangre ni fiebre. La INVASIVA (Campylobacter, Shigella, Salmonella) implica daño de mucosa: sangre, moco, fiebre y síntomas sistémicos. Esto orienta el manejo (rehidratación vs antibiótico)."
+            },
+            {
+              "pregunta": "Tratamiento común a TODAS las gastroenteritis (secretorias e invasivas) y base del manejo:",
+              "opciones": [
+                "Rehidratación oral con SRO",
+                "Antibiótico de amplio espectro",
+                "Loperamida en dosis altas",
+                "Ayuno absoluto prolongado"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La rehidratación oral con SRO es la base del manejo de todas las gastroenteritis, reponiendo agua y electrolitos. El antibiótico es secundario y su indicación varía: mandatorio en Shigella/cólera severo, opcional o evitado en Salmonella."
+            },
+            {
+              "pregunta": "Antecedente epidemiológico clave que orienta a infección por Campylobacter o Salmonella:",
+              "opciones": [
+                "Contacto con aves de corral, carne cruda, huevos o mascotas/reptiles",
+                "Viaje en avión de larga distancia",
+                "Consumo de agua embotellada",
+                "Contacto con agua de mar"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El antecedente de contacto con aves de corral, carne/pollo crudos, huevos o mascotas/reptiles orienta a Campylobacter (pollo, mascotas) o Salmonella (huevos, reptiles). El antecedente de viaje sugiere ETEC, y el de zona endémica/agua contaminada, cólera."
+            },
+            {
+              "pregunta": "¿Cuál es el patógeno #1 de gastroenteritis bacteriana en Estados Unidos?",
+              "opciones": [
+                "Campylobacter jejuni",
+                "Vibrio cholerae",
+                "Shigella dysenteriae",
+                "Salmonella typhi"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Campylobacter jejuni es el patógeno #1 de gastroenteritis bacteriana en EE.UU. Causa diarrea inflamatoria invasiva con sangre/moco, fiebre alta y síntomas sistémicos prominentes, y se asocia al síndrome de Guillain-Barré."
+            },
+            {
+              "pregunta": "Paciente con cólera y deshidratación severa con shock hipovolémico. ¿Cuál es la medida de rehidratación apropiada?",
+              "opciones": [
+                "Cristaloides IV (Ringer lactato o SSN 0.9%) de reposición rápida",
+                "Solución de rehidratación oral exclusivamente",
+                "Restricción de líquidos",
+                "Transfusión de plaquetas"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Aunque la SRO cura ~90% de los casos, en presencia de shock o deshidratación severa se requieren cristaloides IV (Ringer lactato o SSN 0.9%) con reposición rápida para corregir la hipovolemia. Es la prioridad terapéutica que salva la vida en el cólera grave."
+            },
+            {
+              "pregunta": "Tratamiento alternativo de la disentería por Shigella cuando no se usa ciprofloxacino:",
+              "opciones": [
+                "Azitromicina o ceftriaxona (si está hospitalizado)",
+                "Solo rehidratación, sin antibiótico",
+                "Nitrofurantoína",
+                "Aciclovir"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la shigelosis el antibiótico es mandatorio: ciprofloxacino es de primera línea, y como alternativas están la azitromicina (500 mg día 1, luego 250 mg) o la ceftriaxona si el paciente está hospitalizado. Reducen duración/severidad y previenen el megacolon tóxico."
+            }
+          ]
+        },
+        {
+          "id": "micro-oseo",
+          "nombre": "Infecciones del Sistema Óseo",
+          "preguntas": [
+            {
+              "pregunta": "Niño de 10 años con dolor óseo severo localizado en fémur, fiebre de 40°C, tumefacción y eritema local, con antecedente de infección cutánea reciente. Se sospecha osteomielitis aguda. ¿Agente causal más frecuente?",
+              "opciones": [
+                "Staphylococcus aureus (incluyendo MRSA)",
+                "Streptococcus pyogenes",
+                "Neisseria gonorrhoeae",
+                "Escherichia coli"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Staphylococcus aureus (incluyendo MRSA en pacientes de riesgo) es el patógeno #1 de la osteomielitis. La aguda cursa con dolor óseo severo, fiebre alta, tumefacción y eritema. Localización típica: fémur en niños, tibia en adultos."
+            },
+            {
+              "pregunta": "En la osteomielitis aguda, el hemocultivo x2 resulta positivo en aproximadamente:",
+              "opciones": [
+                "50-60% de los casos",
+                "5% de los casos",
+                "100% de los casos",
+                "Nunca es positivo"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El hemocultivo x2 es positivo en 50-60% de las osteomielitis agudas, lo que indica bacteriemia. Junto con la biopsia ósea con cultivo (gold standard) y el laboratorio (leucocitosis, CRP/VSG elevadas), orienta el diagnóstico."
+            },
+            {
+              "pregunta": "¿Cuál es el gold standard diagnóstico de la osteomielitis?",
+              "opciones": [
+                "Biopsia ósea con cultivo",
+                "Radiografía simple inicial",
+                "Hemograma",
+                "Gammagrafía exclusiva"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El gold standard es la biopsia ósea con cultivo (identifica el patógeno y su sensibilidad), junto con el hemocultivo. Sin embargo, no debe retrasarse el antibiótico en caso de sepsis aunque la biopsia sea ideal."
+            },
+            {
+              "pregunta": "¿Cuál es el método de imagen MÁS sensible en la osteomielitis aguda?",
+              "opciones": [
+                "Resonancia magnética (cambios ≤5 días)",
+                "Radiografía simple",
+                "Ultrasonido",
+                "Densitometría ósea"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La RM es la imagen más sensible: detecta cambios desde ≤5 días. La radiografía simple tiene baja sensibilidad en fase aguda (cambios visibles a los 10-14 días). La TC se usa si hay contraindicación para RM."
+            },
+            {
+              "pregunta": "¿Por qué la radiografía simple puede ser normal en una osteomielitis aguda de pocos días?",
+              "opciones": [
+                "Porque los cambios radiográficos tardan 10-14 días en aparecer",
+                "Porque el hueso no se afecta en la osteomielitis",
+                "Porque la radiografía solo detecta tejidos blandos",
+                "Porque la osteomielitis no produce cambios óseos"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la osteomielitis aguda, los cambios radiográficos (reacción perióstica, lisis) tardan 10-14 días en hacerse visibles, por lo que la radiografía inicial puede ser normal. Por eso la RM (cambios ≤5 días) es más sensible para el diagnóstico temprano."
+            },
+            {
+              "pregunta": "¿Cuál es el tratamiento antibiótico empírico inicial de la osteomielitis aguda?",
+              "opciones": [
+                "Vancomicina IV ± ceftriaxona",
+                "Amoxicilina oral",
+                "Azitromicina",
+                "Nitrofurantoína"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El tratamiento empírico inmediato es vancomicina IV (± ceftriaxona), mandatorio porque se requiere cobertura para MRSA. No debe retrasarse en caso de sepsis aunque la biopsia ósea sea el gold standard."
+            },
+            {
+              "pregunta": "Si en la osteomielitis se confirma que el S. aureus es sensible a meticilina (MSSA), ¿a qué antibiótico se cambia?",
+              "opciones": [
+                "Nafcilina IV",
+                "Vancomicina indefinida",
+                "Penicilina V oral",
+                "Metronidazol"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Si se confirma MSSA (sensible a meticilina), se desescala de vancomicina empírica a nafcilina IV (1-2 g cada 4-6 h), más eficaz frente a S. aureus sensible. La vancomicina se reserva para MRSA."
+            },
+            {
+              "pregunta": "¿Cuál es la duración típica del tratamiento antibiótico de la osteomielitis?",
+              "opciones": [
+                "4-6 semanas",
+                "3 días",
+                "24 horas",
+                "6 meses fijos"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La osteomielitis requiere antibióticos PROLONGADOS: 4-6 semanas (IV inicial y luego oral). Un tratamiento corto deja curación incompleta y evolución a osteomielitis crónica. Es una duración mayor que la de la artritis séptica."
+            },
+            {
+              "pregunta": "Características de la osteomielitis CRÓNICA frente a la aguda:",
+              "opciones": [
+                "Dolor intermitente y drenaje purulento por trayecto sinusal, fiebre ausente-leve",
+                "Fiebre de 40°C y dolor agudo intenso",
+                "Resolución espontánea en 48 h",
+                "Siempre hemocultivo positivo"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La osteomielitis crónica cursa con dolor intermitente, drenaje purulento por un trayecto sinusal y fiebre ausente o leve, a diferencia de la aguda (dolor severo, fiebre alta). Resulta de un tratamiento inadecuado de la fase aguda."
+            },
+            {
+              "pregunta": "Factores de riesgo clásicos para osteomielitis por S. aureus:",
+              "opciones": [
+                "Trauma reciente, infección cutánea, uso de drogas IV o cirugía ortopédica",
+                "Viaje internacional reciente",
+                "Consumo de huevos crudos",
+                "Contacto con aves de corral"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Los factores de riesgo de osteomielitis incluyen trauma reciente, infección cutánea (puerta de entrada), uso de drogas intravenosas (IVDU) y cirugía/procedimientos ortopédicos. El MRSA es más probable en estos contextos."
+            },
+            {
+              "pregunta": "Medida adicional al antibiótico que puede requerirse en la osteomielitis según localización o presencia de secuestro óseo:",
+              "opciones": [
+                "Drenaje quirúrgico e inmovilización",
+                "Diálisis",
+                "Plasmaféresis",
+                "Quimioterapia"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Además del antibiótico prolongado, puede requerirse drenaje quirúrgico (si la localización/severidad lo exige o hay secuestro óseo) e inmovilización. El manejo combinado mejora la curación y previene la cronicidad."
+            },
+            {
+              "pregunta": "En un paciente séptico con sospecha de osteomielitis, ¿cuál es la conducta correcta respecto al antibiótico y la biopsia?",
+              "opciones": [
+                "Iniciar antibiótico empírico de inmediato sin retrasarlo por la biopsia",
+                "Esperar siempre el resultado de la biopsia antes de tratar",
+                "No dar antibiótico hasta la radiografía positiva",
+                "Tratar solo con analgésicos"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Aunque la biopsia ósea con cultivo es el gold standard, NO debe retrasarse el antibiótico empírico (vancomicina ± ceftriaxona) en un paciente con sepsis. Se inicia tratamiento inmediato y se obtienen cultivos cuando sea posible."
+            },
+            {
+              "pregunta": "Paciente joven sexualmente activo con artralgia aguda severa en rodilla, articulación inflamada y caliente, fiebre moderada y antecedente de uretritis 1-2 semanas antes. Líquido sinovial: >50,000 leucocitos. ¿Agente causal más probable?",
+              "opciones": [
+                "Neisseria gonorrhoeae",
+                "Staphylococcus aureus",
+                "Streptococcus pyogenes",
+                "Mycobacterium tuberculosis"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Es una artritis séptica gonocócica por Neisseria gonorrhoeae, parte de la DGI. El antecedente de uretritis/cervicitis reciente y la diseminación hematógena son clave. Líquido sinovial >50,000 leucocitos con predominio de PMN."
+            },
+            {
+              "pregunta": "La infección gonocócica diseminada (DGI) se caracteriza por la tríada de:",
+              "opciones": [
+                "Artritis + tenosinovitis + dermatitis",
+                "Fiebre + rigidez de nuca + alteración mental",
+                "Tos + esputo herrumbroso + dolor pleurítico",
+                "Disuria + hematuria + cálculos"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La DGI se presenta como la tríada de artritis + tenosinovitis + dermatitis. La gonococemia con bacteriemia está presente en 40-50% (hemocultivo de alto rendimiento). Articulaciones afectadas: rodilla (40%), tobillo (30%), codo (20%)."
+            },
+            {
+              "pregunta": "En la artritis séptica gonocócica, el hemocultivo resulta positivo en aproximadamente:",
+              "opciones": [
+                "40-50% (DGI)",
+                "0%",
+                "100%",
+                "5%"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la DGI, el hemocultivo es positivo en 40-50% (alto rendimiento por la gonococemia). El cultivo del líquido sinovial es positivo en 25-40%, menor que en la artritis por S. aureus (50-70%)."
+            },
+            {
+              "pregunta": "¿Tratamiento antibiótico de la artritis séptica gonocócica?",
+              "opciones": [
+                "Ceftriaxona IV + azitromicina oral",
+                "Vancomicina en monoterapia",
+                "Nafcilina sola",
+                "Metronidazol"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El tratamiento es ceftriaxona IV (1-2 g cada 12 h) + azitromicina oral 1 g dosis única (terapia dual que cubre gonorrea y posible coinfección por Chlamydia), por 7-14 días. Se acompaña de artrocentesis terapéutica."
+            },
+            {
+              "pregunta": "¿Cuál es la duración del tratamiento de la artritis séptica gonocócica?",
+              "opciones": [
+                "7-14 días (es menos destructiva)",
+                "24 horas",
+                "4-6 semanas como la osteomielitis",
+                "6 meses"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La artritis séptica gonocócica se trata 7-14 días, una duración más corta que la artritis por S. aureus (~4 semanas) o la osteomielitis (4-6 semanas), porque es menos destructiva. La artrocentesis a sequedad es igualmente clave."
+            },
+            {
+              "pregunta": "Medida que previene la diseminación gonocócica y la consiguiente artritis séptica:",
+              "opciones": [
+                "Tratamiento precoz de la uretritis/cervicitis",
+                "Vacunación universal",
+                "Profilaxis con rifampicina a contactos",
+                "Acidificación de la orina"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El tratamiento precoz de la uretritis/cervicitis gonocócica impide la diseminación hematógena (DGI) y la artritis séptica. La complicación de un drenaje insuficiente es el daño permanente del cartílago."
+            },
+            {
+              "pregunta": "Paciente con artralgia aguda severa monoarticular en rodilla, fiebre de 40°C, toxemia y antecedente de uso de drogas IV. Líquido sinovial: WBC >50,000, Gram con cocos grampositivos en racimos. ¿Agente causal?",
+              "opciones": [
+                "Staphylococcus aureus",
+                "Neisseria gonorrhoeae",
+                "Streptococcus pneumoniae",
+                "Haemophilus influenzae"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El Gram con cocos grampositivos en racimos identifica Staphylococcus aureus, patógeno #1 de la artritis séptica nativa y la forma MÁS grave y destructiva. Factores de riesgo de MRSA: IVDU, hospitalización previa."
+            },
+            {
+              "pregunta": "El cultivo del líquido sinovial en la artritis séptica por S. aureus es positivo en aproximadamente:",
+              "opciones": [
+                "50-70% (mejor rendimiento que el gonococo)",
+                "10%",
+                "0%",
+                "Igual que el gonococo (25-40%)"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El cultivo del líquido sinovial es positivo en 50-70% en la artritis por S. aureus, mejor rendimiento que en la gonocócica (25-40%). El hemocultivo es positivo en 50-60%. El líquido muestra WBC muy elevados (>50,000), PMN, pH y glucosa bajos."
+            },
+            {
+              "pregunta": "¿Tratamiento empírico de la artritis séptica por S. aureus y su ajuste si es MSSA?",
+              "opciones": [
+                "Vancomicina IV ± ceftriaxona; si es MSSA, cambiar a nafcilina",
+                "Solo analgésicos",
+                "Azitromicina oral",
+                "Penicilina V por 10 días"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El tratamiento empírico es vancomicina IV (cobertura MRSA obligatoria) ± ceftriaxona; si se confirma MSSA se cambia a nafcilina IV. Duración ~4 semanas. Se acompaña de artrocentesis terapéutica y, si la efusión persiste, drenaje quirúrgico."
+            },
+            {
+              "pregunta": "¿Cuál es la duración típica del tratamiento de la artritis séptica por S. aureus?",
+              "opciones": [
+                "Alrededor de 4 semanas (menos que la osteomielitis)",
+                "24 horas",
+                "7-14 días como la gonocócica",
+                "6 meses"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La artritis séptica por S. aureus se trata ~4 semanas, duración menor que la osteomielitis (4-6 semanas) pero mayor que la gonocócica (7-14 días), por ser más destructiva que esta última."
+            },
+            {
+              "pregunta": "Complicación de una artritis séptica con drenaje inadecuado:",
+              "opciones": [
+                "Daño permanente del cartílago y artrosis prematura",
+                "Fiebre reumática",
+                "Glomerulonefritis",
+                "Megacolon tóxico"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Si el drenaje es inadecuado, la artritis séptica deja daño permanente del cartílago y artrosis prematura. Por ello la artrocentesis terapéutica a sequedad es mandatoria en toda artritis séptica."
+            },
+            {
+              "pregunta": "Procedimiento mandatorio, además del antibiótico, en TODA artritis séptica (gonocócica o por S. aureus):",
+              "opciones": [
+                "Artrocentesis terapéutica con drenaje a sequedad",
+                "Inmovilización con yeso sin drenaje",
+                "Antibiótico intraarticular único",
+                "Observación hasta que ceda la efusión"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La artrocentesis terapéutica con drenaje a sequedad es mandatoria en toda artritis séptica (diagnóstica y terapéutica), pues previene el daño irreversible del cartílago. Se repite cada 24-48 h si la efusión recurre."
+            },
+            {
+              "pregunta": "¿Cuándo está indicado el drenaje quirúrgico (artroscopia/artrotomía) en la artritis séptica?",
+              "opciones": [
+                "Si la efusión persiste >7 días pese a las artrocentesis",
+                "Inmediatamente en todos los casos",
+                "Solo si el hemocultivo es negativo",
+                "Nunca está indicado"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El drenaje quirúrgico (artroscopia/artrotomía) se indica si la efusión persiste >7 días a pesar de las artrocentesis repetidas. La artrocentesis a sequedad es el primer paso terapéutico junto con el antibiótico."
+            },
+            {
+              "pregunta": "Hallazgo del líquido sinovial que apoya el diagnóstico de artritis séptica bacteriana:",
+              "opciones": [
+                "Leucocitos >50,000 con predominio de PMN",
+                "Leucocitos <200, predominio de linfocitos",
+                "Líquido claro y acelular",
+                "Glucosa elevada"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la artritis séptica bacteriana, el líquido sinovial muestra leucocitos >50,000 con predominio de polimorfonucleares (PMN), pH y glucosa bajos. Es el dato diferencial frente a artritis virales o no infecciosas (recuentos mucho menores)."
+            },
+            {
+              "pregunta": "Factores de riesgo de MRSA en la artritis séptica o la osteomielitis por S. aureus:",
+              "opciones": [
+                "Uso de drogas IV y hospitalización previa",
+                "Consumo de huevos crudos",
+                "Viaje a zona de cólera",
+                "Contacto sexual reciente"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El riesgo de MRSA aumenta con el uso de drogas intravenosas (IVDU) y la hospitalización previa (también antibióticos recientes, diálisis). Por ello la vancomicina empírica es obligatoria hasta conocer las sensibilidades."
+            },
+            {
+              "pregunta": "Comparando ambas artritis sépticas, ¿cuál afirmación es correcta?",
+              "opciones": [
+                "La de S. aureus es más destructiva y de mayor duración que la gonocócica",
+                "La gonocócica es la más destructiva de todas",
+                "Ambas se tratan con dosis única de antibiótico",
+                "La de S. aureus se trata con azitromicina sola"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La artritis séptica por S. aureus es la MÁS grave y destructiva (tratamiento ~4 semanas, vancomicina empírica), mientras que la gonocócica es menos destructiva (7-14 días, ceftriaxona + azitromicina). El cultivo sinovial rinde más en S. aureus (50-70% vs 25-40%)."
+            },
+            {
+              "pregunta": "Localización típica de la osteomielitis hematógena según la edad:",
+              "opciones": [
+                "Fémur en niños y tibia en adultos",
+                "Cráneo en niños y costillas en adultos",
+                "Falanges en ambos",
+                "Vértebras cervicales exclusivamente"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La osteomielitis afecta típicamente el fémur en niños y la tibia en adultos (huesos largos, metáfisis muy vascularizadas). Los factores de riesgo incluyen trauma, infección cutánea, uso de drogas IV y cirugía ortopédica."
+            },
+            {
+              "pregunta": "Articulaciones más frecuentemente afectadas en la artritis séptica gonocócica (DGI):",
+              "opciones": [
+                "Rodilla, tobillo y codo",
+                "Articulaciones interfalángicas distales de la mano",
+                "Articulación temporomandibular",
+                "Columna lumbar"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la artritis séptica gonocócica (parte de la DGI), las articulaciones más afectadas son la rodilla (40%), el tobillo (30%) y el codo (20%). Suele ser monoarticular, con líquido sinovial >50,000 leucocitos y antecedente de uretritis/cervicitis reciente."
+            }
+          ]
+        },
+        {
+          "id": "micro-snc",
+          "nombre": "Infecciones del Sistema Nervioso Central",
+          "preguntas": [
+            {
+              "pregunta": "Adulto con fiebre alta, rigidez de nuca y alteración del estado mental, con cefalea severa y fotofobia. LCR: proteínas elevadas, glucosa baja y predominio de polimorfonucleares. ¿Agente causal más frecuente en adultos?",
+              "opciones": [
+                "Streptococcus pneumoniae",
+                "Enterovirus",
+                "Herpes simple tipo 1",
+                "Haemophilus influenzae tipo b"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La meningitis bacteriana es una emergencia médica; S. pneumoniae es el patógeno #1 en adultos. El LCR es diferencial: proteínas muy elevadas (100-500), glucosa BAJA (<40 mg/dL) y predominio de PMN (>500 células). Hemocultivo positivo 50-60%."
+            },
+            {
+              "pregunta": "Respecto a la tríada clásica de meningitis (fiebre, rigidez de nuca, alteración mental):",
+              "opciones": [
+                "No siempre está presente (solo en 30-50% de los pacientes)",
+                "Está siempre presente en el 100% de los casos",
+                "Es exclusiva de la meningitis viral",
+                "Solo aparece en niños"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La tríada clásica (fiebre + rigidez de nuca + alteración mental) NO siempre está presente: solo en 30-50% de los pacientes. Por ello, ante sospecha clínica, no debe esperarse la tríada completa para iniciar tratamiento."
+            },
+            {
+              "pregunta": "Signos meníngeos que apoyan el diagnóstico de meningitis:",
+              "opciones": [
+                "Signos de Kernig y Brudzinski",
+                "Signo de Murphy",
+                "Signo de McBurney",
+                "Signo de Babinski aislado"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Los signos de Kernig y Brudzinski son signos meníngeos clásicos. Se acompañan de rigidez de nuca, cefalea severa, fotofobia y náusea/vómito. La presencia de petequias orienta a etiología bacteriana (meningococo)."
+            },
+            {
+              "pregunta": "Patrón de LCR característico de la meningitis BACTERIANA:",
+              "opciones": [
+                "Proteína elevada, glucosa baja, predominio de PMN",
+                "Proteína normal, glucosa normal, sin células",
+                "Glucosa normal con predominio de linfocitos",
+                "Proteína baja, glucosa alta, eosinófilos"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la meningitis bacteriana el LCR muestra proteína muy elevada (100-500), glucosa BAJA (<40 mg/dL) y predominio de polimorfonucleares (PMN, >500 células). Contrasta con la viral (linfocitos, glucosa normal)."
+            },
+            {
+              "pregunta": "¿Cuál es el gold standard diagnóstico de la meningitis bacteriana?",
+              "opciones": [
+                "Análisis y cultivo de LCR",
+                "Radiografía de cráneo",
+                "Electroencefalograma",
+                "Coprocultivo"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El gold standard es el análisis + cultivo de LCR; el hemocultivo también es positivo en 50-60%. Se recomienda hemocultivo x2 antes de la punción lumbar (si no hay contraindicación), pero el antibiótico no debe retrasarse."
+            },
+            {
+              "pregunta": "Ante sospecha clínica de meningitis bacteriana, ¿cuál es la conducta correcta?",
+              "opciones": [
+                "Iniciar antibiótico de inmediato sin esperar la punción lumbar",
+                "Esperar el cultivo de LCR antes de tratar",
+                "Dar solo analgésicos hasta confirmar",
+                "Iniciar aciclovir como primera medida"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El antibiótico debe darse INMEDIATAMENTE ante sospecha clínica, sin esperar la punción lumbar (la meningitis no requiere LP para iniciar tratamiento). Sí conviene administrar la dexametasona antes o junto con la primera dosis de antibiótico."
+            },
+            {
+              "pregunta": "¿Cuál es el esquema antibiótico empírico de la meningitis bacteriana del adulto?",
+              "opciones": [
+                "Vancomicina + ceftriaxona",
+                "Amoxicilina oral",
+                "Azitromicina en monoterapia",
+                "Nitrofurantoína"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El esquema empírico es vancomicina + ceftriaxona, obligatorio porque la resistencia del neumococo a penicilina es creciente. Si se confirma sensibilidad a penicilina, se cambia vancomicina por penicilina G. Duración 10-14 días."
+            },
+            {
+              "pregunta": "Adyuvante mandatorio en la meningitis bacteriana que reduce las secuelas neurológicas y la mortalidad:",
+              "opciones": [
+                "Dexametasona (idealmente antes o junto con el antibiótico)",
+                "Manitol de rutina",
+                "Heparina",
+                "Furosemida"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La dexametasona IV (10 mg cada 6 h × 4 días) es un adyuvante MANDATORIO, idealmente administrada ANTES o junto con la primera dosis de antibiótico, porque previene secuelas neurológicas permanentes y mejora la mortalidad."
+            },
+            {
+              "pregunta": "Si el neumococo resulta sensible a penicilina, el tratamiento de la meningitis se ajusta a:",
+              "opciones": [
+                "Penicilina G IV (sustituyendo a la vancomicina)",
+                "Azitromicina oral",
+                "Nitrofurantoína",
+                "Suspender todo antibiótico"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Una vez confirmada la sensibilidad a penicilina, se desescala cambiando la vancomicina por penicilina G IV, manteniendo la cobertura adecuada. El esquema empírico inicial (vancomicina + ceftriaxona) cubre cepas resistentes."
+            },
+            {
+              "pregunta": "Factores de riesgo para meningitis neumocócica:",
+              "opciones": [
+                "Asplenia, alcoholismo, diabetes e inmunosupresión",
+                "Viaje a zona de cólera",
+                "Consumo de pollo crudo",
+                "Uso de lentes de contacto"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Los factores de riesgo de meningitis por S. pneumoniae incluyen asplenia, alcoholismo, diabetes e inmunosupresión. La presencia de petequias en el cuadro orienta más a meningococo (diferencial clave)."
+            },
+            {
+              "pregunta": "Estudiante universitario que vive en dormitorios con meningitis fulminante, fiebre, rigidez de nuca y exantema petequial/purpúrico NO blanqueable, con deterioro rápido a shock séptico. ¿Agente causal más probable?",
+              "opciones": [
+                "Neisseria meningitidis",
+                "Streptococcus pneumoniae",
+                "Enterovirus",
+                "Listeria monocytogenes"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Neisseria meningitidis causa meningitis fulminante, más agresiva que el neumococo, asociada a contacto cercano (dormitorios, universidades, militares). Las PETEQUIAS/PÚRPURA no blanqueables son el hallazgo diferencial clave. Hemocultivo positivo 70-80%."
+            },
+            {
+              "pregunta": "El exantema petequial/purpúrico no blanqueable en meningitis es un hallazgo diferencial clave de:",
+              "opciones": [
+                "Neisseria meningitidis",
+                "Streptococcus pneumoniae",
+                "Enterovirus",
+                "Herpes simple"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Las petequias/púrpura no blanqueables son características de la meningitis meningocócica (N. meningitidis), mientras que S. pneumoniae no suele dar exantema. Este dato ayuda a diferenciar etiologías y advierte de un curso fulminante."
+            },
+            {
+              "pregunta": "En la meningitis meningocócica, el hemocultivo resulta positivo en aproximadamente:",
+              "opciones": [
+                "70-80%",
+                "5%",
+                "0%",
+                "20%"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El hemocultivo en la meningitis por N. meningitidis es positivo en 70-80%, mayor que en la neumocócica (50-60%). Refleja la intensa bacteriemia y el riesgo de shock séptico rápido."
+            },
+            {
+              "pregunta": "Complicación fulminante de la meningococemia con hemorragia suprarrenal masiva y shock (mortalidad ~40%):",
+              "opciones": [
+                "Síndrome de Waterhouse-Friderichsen",
+                "Síndrome de Guillain-Barré",
+                "Síndrome hemolítico urémico",
+                "Síndrome de Reiter"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El síndrome de Waterhouse-Friderichsen es una complicación fulminante de la meningococemia: hemorragia suprarrenal masiva + shock, con ~40% de mortalidad aun tratada. Subraya la gravedad y rapidez del cuadro meningocócico."
+            },
+            {
+              "pregunta": "Tras confirmar meningitis por N. meningitidis, ¿qué medida es obligatoria para los contactos estrechos?",
+              "opciones": [
+                "Profilaxis con rifampicina o ciprofloxacino dosis única dentro de 24 h",
+                "Vacunación inmediata sin profilaxis antibiótica",
+                "Observación domiciliaria sin tratamiento",
+                "Aciclovir profiláctico"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La profilaxis de contactos estrechos (familia, compañeros de dormitorio, personal médico expuesto) es OBLIGATORIA dentro de las primeras 24 h: rifampicina oral o ciprofloxacino dosis única. La vacunación previene pero con cobertura incompleta."
+            },
+            {
+              "pregunta": "¿Cuál es el antibiótico preferido para la meningitis meningocócica?",
+              "opciones": [
+                "Ceftriaxona IV (± vancomicina si hay resistencia)",
+                "Nitrofurantoína",
+                "Azitromicina oral",
+                "Penicilina V oral"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La ceftriaxona IV (2 g cada 12 h) es preferida en la meningitis meningocócica, más rápida que el esquema vancomicina+ceftriaxona del neumococo. Se añade dexametasona y, ante resistencia, vancomicina. La profilaxis de contactos es obligatoria."
+            },
+            {
+              "pregunta": "Paciente en verano con cefalea moderada, fiebre de 38.5°C y rigidez de nuca leve, buen estado general. LCR: pleocitosis linfocítica, proteínas moderadas y glucosa NORMAL; hemocultivo negativo. ¿Diagnóstico más probable?",
+              "opciones": [
+                "Meningitis viral por enterovirus",
+                "Meningitis bacteriana por neumococo",
+                "Meningitis meningocócica",
+                "Encefalitis por HSV-1"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La meningitis viral por enterovirus es autolimitada y más leve. El LCR es clave: pleocitosis LINFOCÍTICA, proteínas moderadas y glucosa NORMAL (vs baja en bacteriana); hemocultivo negativo. Es típica de verano/otoño."
+            },
+            {
+              "pregunta": "Dato del LCR que mejor diferencia la meningitis viral de la bacteriana:",
+              "opciones": [
+                "Glucosa NORMAL con predominio linfocítico (viral) vs glucosa baja y PMN (bacteriana)",
+                "Proteína indetectable en la viral",
+                "Presencia de eritrocitos solo en la viral",
+                "Cultivo siempre positivo en la viral"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "En la meningitis viral el LCR tiene glucosa NORMAL y predominio linfocítico; en la bacteriana, glucosa BAJA y predominio de PMN. Esta diferencia es crítica para distinguir ambas y orientar el tratamiento."
+            },
+            {
+              "pregunta": "¿Cuál es el tratamiento de la meningitis viral por enterovirus no complicada?",
+              "opciones": [
+                "Soporte (líquidos, analgesia, reposo); resolución espontánea en 3-7 días",
+                "Vancomicina + ceftriaxona por 14 días",
+                "Aciclovir IV por 21 días siempre",
+                "Profilaxis de contactos con rifampicina"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La meningitis viral por enterovirus es autolimitada: el tratamiento es de SOPORTE (fluidoterapia, analgesia, reposo), con resolución espontánea en 3-7 días. El pronóstico es excelente, rara vez deja secuelas."
+            },
+            {
+              "pregunta": "Característica epidemiológica de la meningitis por enterovirus:",
+              "opciones": [
+                "Predominio estacional en verano/otoño",
+                "Exclusiva del invierno",
+                "Solo en ancianos institucionalizados",
+                "Asociada a contacto con reptiles"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Los enterovirus (coxsackievirus, echovirus) causan meningitis viral típicamente en verano/otoño (estacional), con contacto familiar. El gold standard diagnóstico es la PCR de LCR (sensibilidad >95%)."
+            },
+            {
+              "pregunta": "¿Por qué ante una meningitis indiferenciada al inicio se recomienda terapia dual (antibiótico + antiviral)?",
+              "opciones": [
+                "Porque es imposible distinguir viral de bacteriana al inicio y ambas (más la encefalitis por HSV) son potencialmente letales",
+                "Porque los enterovirus responden a antibióticos",
+                "Porque la dexametasona requiere cobertura antiviral",
+                "Porque la viral siempre se vuelve bacteriana"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Al inicio es imposible diferenciar con certeza viral de bacteriana (o de encefalitis por HSV concurrente), y la bacteriana y la encefalitis herpética son letales. Por eso se inicia terapia dual empírica (antibiótico + aciclovir) hasta descartar bacteriana por cultivo/Gram y PCR."
+            },
+            {
+              "pregunta": "¿Cuándo puede suspenderse el antibiótico en una meningitis tratada empíricamente con terapia dual?",
+              "opciones": [
+                "Si el cultivo y el Gram son negativos y la PCR viral es positiva",
+                "A las 24 h, independientemente de los resultados",
+                "Nunca debe suspenderse",
+                "Cuando ceda la fiebre, sin estudios"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El antibiótico solo se discontinúa si el cultivo y el Gram de LCR son negativos y la PCR viral es positiva, confirmando etiología viral. Hasta entonces se mantiene la cobertura para no dejar sin tratar una meningitis bacteriana."
+            },
+            {
+              "pregunta": "Paciente con fiebre alta, alteración mental severa, convulsiones y déficits neurológicos focales (afasia). RM: afectación BILATERAL de lóbulos temporales. ¿Agente causal?",
+              "opciones": [
+                "Herpes simple tipo 1 (HSV-1)",
+                "Enterovirus",
+                "Streptococcus pneumoniae",
+                "Neisseria meningitidis"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La encefalitis por HSV-1 (reactivación latente) es la más grave: fiebre alta, alteración mental severa, convulsiones (50-80%) y déficits focales. La afectación BILATERAL de los lóbulos temporales en la RM es prácticamente patognomónica."
+            },
+            {
+              "pregunta": "Hallazgo de imagen prácticamente patognomónico de la encefalitis por HSV-1:",
+              "opciones": [
+                "Afectación bilateral de los lóbulos temporales en la RM",
+                "Hidrocefalia obstructiva",
+                "Infarto de la arteria cerebral media",
+                "Calcificaciones periventriculares"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La afectación BILATERAL de los lóbulos temporales en la RM es casi patognomónica de la encefalitis herpética. El EEG muestra descargas epileptiformes periódicas lateralizadas, y el LCR pleocitosis linfocítica (a veces con eritrocitos por componente hemorrágico)."
+            },
+            {
+              "pregunta": "¿Cuál es el gold standard diagnóstico de la encefalitis por HSV-1?",
+              "opciones": [
+                "PCR de HSV-1 en LCR (sensibilidad 98%)",
+                "Cultivo viral en sangre",
+                "Serología IgG única",
+                "Biopsia cerebral de rutina"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El gold standard es la PCR de HSV-1 en LCR (sensibilidad 98%, especificidad 99%). La RM (lóbulos temporales bilaterales) y el EEG son muy sugestivos. Aun así, el aciclovir se inicia sin esperar la PCR."
+            },
+            {
+              "pregunta": "¿Cuál es la conducta terapéutica inmediata ante sospecha de encefalitis por HSV-1?",
+              "opciones": [
+                "Iniciar aciclovir IV de inmediato sin esperar la PCR",
+                "Esperar el resultado de la PCR antes de tratar",
+                "Iniciar antibióticos de amplio espectro solamente",
+                "Observación con analgésicos"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El aciclovir IV (10-15 mg/kg cada 8 h por 14-21 días) debe iniciarse INMEDIATAMENTE ante la sospecha, sin esperar la PCR, por la progresión rápida (horas-días). Se vigila la función renal y se mantiene buena hidratación."
+            },
+            {
+              "pregunta": "Mortalidad de la encefalitis por HSV-1 CON tratamiento adecuado:",
+              "opciones": [
+                "20-30% (hasta 70% sin tratamiento)",
+                "0%",
+                "Siempre 100%",
+                "Menos del 1%"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La encefalitis herpética tiene una mortalidad de 20-30% AUN con tratamiento (hasta 70% sin él), y deja secuelas neurológicas permanentes en muchos sobrevivientes. Por eso el aciclovir debe iniciarse de inmediato."
+            },
+            {
+              "pregunta": "Si la PCR inicial de LCR para HSV-1 es negativa pero la sospecha clínica es alta, ¿qué conducta se recomienda?",
+              "opciones": [
+                "Continuar aciclovir y repetir la PCR en 3-7 días",
+                "Suspender el aciclovir de inmediato",
+                "Cambiar a antibióticos y suspender antiviral",
+                "Iniciar corticoides en monoterapia"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El aciclovir debe CONTINUARSE aunque la PCR inicial sea negativa si la sospecha es alta, repitiendo la PCR en 3-7 días, por la alta morbimortalidad y la posibilidad de falsos negativos tempranos. Solo se añaden antibióticos si se sospecha meningitis bacteriana simultánea."
+            },
+            {
+              "pregunta": "Antes de la punción lumbar en la meningitis, ¿qué estudio se recomienda obtener (si no hay contraindicación para la LP)?",
+              "opciones": [
+                "Hemocultivo x2",
+                "Electroencefalograma",
+                "Coprocultivo",
+                "Biopsia cerebral"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Se recomienda obtener hemocultivo x2 ANTES de la punción lumbar (positivo en 50-60% en neumococo y 70-80% en meningococo), ya que el antibiótico no debe retrasarse. La LP aporta el análisis y cultivo de LCR, que es el gold standard."
+            },
+            {
+              "pregunta": "¿Cuál es la duración habitual del tratamiento antibiótico de la meningitis bacteriana?",
+              "opciones": [
+                "10-14 días",
+                "24 horas",
+                "3 días",
+                "6 semanas"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La meningitis bacteriana se trata 10-14 días con el esquema empírico (vancomicina + ceftriaxona, ajustado según sensibilidad) más dexametasona como adyuvante. En la meningococócica el rango es de 7-14 días."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

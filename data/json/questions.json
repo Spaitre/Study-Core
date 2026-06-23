@@ -1,0 +1,113 @@
+{
+  "materias": [
+    {
+      "id": "cardiologia",
+      "nombre": "Cardiología",
+      "icono": "❤️",
+      "temas": [
+        {
+          "id": "card-iam",
+          "nombre": "Infarto Agudo de Miocardio",
+          "preguntas": [
+            {
+              "pregunta": "¿Cuál es el marcador bioquímico más específico y sensible para el diagnóstico de infarto agudo de miocardio?",
+              "opciones": [
+                "Troponina cardiaca (I o T)",
+                "Mioglobina",
+                "Creatina cinasa total (CK)",
+                "Lactato deshidrogenasa (LDH)"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Las troponinas cardiacas (cTnI y cTnT) son los biomarcadores de elección por su alta especificidad y sensibilidad para daño miocárdico. Se elevan a las 3-4 horas del inicio de los síntomas, alcanzan su pico a las 12-24 h y permanecen elevadas hasta 7-14 días. La mioglobina se eleva más temprano pero es inespecífica; la CK-MB es útil para detectar reinfarto por su normalización más rápida."
+            },
+            {
+              "pregunta": "En un IAM con elevación del segmento ST (IAMCEST), ¿cuál es el tratamiento de reperfusión de elección si está disponible dentro de los tiempos recomendados?",
+              "opciones": [
+                "Intervención coronaria percutánea primaria (ICP)",
+                "Fibrinólisis con estreptocinasa",
+                "Anticoagulación con heparina únicamente",
+                "Bypass coronario de urgencia"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La ICP primaria es el tratamiento de reperfusión de elección cuando puede realizarse en un tiempo puerta-balón menor a 90-120 minutos. Es superior a la fibrinólisis en reducción de mortalidad, reinfarto y eventos cerebrovasculares. La fibrinólisis se reserva cuando la ICP no está disponible a tiempo (idealmente dentro de los primeros 30 minutos del contacto médico)."
+            },
+            {
+              "pregunta": "¿Qué derivaciones del ECG corresponden a un infarto de la cara inferior del corazón?",
+              "opciones": [
+                "II, III y aVF",
+                "V1 a V4",
+                "I, aVL, V5 y V6",
+                "aVR y V1"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "La cara inferior se explora con las derivaciones II, III y aVF, irrigadas habitualmente por la arteria coronaria derecha. La cara anterior se ve en V1-V4 (descendente anterior), y la lateral en I, aVL, V5 y V6 (circunfleja). Reconocer la localización orienta sobre la arteria culpable y las posibles complicaciones."
+            }
+          ]
+        },
+        {
+          "id": "card-ic",
+          "nombre": "Insuficiencia Cardiaca",
+          "preguntas": [
+            {
+              "pregunta": "¿Qué péptido natriurético se utiliza como marcador diagnóstico y pronóstico en la insuficiencia cardiaca?",
+              "opciones": [
+                "BNP / NT-proBNP",
+                "Péptido C",
+                "Troponina T",
+                "Dímero D"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "El BNP y su fragmento NT-proBNP se liberan por los miocitos ventriculares en respuesta al estiramiento por sobrecarga de volumen y presión. Valores elevados apoyan el diagnóstico de IC y se correlacionan con la gravedad y el pronóstico. Un BNP normal tiene alto valor predictivo negativo para descartar IC en pacientes con disnea."
+            },
+            {
+              "pregunta": "¿Cuál de los siguientes grupos farmacológicos ha demostrado reducir la mortalidad en la insuficiencia cardiaca con fracción de eyección reducida (ICFEr)?",
+              "opciones": [
+                "Betabloqueadores (carvedilol, bisoprolol, metoprolol)",
+                "Diuréticos de asa en monoterapia",
+                "Digoxina",
+                "Bloqueadores de canales de calcio dihidropiridínicos"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Los betabloqueadores específicos (carvedilol, bisoprolol, metoprolol succinato) reducen la mortalidad en ICFEr junto con IECA/ARA-II/ARNI, antagonistas de mineralocorticoides e iSGLT2. Los diuréticos de asa mejoran síntomas y congestión pero no han demostrado reducir mortalidad. La digoxina disminuye hospitalizaciones sin impactar la mortalidad."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "infectologia",
+      "nombre": "Infectología",
+      "icono": "🦠",
+      "temas": [
+        {
+          "id": "inf-neumonia",
+          "nombre": "Neumonía Adquirida en la Comunidad",
+          "preguntas": [
+            {
+              "pregunta": "¿Cuál es el agente etiológico más frecuente de la neumonía adquirida en la comunidad en adultos?",
+              "opciones": [
+                "Streptococcus pneumoniae",
+                "Mycoplasma pneumoniae",
+                "Legionella pneumophila",
+                "Staphylococcus aureus"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "Streptococcus pneumoniae (neumococo) sigue siendo el patógeno más común de la NAC típica en adultos. Los agentes atípicos como Mycoplasma y Chlamydophila son frecuentes en jóvenes. La escala CURB-65 ayuda a decidir el sitio de tratamiento (ambulatorio vs. hospitalario)."
+            },
+            {
+              "pregunta": "En la escala CURB-65, ¿qué parámetros se evalúan?",
+              "opciones": [
+                "Confusión, Urea, Frecuencia respiratoria, presión arterial (Blood pressure) y edad ≥65",
+                "Creatinina, Urea, Bilirrubina, Recuento leucocitario y edad",
+                "Confusión, Uresis, Ritmo cardiaco, Bicarbonato y edad",
+                "Cianosis, Urea, Reflejos, Bradicardia y edad"
+              ],
+              "respuestaCorrecta": 0,
+              "explicacion": "CURB-65 valora: Confusión, Urea >7 mmol/L (>19 mg/dL de BUN), frecuencia Respiratoria ≥30/min, presión arterial (Blood pressure) sistólica <90 o diastólica ≤60 mmHg, y edad ≥65 años. Cada criterio suma 1 punto; 0-1 sugiere manejo ambulatorio, 2 considerar hospitalización y ≥3 valorar ingreso, incluso a UCI."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
