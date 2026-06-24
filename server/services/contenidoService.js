@@ -27,6 +27,102 @@ function preguntaHash(temaId, pregunta) {
   return crypto.createHash('sha256').update(`${temaId}::${normal}`).digest('hex')
 }
 
+// Emoji por defecto cuando el nombre no sugiere ninguno.
+const EMOJI_MATERIA_DEFECTO = '📚'
+
+// Palabras clave → emoji para inferir el icono de una materia por su nombre.
+// Orden importa: lo más específico/compuesto primero (se devuelve el 1er match).
+// Las claves van sin acentos y en minúsculas (se comparan contra slugify).
+// Clave de una sola palabra: coincide si ALGUNA palabra del nombre empieza por
+// ella (prefijo). Clave con espacio: coincide como subcadena del nombre.
+const EMOJI_MATERIA = [
+  // Compuestas (antes que las genéricas que contienen)
+  ['educacion fisica', '⚽'],
+  ['salud publica', '📊'], ['salud mental', '🧠'], ['salud ocupacional', '🦺'],
+  ['ciencias sociales', '🌍'], ['medio ambiente', '🌱'], ['bellas artes', '🎨'],
+  ['base de datos', '🗄️'], ['medicina interna', '🩺'], ['medicina general', '🩺'],
+  ['inteligencia artificial', '🤖'], ['seguridad informatica', '🔒'],
+
+  // Medicina
+  ['cardio', '❤️'], ['corazon', '❤️'], ['vascular', '❤️'],
+  ['neumolog', '🫁'], ['pulmon', '🫁'], ['respirat', '🫁'],
+  ['neuro', '🧠'], ['cerebro', '🧠'], ['psiqui', '🧠'], ['psicolog', '🧠'],
+  ['trauma', '🦴'], ['ortoped', '🦴'], ['hueso', '🦴'], ['musculoesquelet', '🦴'], ['reumatolog', '🦴'],
+  ['hematolog', '🩸'], ['sangre', '🩸'], ['transfusion', '🩸'],
+  ['odontolog', '🦷'], ['estomatolog', '🦷'], ['dental', '🦷'], ['diente', '🦷'], ['endodon', '🦷'],
+  ['oftalmolog', '👁️'], ['vision', '👁️'], ['optometr', '👁️'],
+  ['otorrino', '👂'], ['audiolog', '👂'],
+  ['dermatolog', '🧴'],
+  ['nefrolog', '🫘'], ['urolog', '🫘'], ['rinon', '🫘'],
+  ['microbiolog', '🦠'], ['bacteriolog', '🦠'], ['virolog', '🦠'], ['virus', '🦠'],
+  ['infectolog', '🦠'], ['infeccios', '🦠'], ['parasitolog', '🦠'], ['micolog', '🦠'],
+  ['inmunolog', '🛡️'], ['inmune', '🛡️'], ['alergolog', '🤧'],
+  ['farmacolog', '💊'], ['farmac', '💊'], ['medicament', '💊'], ['toxicolog', '☠️'],
+  ['pediatr', '🧒'], ['neonatolog', '🍼'], ['geriatr', '👴'], ['gerontolog', '👴'],
+  ['ginecolog', '🤰'], ['obstetr', '🤰'], ['embaraz', '🤰'],
+  ['radiolog', '🩻'], ['imagenolog', '🩻'],
+  ['cirug', '🔪'], ['quirurg', '🔪'], ['anestesi', '💉'], ['vacun', '💉'], ['enfermeri', '🩺'],
+  ['oncolog', '🎗️'],
+  ['bioquimic', '🧪'], ['biofisic', '⚛️'], ['genetic', '🧬'], ['embriolog', '🧬'],
+  ['histolog', '🔬'], ['patolog', '🔬'], ['citolog', '🔬'], ['laboratori', '🔬'],
+  ['propedeutic', '🩺'], ['semiolog', '🩺'], ['clinic', '🩺'],
+  ['endocrin', '🧪'], ['hormon', '🧪'], ['diabet', '🩸'],
+  ['anatomi', '🫀'], ['fisiolog', '🫀'],
+  ['nutri', '🥗'], ['dietet', '🥗'],
+  ['epidemiolog', '📊'], ['bioestad', '📊'],
+  ['bioetica', '⚖️'], ['etica', '⚖️'],
+  ['urgenci', '🚑'], ['emergenci', '🚑'], ['veterinari', '🐾'],
+
+  // Ciencias exactas y naturales
+  ['matematic', '🔢'], ['calculo', '🔢'], ['algebra', '🔢'], ['aritmet', '🔢'],
+  ['geometr', '📐'], ['trigonometr', '📐'],
+  ['estadist', '📊'], ['probabilidad', '🎲'],
+  ['fisica', '⚛️'], ['quimic', '🧪'],
+  ['biolog', '🧬'], ['botanic', '🌿'], ['zoolog', '🦁'],
+  ['ecolog', '🌱'], ['ambient', '🌱'], ['agronom', '🌾'], ['agricultur', '🌾'],
+  ['astronom', '🔭'],
+  ['geolog', '🪨'], ['geografi', '🌍'], ['meteorolog', '🌦️'], ['climatolog', '🌦️'], ['oceanograf', '🌊'],
+
+  // Humanidades y sociales
+  ['historia', '📜'], ['histor', '📜'],
+  ['filosofi', '🤔'], ['logica', '🧩'],
+  ['literatura', '📖'], ['lengua', '📖'], ['gramatica', '📖'], ['ortograf', '📖'],
+  ['espanol', '📖'], ['lectura', '📖'], ['redacc', '✍️'], ['caligraf', '✍️'],
+  ['idioma', '🗣️'], ['ingles', '🗣️'], ['frances', '🗣️'], ['aleman', '🗣️'],
+  ['italiano', '🗣️'], ['portugues', '🗣️'], ['linguist', '🗣️'],
+  ['antropolog', '🗿'], ['arqueolog', '🏺'], ['sociolog', '🌍'],
+  ['civismo', '🏛️'], ['politic', '🏛️'], ['gobierno', '🏛️'],
+  ['derecho', '⚖️'], ['juridic', '⚖️'], ['legislac', '⚖️'],
+  ['religion', '🙏'], ['teolog', '🙏'],
+  ['economi', '💰'], ['finanz', '💰'], ['contab', '💰'], ['contadur', '💰'],
+  ['administrac', '💼'], ['negocio', '💼'], ['mercadotecnia', '📣'], ['marketing', '📣'], ['publicidad', '📣'],
+
+  // Artes, oficios y tecnología
+  ['musica', '🎵'], ['dibujo', '🎨'], ['pintura', '🎨'], ['diseno', '🎨'],
+  ['teatro', '🎭'], ['danza', '💃'], ['baile', '💃'],
+  ['cinematograf', '🎬'], ['audiovisual', '🎬'], ['fotograf', '📷'],
+  ['gastronom', '🍳'], ['cocina', '🍳'], ['reposteria', '🧁'],
+  ['deporte', '⚽'], ['futbol', '⚽'],
+  ['informatic', '💻'], ['computac', '💻'], ['programac', '💻'], ['software', '💻'], ['codigo', '💻'],
+  ['robotic', '🤖'], ['electr', '⚡'], ['mecanic', '⚙️'], ['arquitectur', '🏛️'], ['ingenieri', '🛠️'],
+  ['redes', '🌐'], ['datos', '🗄️'],
+
+  ['ciencia', '🔬'],
+]
+
+// Infiere un emoji a partir del nombre de la materia; 📚 si nada concuerda.
+function emojiParaMateria(nombre) {
+  const tokens = slugify(nombre).split('-').filter(Boolean)
+  const completo = tokens.join(' ')
+  for (const [clave, emoji] of EMOJI_MATERIA) {
+    const coincide = clave.includes(' ')
+      ? completo.includes(clave)
+      : tokens.some((t) => t.startsWith(clave))
+    if (coincide) return emoji
+  }
+  return EMOJI_MATERIA_DEFECTO
+}
+
 function rowToPregunta(r) {
   return {
     id: r.id,
@@ -277,9 +373,10 @@ export const contenidoService = {
   async crearMateria(usuarioId, proyectoId, body) {
     await exigirEdicion(proyectoId, usuarioId)
     const nombre = String(body?.nombre || '').trim()
-    const icono = String(body?.icono || '').trim() || '📚'
-    const carpetaId = String(body?.carpetaId || '').trim() || null
     if (!nombre) throw fallo(400, 'El nombre es obligatorio')
+    // Si no se eligió emoji, se infiere uno acorde al nombre (o 📚 por defecto).
+    const icono = String(body?.icono || '').trim() || emojiParaMateria(nombre)
+    const carpetaId = String(body?.carpetaId || '').trim() || null
     if (carpetaId && !(await contenidoRepo.carpetaEnContexto(carpetaId, proyectoId, usuarioId)))
       throw fallo(404, 'La carpeta no existe')
     const id = await contenidoRepo.idUnico(slugify(nombre), 'materias')
