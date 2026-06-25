@@ -2372,37 +2372,88 @@ body {
 }
 
 /* ---------- Responsivo ---------- */
-@media (max-width: 720px) {
+/* ===== Navegación móvil: drawer (menú hamburguesa) ===== */
+/* Botón ☰ y fondo oscuro: ocultos en escritorio, visibles solo en móvil. */
+.menu-hamburguesa {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 60;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.menu-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  z-index: 70;
+  animation: aparecer 0.15s ease;
+}
+.menu-abierto-body {
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
   .shell {
     flex-direction: column;
   }
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: static;
-    flex-direction: row;
-    flex-wrap: wrap;
+  .menu-hamburguesa {
+    display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
   }
-  .sidebar-perfil {
-    flex-direction: row;
-    border-bottom: none;
-    border-right: 1px solid rgba(255, 255, 255, 0.18);
-    padding: 0 14px 0 4px;
-    margin-bottom: 0;
-    gap: 8px;
-    text-align: left;
+  /* El menú lateral se vuelve un panel deslizable desde la izquierda. */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(82vw, 300px);
+    height: 100vh;
+    height: 100dvh;
+    z-index: 80;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+    background: rgba(15, 23, 42, 0.96);
   }
-  .sidebar-email {
-    display: none;
+  .sidebar.abierto {
+    transform: translateX(0);
   }
-  .sidebar-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
+  .menu-backdrop {
+    display: block;
   }
-  .sidebar-logout {
-    margin-top: 0;
+  /* Sitio arriba para el botón ☰ (que va fijo). */
+  .shell-main {
+    padding: 60px 14px 48px;
+  }
+  /* Inputs a 16px para que iOS no haga zoom al enfocar. */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+  /* Modales casi a pantalla completa, con scroll si son altos. */
+  .modal-overlay {
+    padding: 12px;
+  }
+  .modal {
+    padding: 18px;
+    max-height: 90vh;
+    overflow-y: auto;
   }
 }
 
@@ -2417,6 +2468,43 @@ body {
   }
   .pregunta-texto {
     font-size: 1.1rem;
+    padding: 16px;
+  }
+  /* Quiz: botones de repaso (flashcards) más compactos */
+  .srs-btn {
+    padding: 12px 6px;
+    font-size: 0.8rem;
+  }
+  /* Multijugador: código del lobby sin desbordar a lo ancho */
+  .lobby-codigo-num {
+    font-size: 2.1rem;
+    letter-spacing: 5px;
+  }
+  /* Multijugador: podio compacto para que las 3 columnas entren */
+  .podio {
+    gap: 6px;
+  }
+  .podio-puesto {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 8px 0;
+  }
+  .podio-nombre {
+    font-size: 0.82rem;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .podio-barra {
+    font-size: 1rem;
+  }
+  /* Estadísticas: tarjetas de resumen más compactas */
+  .stat-card {
+    padding: 12px 6px;
+  }
+  .stat-num {
+    font-size: 1.5rem;
   }
   .auth-layout {
     grid-template-columns: 1fr;
@@ -2439,5 +2527,21 @@ body {
     text-align: center;
     padding: 10px;
     font-size: 0.9rem;
+  }
+}
+
+/* En dispositivos táctiles (sin hover) las acciones de las tarjetas se muestran
+   siempre: de otro modo serían inaccesibles porque dependían de :hover. */
+@media (hover: none) {
+  .materia-card .btn-editar,
+  .materia-card .btn-eliminar,
+  .materia-card .btn-exportar,
+  .carpeta-card .btn-editar,
+  .carpeta-card .btn-eliminar,
+  .tema-item .btn-editar,
+  .tema-item .btn-importar,
+  .tema-item .btn-eliminar {
+    opacity: 1;
+    pointer-events: auto;
   }
 }
