@@ -1531,8 +1531,18 @@ body {
   justify-content: center;
   padding: 0 5px;
 }
-.sidebar-logout {
+.sidebar-donar {
   margin-top: auto;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 700;
+  background: rgba(168, 85, 247, 0.28);
+}
+.sidebar-donar:hover {
+  background: rgba(168, 85, 247, 0.45);
+}
+.sidebar-logout {
+  margin-top: 0;
 }
 
 /* ---------- Avatares animados ---------- */

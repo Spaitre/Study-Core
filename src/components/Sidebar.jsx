@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
 import Avatar from './Avatar.jsx'
 
+// Link de donación (Stripe Payment Link). Abre la página de pago alojada por
+// Stripe; no requiere backend ni datos sensibles en el cliente.
+const DONAR_URL = 'https://donate.stripe.com/bJedRa9JA3YRgkK3X58g000'
+
 // Menú lateral de la pantalla principal: foto + nombre arriba y las opciones de
 // navegación + cerrar sesión. En escritorio es una columna fija; en móvil se
 // convierte en un drawer que se abre con el botón ☰ (ver index.css).
@@ -70,6 +74,17 @@ export default function Sidebar({ usuario, screen, solicitudes = 0, onNavigate, 
             </button>
           ))}
         </nav>
+
+        <a
+          className="sidebar-item sidebar-donar"
+          href={DONAR_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => setAbierto(false)}
+        >
+          <span className="sidebar-item-icono">💜</span>
+          Apoyar Study Core
+        </a>
 
         <button className="sidebar-item sidebar-logout" onClick={salir}>
           <span className="sidebar-item-icono">🚪</span>
