@@ -55,6 +55,18 @@ export default function App() {
   // Segundos por pregunta elegidos (null = sin tiempo). Por defecto 30 s.
   const [tiempoPorPregunta, setTiempoPorPregunta] = useState(30)
 
+  // Google Analytics: la app es una sola URL, así que enviamos una "vista de
+  // página" virtual cada vez que cambia de pantalla (o entra al login). En
+  // desarrollo gtag no está configurado, así que estos eventos no se envían.
+  useEffect(() => {
+    if (typeof window.gtag !== 'function' || usuario === undefined) return
+    const vista = usuario ? screen : 'auth'
+    window.gtag('event', 'page_view', {
+      page_title: `Study Core — ${vista}`,
+      page_path: `/${vista}`,
+    })
+  }, [screen, usuario])
+
   // Al iniciar, comprueba si ya hay una sesión activa (cookie).
   useEffect(() => {
     fetchYo()
