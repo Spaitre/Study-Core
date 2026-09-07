@@ -1,4 +1,17 @@
+import { useEffect, useState } from 'react'
+import NumeroAnimado from './NumeroAnimado.jsx'
+import Confeti from './Confeti.jsx'
+
 export default function ResultsScreen({ resultados, onReiniciar, onVerStats }) {
+  // Arranca las barras en 0% y las sube en el siguiente frame: la transición
+  // CSS que ya tenían (width 0.6s ease) solo se dispara si el valor CAMBIA
+  // después de montado, no si nace ya en su valor final.
+  const [animar, setAnimar] = useState(false)
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setAnimar(true))
+    return () => cancelAnimationFrame(id)
+  }, [])
+
   const total = resultados.length
   const aciertos = resultados.filter((r) => r.correcta).length
   const porcentajeGlobal = total > 0 ? Math.round((aciertos / total) * 100) : 0
@@ -30,6 +43,7 @@ export default function ResultsScreen({ resultados, onReiniciar, onVerStats }) {
 
   return (
     <div className="screen results">
+      {porcentajeGlobal >= 70 && <Confeti />}
       <header className="results-header">
         <h1>Resultados</h1>
         <p className="results-mensaje">{mensaje(porcentajeGlobal)}</p>
@@ -37,9 +51,11 @@ export default function ResultsScreen({ resultados, onReiniciar, onVerStats }) {
 
       <div className="puntaje-global">
         <div className="puntaje-circulo">
-          <span className="puntaje-num">{porcentajeGlobal}%</span>
+          <span className="puntaje-num">
+            <NumeroAnimado valor={porcentajeGlobal} sufijo="%" />
+          </span>
           <span className="puntaje-detalle">
-            {aciertos} / {total} aciertos
+            <NumeroAnimado valor={aciertos} /> / {total} aciertos
           </span>
         </div>
       </div>
@@ -60,7 +76,7 @@ export default function ResultsScreen({ resultados, onReiniciar, onVerStats }) {
                 <div className="tema-resultado-barra-fondo">
                   <div
                     className={`tema-resultado-barra ${colorBarra(p)}`}
-                    style={{ width: `${p}%` }}
+                    style={{ width: animar ? `${p}%` : '0%' }}
                   />
                 </div>
               </div>

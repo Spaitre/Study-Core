@@ -18,6 +18,7 @@ export default function AmigosScreen() {
   const [identificador, setIdentificador] = useState('')
   const [error, setError] = useState(null)
   const [aviso, setAviso] = useState(null)
+  const [aceptandoId, setAceptandoId] = useState(null)
 
   async function recargar() {
     try {
@@ -56,16 +57,22 @@ export default function AmigosScreen() {
   async function aceptar(id) {
     const r = await aceptarAmigo(id)
     logroDeMision(r.mision)
-    recargar()
+    // Muestra un check un momento antes de recargar (que ya quita la fila de
+    // solicitudes) para que la aceptación se sienta, no solo "desaparezca".
+    setAceptandoId(id)
+    setTimeout(() => {
+      setAceptandoId(null)
+      recargar()
+    }, 500)
   }
   async function quitar(id) {
     await eliminarAmistad(id)
     recargar()
   }
 
-  function PersonaRow({ p, children }) {
+  function PersonaRow({ p, children, className = '' }) {
     return (
-      <li className="amigo-item">
+      <li className={`amigo-item ${className}`}>
         <Avatar foto={p.foto} size={44} />
         <div className="amigo-info">
           <span className="amigo-nombre">{p.nombreUsuario}</span>
@@ -170,13 +177,23 @@ export default function AmigosScreen() {
           ) : (
             <ul className="amigo-lista">
               {solicitudes.map((p) => (
-                <PersonaRow key={p.amistadId} p={p}>
-                  <button className="btn-mini-ok" onClick={() => aceptar(p.amistadId)}>
-                    Aceptar
-                  </button>
-                  <button className="btn-mini-peligro" onClick={() => quitar(p.amistadId)}>
-                    Rechazar
-                  </button>
+                <PersonaRow
+                  key={p.amistadId}
+                  p={p}
+                  className={aceptandoId === p.amistadId ? 'amigo-aceptado' : ''}
+                >
+                  {aceptandoId === p.amistadId ? (
+                    <span className="amigo-check">✅ ¡Ahora son amigos!</span>
+                  ) : (
+                    <>
+                      <button className="btn-mini-ok" onClick={() => aceptar(p.amistadId)}>
+                        Aceptar
+                      </button>
+                      <button className="btn-mini-peligro" onClick={() => quitar(p.amistadId)}>
+                        Rechazar
+                      </button>
+                    </>
+                  )}
                 </PersonaRow>
               ))}
             </ul>

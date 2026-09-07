@@ -17,6 +17,7 @@ export default function DetalleContenidoModal({ id, onCerrar, onCambio }) {
   const [comentario, setComentario] = useState('')
   const [enviandoComentario, setEnviandoComentario] = useState(false)
   const [votando, setVotando] = useState(false)
+  const [votoPulso, setVotoPulso] = useState(false)
   const [reportando, setReportando] = useState(false)
   const [motivoReporte, setMotivoReporte] = useState('')
   const [carpetas, setCarpetas] = useState([])
@@ -51,6 +52,8 @@ export default function DetalleContenidoModal({ id, onCerrar, onCambio }) {
     try {
       await votarContenido(id)
       await cargar()
+      setVotoPulso(true)
+      setTimeout(() => setVotoPulso(false), 350)
       onCambio?.()
     } catch (e) {
       setError(e.message)
@@ -132,7 +135,7 @@ export default function DetalleContenidoModal({ id, onCerrar, onCambio }) {
 
         <div className="detalle-contenido-acciones">
           <button
-            className={`btn-mini ${detalle.haVotado ? 'primary' : ''}`}
+            className={`btn-mini ${detalle.haVotado ? 'primary' : ''} ${votoPulso ? 'voto-pulso' : ''}`}
             onClick={votar}
             disabled={votando}
           >

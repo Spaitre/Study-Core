@@ -1044,6 +1044,11 @@ body {
 }
 .cronometro-barra.bajo {
   background: #fde047;
+  animation: cronometro-urgente 0.6s ease-in-out infinite;
+}
+@keyframes cronometro-urgente {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.35); }
 }
 .cronometro-num {
   position: absolute;
@@ -1066,6 +1071,7 @@ body {
   font-weight: 700;
   line-height: 1.45;
   box-shadow: var(--sombra);
+  animation: aparecer 0.3s ease;
 }
 
 .opciones-grid {
@@ -1102,17 +1108,39 @@ body {
 .color-2 { background: var(--amarillo); }
 .color-3 { background: var(--verde); }
 
+/* Entrada de las opciones al llegar una pregunta nueva (el componente las
+   "key"-ea por número de pregunta para que esto se repita cada vez). El
+   orden en el archivo importa: .opcion.correcta/.incorrecta más abajo tienen
+   la misma especificidad y deben ganar cuando también aplican. */
+.opciones-grid .opcion {
+  animation: pop-in 0.3s ease backwards;
+}
+
 .opcion.correcta {
   outline: 4px solid #fff;
   box-shadow: 0 0 0 6px rgba(38, 137, 12, 0.4);
+  animation: opcion-correcta-pop 0.35s ease;
 }
 .opcion.incorrecta {
   opacity: 0.85;
   outline: 4px solid #fff;
   box-shadow: 0 0 0 6px rgba(226, 27, 60, 0.4);
+  animation: opcion-shake 0.4s ease;
 }
 .opcion.atenuada {
   opacity: 0.45;
+}
+@keyframes opcion-correcta-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+@keyframes opcion-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
 }
 
 /* ---------- Feedback ---------- */
@@ -1150,6 +1178,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  perspective: 900px;
 }
 .flashcard-reverso {
   width: 100%;
@@ -1158,6 +1187,12 @@ body {
   padding: 20px;
   box-shadow: var(--sombra);
   border-left: 8px solid var(--morado);
+  transform-origin: bottom center;
+  animation: flashcard-flip 0.4s ease;
+}
+@keyframes flashcard-flip {
+  from { transform: rotateX(-90deg); opacity: 0; }
+  to { transform: rotateX(0deg); opacity: 1; }
 }
 /* Opciones de repetición espaciada: fuera del reverso, cada una en su cuadrito */
 .flashcard-srs {
@@ -1231,6 +1266,29 @@ body {
   align-items: center;
   justify-content: center;
   box-shadow: var(--sombra);
+  animation: pop-in 0.4s ease;
+}
+
+/* Confeti de Resultados (buen puntaje): divs sencillos, sin librería. */
+.confeti-zona {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 50;
+}
+.confeti-pieza {
+  position: absolute;
+  top: -20px;
+  width: 8px;
+  height: 14px;
+  opacity: 0.9;
+  animation-name: confeti-caer;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+@keyframes confeti-caer {
+  to { top: 100vh; opacity: 0.2; }
 }
 .puntaje-num {
   font-size: 3.2rem;
@@ -2079,7 +2137,16 @@ body {
   border-radius: 12px;
   padding: 12px 16px;
   font-weight: 600;
+  animation: pop-in 0.3s ease;
 }
+
+/* Pulso al votar contenido de Comunidad. */
+@keyframes voto-pulso {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+.voto-pulso { animation: voto-pulso 0.35s ease; }
 
 /* ---------- Cuenta ---------- */
 .cuenta-resumen {
@@ -2359,6 +2426,19 @@ body {
   padding: 10px 12px;
   border: 1px solid var(--borde);
   border-radius: 12px;
+}
+.amigo-item.amigo-aceptado {
+  background: #dcfce7;
+  border-color: #bbf7d0;
+  animation: amigo-aceptado-pop 0.3s ease;
+}
+.amigo-check {
+  color: #166534;
+  font-weight: 700;
+}
+@keyframes amigo-aceptado-pop {
+  0% { transform: scale(0.92); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
 }
 .amigo-info {
   display: flex;
@@ -3052,7 +3132,12 @@ body {
   border-radius: 14px;
   padding: 14px 16px 0;
   box-shadow: var(--sombra);
+  animation: pop-in 0.45s ease backwards;
 }
+/* Suben en orden de suspenso: bronce, luego plata, luego el 1er lugar. */
+.podio-puesto.bronce { animation-delay: 0s; }
+.podio-puesto.plata { animation-delay: 0.18s; }
+.podio-puesto.oro { animation-delay: 0.36s; }
 .podio-nombre {
   font-weight: 800;
   color: var(--texto);

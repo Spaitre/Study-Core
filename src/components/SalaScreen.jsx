@@ -229,7 +229,11 @@ export default function SalaScreen({ codigo, salaInicial, onSalir }) {
         </div>
       )}
 
-      <div className="pregunta-texto">{sala.pregunta.enunciado}</div>
+      {/* key=sala.idx: remonta el nodo en cada pregunta nueva para repetir
+          la animación de entrada (mismo patrón que QuizScreen). */}
+      <div className="pregunta-texto" key={`p-${sala.idx}`}>
+        {sala.pregunta.enunciado}
+      </div>
 
       {esRevelar && (
         <div className={`feedback ${sala.espectador ? 'ok' : sala.tuCorrecta ? 'ok' : 'mal'}`}>
@@ -246,11 +250,12 @@ export default function SalaScreen({ codigo, salaInicial, onSalir }) {
         </div>
       )}
 
-      <div className="opciones-grid">
+      <div className="opciones-grid" key={`o-${sala.idx}`}>
         {sala.pregunta.opciones.map((op, i) => (
           <button
             key={i}
             className={`opcion color-${i} ${claseOpcion(i)}`}
+            style={{ animationDelay: `${i * 0.05}s` }}
             disabled={esRevelar || seleccion !== null || sala.espectador}
             onClick={() => responder(i)}
           >

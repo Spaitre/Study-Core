@@ -189,7 +189,11 @@ export default function QuizScreen({
         </span>
       </div>
 
-      <div className="pregunta-texto">{actual.pregunta}</div>
+      {/* key=mostradas: fuerza a React a remontar el nodo en cada pregunta
+          nueva para que la animación de entrada (CSS) se repita. */}
+      <div className="pregunta-texto" key={`p-${mostradas}`}>
+        {actual.pregunta}
+      </div>
 
       {esFlashcard ? (
         <div className="flashcard-zona">
@@ -218,11 +222,12 @@ export default function QuizScreen({
           )}
         </div>
       ) : (
-        <div className="opciones-grid">
+        <div className="opciones-grid" key={`o-${mostradas}`}>
           {actual.opciones.map((opcion, i) => (
             <button
               key={i}
               className={`opcion color-${i} ${claseOpcion(i)}`}
+              style={{ animationDelay: `${i * 0.05}s` }}
               onClick={() => responder(i)}
               disabled={respondida}
             >
