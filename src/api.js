@@ -18,6 +18,9 @@ export async function registro(email, password) {
 export async function login(email, password) {
   return postJSON('/api/auth/login', { email, password }).then((d) => d.usuario)
 }
+export async function loginGoogle(idToken) {
+  return postJSON('/api/auth/google', { idToken }).then((d) => d.usuario)
+}
 export async function logout() {
   return postJSON('/api/auth/logout', {})
 }
@@ -61,45 +64,57 @@ export function eliminarAmistad(amistadId) {
   return delJSON(`/api/amigos/${encodeURIComponent(amistadId)}`)
 }
 
-// Sufijo ?proyecto= para operar en el contexto de un proyecto (o personal si null).
-function ctxQuery(proyectoId) {
-  return proyectoId ? `?proyecto=${encodeURIComponent(proyectoId)}` : ''
+// Sufijo ?grupo= para operar en el contexto de un grupo (o personal si null).
+function ctxQuery(grupoId) {
+  return grupoId ? `?grupo=${encodeURIComponent(grupoId)}` : ''
 }
 
-export function fetchMaterias(proyectoId = null) {
-  return getJSON(`/api/materias${ctxQuery(proyectoId)}`).then((d) => d.materias)
+export function fetchMaterias(grupoId = null) {
+  return getJSON(`/api/materias${ctxQuery(grupoId)}`).then((d) => d.materias)
 }
 
-export function fetchCarpetas(proyectoId = null) {
-  return getJSON(`/api/carpetas${ctxQuery(proyectoId)}`).then((d) => d.carpetas)
+export function fetchCarpetas(grupoId = null) {
+  return getJSON(`/api/carpetas${ctxQuery(grupoId)}`).then((d) => d.carpetas)
 }
 
-// ----- Proyectos -----
-export function fetchProyectos() {
-  return getJSON('/api/proyectos').then((d) => d.proyectos)
+// ----- Grupos -----
+export function fetchGrupos() {
+  return getJSON('/api/grupos').then((d) => d.grupos)
 }
-export function fetchProyecto(id) {
-  return getJSON(`/api/proyectos/${encodeURIComponent(id)}`).then((d) => d.proyecto)
+export function fetchGrupo(id) {
+  return getJSON(`/api/grupos/${encodeURIComponent(id)}`).then((d) => d.grupo)
 }
-export function crearProyecto(nombre, { permisoEdicion = 'todos', acceso = [] } = {}) {
-  return postJSON('/api/proyectos', { nombre, permisoEdicion, acceso }).then((d) => d.proyecto)
+export function crearGrupo(nombre, { permisoEdicion = 'todos', acceso = [] } = {}) {
+  return postJSON('/api/grupos', { nombre, permisoEdicion, acceso }).then((d) => d.grupo)
 }
-export function unirseProyecto(codigo) {
-  return postJSON('/api/proyectos/unirse', { codigo }).then((d) => d.proyecto)
+export function unirseGrupo(codigo) {
+  return postJSON('/api/grupos/unirse', { codigo }).then((d) => d.grupo)
 }
-export function editarProyecto(id, cambios) {
-  return patchJSON(`/api/proyectos/${encodeURIComponent(id)}`, cambios).then((d) => d.proyecto)
+export function editarGrupo(id, cambios) {
+  return patchJSON(`/api/grupos/${encodeURIComponent(id)}`, cambios).then((d) => d.grupo)
 }
-export function quitarMiembro(proyectoId, usuarioId) {
+export function quitarMiembro(grupoId, usuarioId) {
   return delJSON(
-    `/api/proyectos/${encodeURIComponent(proyectoId)}/miembros/${encodeURIComponent(usuarioId)}`,
+    `/api/grupos/${encodeURIComponent(grupoId)}/miembros/${encodeURIComponent(usuarioId)}`,
   )
 }
-export function eliminarProyecto(id) {
-  return delJSON(`/api/proyectos/${encodeURIComponent(id)}`)
+export function eliminarGrupo(id) {
+  return delJSON(`/api/grupos/${encodeURIComponent(id)}`)
 }
-export function salirProyecto(id) {
-  return postJSON(`/api/proyectos/${encodeURIComponent(id)}/salir`, {})
+export function salirGrupo(id) {
+  return postJSON(`/api/grupos/${encodeURIComponent(id)}/salir`, {})
+}
+export function estadisticasGrupo(id) {
+  return getJSON(`/api/grupos/${encodeURIComponent(id)}/estadisticas`)
+}
+export function fetchObjetivos(grupoId) {
+  return getJSON(`/api/grupos/${encodeURIComponent(grupoId)}/objetivos`).then((d) => d.objetivos)
+}
+export function crearObjetivo(grupoId, objetivo) {
+  return postJSON(`/api/grupos/${encodeURIComponent(grupoId)}/objetivos`, objetivo)
+}
+export function eliminarObjetivo(grupoId, id) {
+  return delJSON(`/api/grupos/${encodeURIComponent(grupoId)}/objetivos/${encodeURIComponent(id)}`)
 }
 
 // ----- Multijugador (salas en tiempo real) -----
@@ -159,8 +174,8 @@ async function postJSON(url, body) {
   return data
 }
 
-export function crearMateria(nombre, icono, carpetaId, proyectoId = null) {
-  return postJSON('/api/materias', { nombre, icono, carpetaId, proyectoId }).then((d) => d.materia)
+export function crearMateria(nombre, icono, carpetaId, grupoId = null) {
+  return postJSON('/api/materias', { nombre, icono, carpetaId, grupoId }).then((d) => d.materia)
 }
 
 export function crearTema(materiaId, nombre) {
@@ -177,6 +192,23 @@ export async function analizarArchivo(temaId, file) {
       method: 'POST',
       headers: { 'Content-Type': 'application/octet-stream' },
       body: buf,
+      ...CRED,
+    },
+  )
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.error || `Error ${res.status}`)
+  return data
+}
+
+// Paso 1 (alternativo): analiza texto pegado directamente, sin pasar por un
+// archivo. Reutiliza el mismo endpoint que analizarArchivo (ext=txt).
+export async function analizarTexto(temaId, texto) {
+  const res = await fetch(
+    `/api/temas/${encodeURIComponent(temaId)}/importar/analizar?ext=txt`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/octet-stream' },
+      body: texto,
       ...CRED,
     },
   )
@@ -234,8 +266,8 @@ async function delJSON(url) {
 }
 
 // ----- Carpetas -----
-export function crearCarpeta(nombre, proyectoId = null) {
-  return postJSON('/api/carpetas', { nombre, proyectoId }).then((d) => d.carpeta)
+export function crearCarpeta(nombre, grupoId = null) {
+  return postJSON('/api/carpetas', { nombre, grupoId }).then((d) => d.carpeta)
 }
 export function editarCarpeta(id, nombre) {
   return patchJSON(`/api/carpetas/${encodeURIComponent(id)}`, { nombre }).then(
@@ -250,8 +282,8 @@ export function importarMateriasACarpeta(carpetaId, datos) {
   return postJSON(`/api/carpetas/${encodeURIComponent(carpetaId)}/importar`, datos)
 }
 // Importar una carpeta nueva (con sus materias) en el contexto actual.
-export function importarCarpeta(datos, proyectoId = null) {
-  return postJSON('/api/carpetas/importar', { ...datos, proyectoId })
+export function importarCarpeta(datos, grupoId = null) {
+  return postJSON('/api/carpetas/importar', { ...datos, grupoId })
 }
 // Exportaciones (devuelven el JSON para descargar).
 export function exportarMateria(materiaId) {
@@ -299,6 +331,68 @@ export async function reordenarMaterias(ids) {
   })
   if (!res.ok) throw new Error(`No se pudo guardar el orden (${res.status})`)
   return res.json()
+}
+
+// ----- Progreso (racha, XP, monedas, cajas de regalo) -----
+export function fetchProgreso() {
+  return getJSON('/api/progreso')
+}
+export function abrirCaja(id) {
+  return postJSON(`/api/cajas/${encodeURIComponent(id)}/abrir`, {})
+}
+
+// ----- Misiones de bienvenida -----
+export function fetchMisiones() {
+  return getJSON('/api/misiones')
+}
+
+// ----- Banco de contenido público (Comunidad): materias/carpetas publicadas -----
+export function fetchFacetasPublicas() {
+  return getJSON('/api/comunidad/facetas')
+}
+// Los filtros de faceta (tipo/materia/tema/dificultad/categoría) son de
+// selección múltiple: cada uno viaja como un solo query param con sus
+// valores separados por coma.
+export function fetchContenidoPublico(filtros = {}) {
+  const params = new URLSearchParams()
+  for (const [campo, valor] of Object.entries(filtros)) {
+    if (Array.isArray(valor)) {
+      if (valor.length > 0) params.set(campo, valor.join(','))
+    } else if (valor) {
+      params.set(campo, valor)
+    }
+  }
+  const q = params.toString()
+  return getJSON(`/api/comunidad/contenido${q ? `?${q}` : ''}`).then((d) => d.contenido)
+}
+export function fetchDetalleContenido(id) {
+  return getJSON(`/api/comunidad/contenido/${encodeURIComponent(id)}`)
+}
+export function publicarContenido(datos) {
+  return postJSON('/api/comunidad/contenido', datos)
+}
+export function votarContenido(id) {
+  return postJSON(`/api/comunidad/contenido/${encodeURIComponent(id)}/votar`, {})
+}
+export function comentarContenido(id, texto) {
+  return postJSON(`/api/comunidad/contenido/${encodeURIComponent(id)}/comentar`, { texto }).then(
+    (d) => d.comentarios,
+  )
+}
+export function reportarContenido(id, motivo) {
+  return postJSON(`/api/comunidad/contenido/${encodeURIComponent(id)}/reportar`, { motivo })
+}
+export function importarContenido(id, opciones = {}) {
+  return postJSON(`/api/comunidad/contenido/${encodeURIComponent(id)}/importar`, opciones)
+}
+export function fetchModeracionContenido() {
+  return getJSON('/api/comunidad/moderacion').then((d) => d.contenido)
+}
+export function ocultarContenido(id) {
+  return postJSON(`/api/comunidad/moderacion/${encodeURIComponent(id)}/ocultar`, {})
+}
+export function descartarReportesContenido(id) {
+  return postJSON(`/api/comunidad/moderacion/${encodeURIComponent(id)}/descartar`, {})
 }
 
 export async function guardarSesion(sesion) {

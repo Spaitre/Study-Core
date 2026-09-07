@@ -26,6 +26,7 @@ router.patch(
     const perfil = await perfilService.actualizar(req.usuarioId, {
       nombreUsuario: req.body?.nombreUsuario,
       foto: req.body?.foto,
+      marco: req.body?.marco,
     })
     res.json({ perfil })
   }),

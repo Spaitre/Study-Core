@@ -4,8 +4,12 @@ dist-ssr
 *.local
 .vscode
 .DS_Store
+.env
 
 # Base de datos SQLite (se regenera importando los JSON)
 data/cerebro.db
 data/cerebro.db-shm
 data/cerebro.db-wal
+
+# Respaldos locales de la BD (contienen datos reales de usuarios; nunca a git)
+data/*.db.backup*

@@ -3,9 +3,9 @@
 import { database } from '../db/index.js'
 
 // Proyección pública/propia de un usuario (sin datos sensibles). Es la forma de
-// "perfil" que consumen amigos, proyectos, salas, etc.
+// "perfil" que consumen amigos, grupos, salas, etc.
 const PERFIL_COLS =
-  'id, email, nombre_usuario AS nombreUsuario, foto_perfil AS foto, invitado'
+  'id, email, nombre_usuario AS nombreUsuario, foto_perfil AS foto, marco_equipado AS marco, invitado, es_admin AS esAdmin'
 
 export const usuariosRepo = {
   // Fila completa (incluye hash/salt) para verificar credenciales.
@@ -44,12 +44,38 @@ export const usuariosRepo = {
     return this.perfil(Number(info.lastInsertRowid))
   },
 
+  // Registra un intento de login fallido: guarda el nuevo contador y, si
+  // corresponde, la fecha hasta la que queda bloqueada la cuenta.
+  registrarIntentoFallido(id, intentos, bloqueadoHasta) {
+    return database.run(
+      'UPDATE usuarios SET intentos_fallidos = ?, bloqueado_hasta = ? WHERE id = ?',
+      [intentos, bloqueadoHasta, id],
+    )
+  },
+
+  // Limpia el contador de intentos y el bloqueo (login exitoso).
+  resetIntentosFallidos(id) {
+    return database.run(
+      'UPDATE usuarios SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE id = ?',
+      [id],
+    )
+  },
+
   actualizarNombre(id, nombre) {
     return database.run('UPDATE usuarios SET nombre_usuario = ? WHERE id = ?', [nombre, id])
   },
 
   actualizarFoto(id, foto) {
     return database.run('UPDATE usuarios SET foto_perfil = ? WHERE id = ?', [foto, id])
+  },
+
+  actualizarMarco(id, marco) {
+    return database.run('UPDATE usuarios SET marco_equipado = ? WHERE id = ?', [marco, id])
+  },
+
+  async esAdmin(id) {
+    const fila = await database.get('SELECT es_admin FROM usuarios WHERE id = ?', [id])
+    return !!fila?.es_admin
   },
 
   // Busca un usuario por correo exacto o por nombre de usuario (case-insensitive).
@@ -76,22 +102,22 @@ export const usuariosRepo = {
   },
 
   // Elimina por completo una cuenta de invitado y su contenido personal, en una
-  // transacción. Se conservan sus aportes a proyectos de otros (cuelgan del
-  // proyecto, no del usuario); al borrar el usuario, su membresía y proyectos
+  // transacción. Se conservan sus aportes a grupos de otros (cuelgan del
+  // grupo, no del usuario); al borrar el usuario, su membresía y grupos
   // propios caen por cascada.
   eliminarConContenido(id) {
     return database.withTransaction(async (tx) => {
-      // Contenido de los proyectos que posee el invitado.
-      const propios = await tx.all('SELECT id FROM proyectos WHERE propietario_id = ?', [id])
+      // Contenido de los grupos que posee el invitado.
+      const propios = await tx.all('SELECT id FROM grupos WHERE propietario_id = ?', [id])
       for (const p of propios) {
-        await tx.run('DELETE FROM materias WHERE proyecto_id = ?', [p.id])
-        await tx.run('DELETE FROM carpetas WHERE proyecto_id = ?', [p.id])
+        await tx.run('DELETE FROM materias WHERE grupo_id = ?', [p.id])
+        await tx.run('DELETE FROM carpetas WHERE grupo_id = ?', [p.id])
       }
       // Contenido e historial personales del invitado.
-      await tx.run('DELETE FROM materias WHERE usuario_id = ? AND proyecto_id IS NULL', [id])
-      await tx.run('DELETE FROM carpetas WHERE usuario_id = ? AND proyecto_id IS NULL', [id])
+      await tx.run('DELETE FROM materias WHERE usuario_id = ? AND grupo_id IS NULL', [id])
+      await tx.run('DELETE FROM carpetas WHERE usuario_id = ? AND grupo_id IS NULL', [id])
       await tx.run('DELETE FROM sesiones WHERE usuario_id = ?', [id])
-      // Borra el usuario (cascada: tokens, proyectos propios, membresías, amistades).
+      // Borra el usuario (cascada: tokens, grupos propios, membresías, amistades).
       await tx.run('DELETE FROM usuarios WHERE id = ?', [id])
     })
   },

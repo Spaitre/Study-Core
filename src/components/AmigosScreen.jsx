@@ -8,6 +8,7 @@ import {
   aceptarAmigo,
   eliminarAmistad,
 } from '../api.js'
+import { logroDeMision } from '../logros.js'
 
 export default function AmigosScreen() {
   const [tab, setTab] = useState('amigos') // 'amigos' | 'agregar' | 'solicitudes'
@@ -45,6 +46,7 @@ export default function AmigosScreen() {
       const r = await solicitarAmigo(identificador.trim())
       setIdentificador('')
       setAviso(r.estado === 'aceptada' ? '¡Ahora son amigos! 🎉' : 'Solicitud enviada ✓')
+      if (r.estado === 'aceptada') logroDeMision(r.mision)
       recargar()
     } catch (err) {
       setError(err.message)
@@ -52,7 +54,8 @@ export default function AmigosScreen() {
   }
 
   async function aceptar(id) {
-    await aceptarAmigo(id)
+    const r = await aceptarAmigo(id)
+    logroDeMision(r.mision)
     recargar()
   }
   async function quitar(id) {

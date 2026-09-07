@@ -1,6 +1,7 @@
 // Servicio de amigos: solicitar/aceptar/eliminar y listados con perfil adjunto.
 import { amigosRepo } from '../repositories/amigosRepo.js'
 import { usuariosRepo } from '../repositories/usuariosRepo.js'
+import { misionesService } from './misionesService.js'
 import { fallo } from './ApiError.js'
 
 export const amigosService = {
@@ -32,7 +33,9 @@ export const amigosService = {
         throw fallo(409, 'Ya enviaste una solicitud a este usuario')
       // El otro usuario ya te había enviado solicitud: se acepta automáticamente.
       await amigosRepo.aceptarPorId(existente.id)
-      return { estado: 'aceptada' }
+      const mision = await misionesService.progresar(usuarioId, 'primer_amigo')
+      await misionesService.progresar(objetivo.id, 'primer_amigo')
+      return { estado: 'aceptada', mision }
     }
 
     await amigosRepo.crearSolicitud(usuarioId, objetivo.id)
@@ -40,8 +43,12 @@ export const amigosService = {
   },
 
   async aceptar(usuarioId, amistadId) {
+    const solicitud = await amigosRepo.porId(amistadId)
     const cambios = await amigosRepo.aceptarSolicitud(amistadId, usuarioId)
     if (cambios === 0) throw fallo(404, 'No existe la solicitud')
+    const mision = await misionesService.progresar(usuarioId, 'primer_amigo')
+    if (solicitud) await misionesService.progresar(solicitud.solicitante_id, 'primer_amigo')
+    return { mision }
   },
 
   async eliminar(usuarioId, amistadId) {

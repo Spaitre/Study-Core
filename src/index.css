@@ -121,6 +121,40 @@ body {
   font-size: 1.05rem;
 }
 
+/* Dos columnas: lo principal (carpetas/materias/temas) más ancho a la
+   izquierda, misiones/sugerencias como barra lateral secundaria. */
+.home-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 20px;
+  align-items: start;
+}
+.home-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+.home-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 16px;
+}
+/* Embebido en un grupo (GrupoScreen): no hay encabezado ni barra lateral. */
+.home-layout.sin-aside {
+  grid-template-columns: 1fr;
+}
+@media (max-width: 860px) {
+  .home-layout {
+    grid-template-columns: 1fr;
+  }
+  .home-aside {
+    position: static;
+  }
+}
+
 .materia-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -260,32 +294,18 @@ body {
   right: 6px;
 }
 
-/* Botón de importar preguntas (estilo neutro como editar) */
-.btn-importar {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 0.85rem;
-  line-height: 1;
-  padding: 4px 6px;
-  border-radius: 6px;
-  transition: all 0.12s ease;
-}
-.btn-importar:hover {
-  background: #ecfeff;
-}
-.tema-item .btn-importar {
+.tema-item .btn-exportar {
   margin-left: 4px;
 }
 
-/* Iconos editar/importar/eliminar: ocultos hasta hover o foco por teclado */
+/* Iconos editar/exportar/eliminar: ocultos hasta hover o foco por teclado */
 .materia-card .btn-editar,
 .materia-card .btn-eliminar,
 .materia-card .btn-exportar,
 .carpeta-card .btn-editar,
 .carpeta-card .btn-eliminar,
 .tema-item .btn-editar,
-.tema-item .btn-importar,
+.tema-item .btn-exportar,
 .tema-item .btn-eliminar {
   opacity: 0;
   pointer-events: none;
@@ -301,10 +321,10 @@ body {
 .carpeta-card:focus-within .btn-editar,
 .carpeta-card:focus-within .btn-eliminar,
 .tema-item:hover .btn-editar,
-.tema-item:hover .btn-importar,
+.tema-item:hover .btn-exportar,
 .tema-item:hover .btn-eliminar,
 .tema-item:focus-within .btn-editar,
-.tema-item:focus-within .btn-importar,
+.tema-item:focus-within .btn-exportar,
 .tema-item:focus-within .btn-eliminar {
   opacity: 1;
   pointer-events: auto;
@@ -408,6 +428,59 @@ body {
   border-color: var(--morado);
   color: var(--morado);
 }
+.btn-preg.destacado {
+  border-color: #c4b5fd;
+  background: #f5f3ff;
+  color: var(--morado);
+  font-weight: 800;
+}
+.btn-preg.destacado:hover {
+  background: #ede9fe;
+}
+
+/* ---------- Sugerencia de importar con IA (Inicio) ---------- */
+.sugerencia-ia {
+  position: relative;
+  background: linear-gradient(135deg, #ede9fe, #fae8ff);
+  border: 2px solid #c4b5fd;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.15);
+}
+.sugerencia-ia h2 {
+  margin: 0 0 12px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--morado);
+  line-height: 1.3;
+}
+.sugerencia-ia-pasos {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--texto);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+.sugerencia-ia-pasos li::marker {
+  font-weight: 800;
+  color: var(--morado);
+}
+.sugerencia-ia-cerrar {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  color: var(--texto-suave);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+.sugerencia-ia-cerrar:hover {
+  color: var(--texto);
+}
 
 /* ---------- Modal de gestión de preguntas ---------- */
 .tipo-toggle {
@@ -433,6 +506,13 @@ body {
 }
 .gestion-badge {
   margin-right: 4px;
+}
+.gestion-meta {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--morado);
 }
 .gestion-acciones {
   display: flex;
@@ -752,6 +832,20 @@ body {
 .import-nota {
   color: var(--texto-suave);
   font-size: 0.85rem;
+}
+.textarea-pegar {
+  resize: vertical;
+  font-family: inherit;
+  min-height: 140px;
+}
+.meta-caso {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.meta-caso .form-input {
+  font-size: 0.82rem;
+  padding: 6px 8px;
 }
 
 /* Vista previa editable */
@@ -1347,6 +1441,10 @@ body {
   flex-direction: column;
   gap: 14px;
 }
+.auth-google-btn {
+  display: flex;
+  justify-content: center;
+}
 .auth-form h1 {
   margin: 0;
   font-size: 1.6rem;
@@ -1486,6 +1584,390 @@ body {
   opacity: 0.7;
   word-break: break-all;
 }
+/* ---------- Pestañas de Comunidad (Grupos / Banco de preguntas) ---------- */
+.comunidad-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.comunidad-tab {
+  background: #fff;
+  border: 2px solid var(--borde);
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--texto);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.comunidad-tab:hover {
+  border-color: var(--morado);
+}
+.comunidad-tab.activo {
+  background: var(--texto);
+  border-color: var(--texto);
+  color: #fff;
+}
+
+/* ---------- Banco de contenido público (Comunidad) ---------- */
+.banco-publico-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.banco-publico-header h2 {
+  margin: 0;
+}
+.banco-publico-acciones {
+  display: flex;
+  gap: 8px;
+}
+.banco-publico-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 20px;
+  margin-top: 14px;
+  align-items: start;
+}
+.banco-publico-filtros {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--gris-fondo);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  padding: 16px;
+  position: sticky;
+  top: 16px;
+}
+.filtro-grupo h4 {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--texto-suave);
+}
+.filtro-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+.filtro-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--texto);
+  cursor: pointer;
+}
+.filtro-check:hover {
+  background: #fff;
+}
+.filtro-check input {
+  cursor: pointer;
+  accent-color: var(--morado);
+}
+.banco-publico-resultados {
+  min-width: 0;
+}
+.contenido-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+.contenido-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  background: #fff;
+  border: 2px solid var(--borde);
+  border-radius: 14px;
+  padding: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.contenido-card:hover {
+  border-color: var(--morado);
+  transform: translateY(-2px);
+}
+.contenido-card-icono {
+  font-size: 1.8rem;
+}
+.contenido-card-nombre {
+  font-weight: 700;
+  color: var(--texto);
+}
+.contenido-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: var(--texto-suave);
+}
+.contenido-card-votado {
+  color: var(--morado);
+  font-weight: 700;
+}
+
+/* ---------- Detalle de contenido público ---------- */
+.detalle-contenido-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+}
+.detalle-contenido-materias {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.comentarios-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+.comentario-item {
+  background: var(--gris-fondo);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 0.88rem;
+}
+.comentario-nuevo {
+  display: flex;
+  gap: 8px;
+}
+.comentario-nuevo .form-input {
+  flex: 1;
+}
+
+@media (max-width: 720px) {
+  .banco-publico-layout {
+    grid-template-columns: 1fr;
+  }
+  .banco-publico-filtros {
+    position: static;
+  }
+}
+
+/* ---------- Aviso de logro (XP / avatar desbloqueado) ---------- */
+.logro-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #fff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.3);
+  pointer-events: none;
+  white-space: nowrap;
+  animation: logro-entrada 0.35s ease, logro-salida 0.35s ease forwards;
+  animation-delay: 0s, 2.05s;
+}
+.logro-toast-xp {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+.logro-toast-avatar {
+  background: linear-gradient(135deg, #a78bfa, #7c3aed);
+  font-size: 1.05rem;
+  padding: 8px 22px 8px 12px;
+  /* Se queda un poco más visible que el de XP (coincide con el timeout de
+     desmontaje en LogroToast.jsx: 3.4s). */
+  animation-delay: 0s, 3.05s;
+}
+.logro-toast-avatar .avatar {
+  background: #fff;
+  border-radius: 50%;
+}
+@keyframes logro-entrada {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -16px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+@keyframes logro-salida {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -12px) scale(0.95);
+  }
+}
+
+/* ---------- Marco de avatar (cosmético) ---------- */
+.marco-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.marco-anillo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ---------- Progreso (racha/XP/cajas) ---------- */
+.progreso-widget {
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.progreso-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.progreso-racha {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.progreso-nivel {
+  opacity: 0.85;
+  font-size: 0.78rem;
+  text-align: right;
+}
+.progreso-barra {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+}
+.progreso-barra-relleno {
+  height: 100%;
+  background: #fbbf24;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+.progreso-cajas-btn {
+  margin-top: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.progreso-cajas-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* ---------- Modal de cajas de regalo ---------- */
+.cajas-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.caja-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+.caja-item span {
+  font-size: 0.75rem;
+  color: var(--texto-suave);
+}
+.caja-item:hover:not(:disabled) {
+  background: #ede9fe;
+  transform: translateY(-2px);
+}
+.caja-item:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.caja-resultado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 10px 0 6px;
+}
+.caja-resultado-icono {
+  font-size: 3rem;
+}
+.caja-resultado-marco {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid rgba(15, 23, 42, 0.15);
+}
+.rareza {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.rareza-comun {
+  background: #e2e8f0;
+  color: #475569;
+}
+.rareza-raro {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.rareza-epico {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+.rareza-legendario {
+  background: #fef3c7;
+  color: #b45309;
+}
+
 .sidebar-nav {
   display: flex;
   flex-direction: column;
@@ -1676,6 +2158,141 @@ body {
   background: #f5f3ff;
   box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.15);
 }
+.avatar-opcion.bloqueado {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* ---------- Misiones de bienvenida ---------- */
+.misiones-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mision-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--gris-fondo);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.mision-item.completada {
+  background: #f0fdf4;
+}
+.mision-check {
+  font-size: 1.1rem;
+}
+.mision-texto {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mision-xp {
+  font-weight: 800;
+  color: var(--morado);
+  white-space: nowrap;
+}
+.mision-item.completada .mision-xp {
+  color: #16a34a;
+}
+
+/* Resumen compacto (Inicio, barra lateral) */
+.misiones-widget {
+  padding: 14px 16px;
+}
+.misiones-widget-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.misiones-widget-cab h2 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+.misiones-widget-contador {
+  font-weight: 800;
+  color: var(--morado);
+  font-size: 0.9rem;
+}
+.misiones-widget-barra {
+  margin-top: 8px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--gris-fondo);
+  overflow: hidden;
+}
+.misiones-widget-barra-relleno {
+  height: 100%;
+  background: var(--morado);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+.misiones-widget-chips {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+.misiones-widget-chips li.hecha {
+  color: var(--texto);
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+.misiones-widget .cuenta-ayuda {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+}
+
+.cosmeticos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 12px;
+}
+.cosmetico-opcion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  background: #fff;
+  border: 2px solid var(--borde);
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--texto);
+  transition: all 0.12s ease;
+}
+.cosmetico-opcion:hover:not(.bloqueado):not(:disabled) {
+  border-color: var(--morado);
+}
+.cosmetico-opcion.activo {
+  border-color: var(--morado);
+  background: #f5f3ff;
+  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.15);
+}
+.cosmetico-opcion.bloqueado {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.insignia-opcion {
+  cursor: default;
+}
+.insignia-icono {
+  font-size: 1.8rem;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .avatar-subir-icono {
   width: 64px;
   height: 64px;
@@ -1799,18 +2416,18 @@ body {
   margin: 8px 0;
 }
 
-/* ---------- Proyectos ---------- */
-.proyectos-top {
+/* ---------- Grupos de estudio ---------- */
+.grupos-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 14px;
 }
-.proyectos-top h2 {
+.grupos-top h2 {
   margin: 0;
 }
-.proyecto-form {
+.grupo-form {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -1819,11 +2436,12 @@ body {
   border-radius: 12px;
   margin-bottom: 18px;
 }
-.proyecto-amigos-label {
+.grupo-amigos-label,
+.mj-opcion-label {
   font-weight: 700;
   font-size: 0.9rem;
 }
-.proyecto-amigos {
+.grupo-amigos {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 8px;
@@ -1847,7 +2465,7 @@ body {
 .amigo-check input {
   accent-color: var(--morado);
 }
-.proyecto-lista {
+.grupo-lista {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -1855,12 +2473,12 @@ body {
   flex-direction: column;
   gap: 10px;
 }
-.proyecto-item {
+.grupo-item {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-.proyecto-abrir {
+.grupo-abrir {
   flex: 1;
   display: flex;
   align-items: center;
@@ -1873,33 +2491,33 @@ body {
   cursor: pointer;
   transition: all 0.12s ease;
 }
-.proyecto-abrir:hover {
+.grupo-abrir:hover {
   border-color: var(--morado);
   transform: translateY(-1px);
 }
-.proyecto-icono {
+.grupo-icono {
   font-size: 1.6rem;
 }
-.proyecto-info {
+.grupo-info {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
 }
-.proyecto-nombre {
+.grupo-nombre {
   font-weight: 800;
   font-size: 1.05rem;
 }
-.proyecto-meta {
+.grupo-meta {
   font-size: 0.82rem;
   color: var(--texto-suave);
 }
-.proyecto-miembros-mini,
-.proyecto-miembros-fila {
+.grupo-miembros-mini,
+.grupo-miembros-fila {
   display: flex;
   align-items: center;
 }
-.proyecto-miembros-mini .mini-avatar {
+.grupo-miembros-mini .mini-avatar {
   margin-left: -8px;
 }
 .mini-avatar {
@@ -1909,38 +2527,115 @@ body {
   background: #fff;
 }
 
-/* Encabezado dentro de un proyecto */
-.proyecto-encabezado {
+/* Encabezado dentro de un grupo */
+.grupo-encabezado {
   color: #fff;
   text-align: center;
 }
-.proyecto-encabezado .btn-link {
+.grupo-encabezado .btn-link {
   display: inline-block;
   margin-bottom: 6px;
 }
-.proyecto-encabezado h1 {
+.grupo-encabezado h1 {
   margin: 0;
   font-size: 1.9rem;
 }
-.proyecto-miembros-fila {
+.grupo-miembros-fila {
   justify-content: center;
   gap: 4px;
   margin-top: 8px;
   flex-wrap: wrap;
 }
-.proyecto-miembros-fila .mini-avatar {
+.grupo-miembros-fila .mini-avatar {
   margin-left: -6px;
 }
-.proyecto-compartido {
+.grupo-compartido {
   color: #fff;
   opacity: 0.85;
   font-size: 0.85rem;
   margin-left: 10px;
 }
-.proyecto .home-header { display: none; }
+.grupo .home-header { display: none; }
 
-/* Bloque de cada proyecto en la lista (item + panel de edición) */
-.proyecto-bloque {
+/* Estadísticas colectivas del grupo */
+.grupo-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 12px;
+  text-align: center;
+}
+.grupo-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.grupo-stat-valor {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--morado);
+}
+.grupo-stat-label {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+}
+
+/* Objetivos grupales */
+.grupo-objetivo-campos {
+  display: flex;
+  gap: 8px;
+}
+.grupo-objetivo-campos select {
+  flex: 2;
+}
+.grupo-objetivo-campos input {
+  flex: 1;
+}
+.grupo-objetivo-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.grupo-objetivo-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.grupo-objetivo-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.grupo-objetivo-desc {
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+.grupo-objetivo-materia {
+  font-weight: 400;
+  color: var(--texto-suave);
+}
+.grupo-objetivo-barra {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--gris-fondo);
+  overflow: hidden;
+}
+.grupo-objetivo-progreso {
+  height: 100%;
+  background: var(--morado);
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+.grupo-objetivo-cifras {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+}
+
+/* Bloque de cada grupo en la lista (item + panel de edición) */
+.grupo-bloque {
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -1962,8 +2657,8 @@ body {
   border-color: var(--morado);
 }
 
-/* Panel de edición de proyecto */
-.proyecto-editar {
+/* Panel de edición de grupo */
+.grupo-editar {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1972,7 +2667,7 @@ body {
   background: var(--gris-fondo);
   border-radius: 12px;
 }
-.proyecto-editar .cuenta-ayuda {
+.grupo-editar .cuenta-ayuda {
   margin: 6px 0 0;
   font-weight: 700;
   color: var(--texto);
@@ -2015,18 +2710,20 @@ body {
 /* Cabecera de la sección de materias (título + importar) */
 .materias-cab {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 14px;
 }
 .materias-cab h2 {
   margin: 0;
+  min-width: 0;
 }
 .materias-cab-acciones {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
 }
 .export-todas {
   display: flex;
@@ -2061,7 +2758,6 @@ body {
 /* Modo solo lectura: ocultar todos los controles de edición de HomeScreen */
 .solo-lectura .btn-editar,
 .solo-lectura .btn-eliminar,
-.solo-lectura .btn-importar,
 .solo-lectura .btn-importar-materia,
 .solo-lectura .carpeta-card.agregar,
 .solo-lectura .materia-card.agregar,
@@ -2087,7 +2783,7 @@ body {
   color: var(--texto-suave);
   margin: 10px 0 6px;
 }
-.mj-proyecto-grupo {
+.mj-grupo-carpetas {
   margin-bottom: 6px;
 }
 .mj-grupo-label {
@@ -2549,7 +3245,7 @@ body {
   .carpeta-card .btn-editar,
   .carpeta-card .btn-eliminar,
   .tema-item .btn-editar,
-  .tema-item .btn-importar,
+  .tema-item .btn-exportar,
   .tema-item .btn-eliminar {
     opacity: 1;
     pointer-events: auto;

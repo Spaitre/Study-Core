@@ -1,10 +1,11 @@
 // Servicio de contenido de estudio: carpetas, materias, temas y preguntas,
-// más import/export JSON. Resuelve contexto (personal/proyecto) y permisos,
+// más import/export JSON. Resuelve contexto (personal/grupo) y permisos,
 // y orquesta las transacciones; el SQL vive en contenidoRepo.
 import crypto from 'node:crypto'
 import { database } from '../db/index.js'
 import { contenidoRepo } from '../repositories/contenidoRepo.js'
-import { esMiembro, puedeEditarProyecto } from './proyectosService.js'
+import { esMiembro, puedeEditarGrupo } from './gruposService.js'
+import { misionesService } from './misionesService.js'
 import { extraerTexto, FORMATOS_SOPORTADOS } from '../importar/extraer.js'
 import { parsearPreguntas } from '../importar/parsear.js'
 import { fallo } from './ApiError.js'
@@ -148,13 +149,22 @@ function barajarOpciones(p) {
   return { ...p, opciones, respuestaCorrecta: opciones.indexOf(textoCorrecto) }
 }
 
+function textoOpcional(v) {
+  const s = v != null ? String(v).trim() : ''
+  return s || null
+}
+
 function normalizarPregunta(p) {
   const tipo = p?.tipo === 'flashcard' ? 'flashcard' : 'opcion'
   const pregunta = String(p?.pregunta || '').trim()
   const opciones = Array.isArray(p?.opciones) ? p.opciones.map((o) => String(o)) : []
   const rc = Number.isInteger(p?.respuestaCorrecta) ? p.respuestaCorrecta : tipo === 'flashcard' ? -1 : 0
   const explicacion = p?.explicacion != null ? String(p.explicacion) : null
-  return { tipo, pregunta, opciones, rc, explicacion }
+  // Metadatos de caso clínico / flashcard: opcionales para ambos tipos.
+  const materiaCaso = textoOpcional(p?.materiaCaso)
+  const temaCategoria = textoOpcional(p?.temaCategoria)
+  const dificultad = textoOpcional(p?.dificultad)
+  return { tipo, pregunta, opciones, rc, explicacion, materiaCaso, temaCategoria, dificultad }
 }
 
 function validarPregunta(d) {
@@ -168,20 +178,20 @@ function validarPregunta(d) {
 export { preguntaHash }
 
 // ----- Contexto y permisos -----
-// Resuelve el contexto (personal o proyecto) desde ?proyecto= / body.proyectoId.
-// Lanza 403 si el proyecto existe pero el usuario no es miembro.
+// Resuelve el contexto (personal o grupo) desde ?grupo= / body.grupoId.
+// Lanza 403 si el grupo existe pero el usuario no es miembro.
 export async function resolverContexto(usuarioId, raw) {
-  if (raw === undefined || raw === null || raw === '') return { proyectoId: null }
+  if (raw === undefined || raw === null || raw === '') return { grupoId: null }
   const pid = Number(raw)
   if (!Number.isInteger(pid) || !(await esMiembro(pid, usuarioId)))
-    throw fallo(403, 'No tienes acceso a ese proyecto')
-  return { proyectoId: pid }
+    throw fallo(403, 'No tienes acceso a ese grupo')
+  return { grupoId: pid }
 }
 
-// Lanza 403 si el contenido pertenece a un proyecto sin permiso de edición.
-async function exigirEdicion(proyectoId, usuarioId) {
-  if (proyectoId && !(await puedeEditarProyecto(proyectoId, usuarioId)))
-    throw fallo(403, 'No tienes permiso para modificar este proyecto')
+// Lanza 403 si el contenido pertenece a un grupo sin permiso de edición.
+async function exigirEdicion(grupoId, usuarioId) {
+  if (grupoId && !(await puedeEditarGrupo(grupoId, usuarioId)))
+    throw fallo(403, 'No tienes permiso para modificar este grupo')
 }
 
 // ----- Importación JSON (compartida) -----
@@ -194,16 +204,16 @@ function materiasDesde(body) {
 // Inserta materias (con temas y preguntas) en una carpeta, dentro de la
 // transacción `tx`. Devuelve los conteos insertados.
 async function insertarMaterias(carpeta, materias, usuarioId, tx) {
-  const proyectoId = carpeta.proyecto_id
+  const grupoId = carpeta.grupo_id
   let nMaterias = 0
   let nTemas = 0
   let nPreguntas = 0
   for (const m of materias) {
     const nombre = String(m.nombre).trim()
     const icono = String(m.icono || '').trim() || '📚'
-    const pos = await contenidoRepo.maxPosMateria(proyectoId, usuarioId, tx)
+    const pos = await contenidoRepo.maxPosMateria(grupoId, usuarioId, tx)
     const matId = await contenidoRepo.idUnico(slugify(nombre), 'materias', tx)
-    await contenidoRepo.insertarMateria(matId, nombre, icono, pos, carpeta.id, usuarioId, proyectoId, tx)
+    await contenidoRepo.insertarMateria(matId, nombre, icono, pos, carpeta.id, usuarioId, grupoId, tx)
     nMaterias++
     const temas = Array.isArray(m.temas) ? m.temas : []
     for (const t of temas) {
@@ -229,6 +239,9 @@ async function insertarMaterias(carpeta, materias, usuarioId, tx) {
           explicacion,
           preguntaHash(temaId, enun),
           tipo,
+          textoOpcional(p.materiaCaso),
+          textoOpcional(p.temaCategoria),
+          textoOpcional(p.dificultad),
           tx,
         )
       }
@@ -253,6 +266,10 @@ async function exportarMateria(m) {
           opciones: JSON.parse(p.opciones),
           respuestaCorrecta: p.respuesta_correcta,
           explicacion: p.explicacion,
+          tipo: p.tipo,
+          materiaCaso: p.materia_caso,
+          temaCategoria: p.tema_categoria,
+          dificultad: p.dificultad,
         })),
       })),
     ),
@@ -261,19 +278,19 @@ async function exportarMateria(m) {
 
 export const contenidoService = {
   // ----- Carpetas -----
-  async listarCarpetas(usuarioId, proyectoId) {
-    return proyectoId
-      ? contenidoRepo.carpetasProyecto(proyectoId)
+  async listarCarpetas(usuarioId, grupoId) {
+    return grupoId
+      ? contenidoRepo.carpetasGrupo(grupoId)
       : contenidoRepo.carpetasPersonal(usuarioId)
   },
 
-  async crearCarpeta(usuarioId, proyectoId, nombreRaw) {
-    await exigirEdicion(proyectoId, usuarioId)
+  async crearCarpeta(usuarioId, grupoId, nombreRaw) {
+    await exigirEdicion(grupoId, usuarioId)
     const nombre = String(nombreRaw || '').trim()
     if (!nombre) throw fallo(400, 'El nombre es obligatorio')
     const id = await contenidoRepo.idUnico('carpeta-' + slugify(nombre), 'carpetas')
-    const pos = await contenidoRepo.maxPosCarpeta(proyectoId, usuarioId)
-    await contenidoRepo.insertarCarpeta(id, nombre, pos, usuarioId, proyectoId)
+    const pos = await contenidoRepo.maxPosCarpeta(grupoId, usuarioId)
+    await contenidoRepo.insertarCarpeta(id, nombre, pos, usuarioId, grupoId)
     return { id, nombre, materias: 0 }
   },
 
@@ -282,7 +299,7 @@ export const contenidoService = {
     if (!nombre) throw fallo(400, 'El nombre es obligatorio')
     const row = await contenidoRepo.carpetaAccesible(id, usuarioId)
     if (!row) throw fallo(404, 'No existe')
-    await exigirEdicion(row.proyecto_id, usuarioId)
+    await exigirEdicion(row.grupo_id, usuarioId)
     await contenidoRepo.actualizarCarpetaNombre(id, nombre)
     return { id, nombre }
   },
@@ -290,7 +307,7 @@ export const contenidoService = {
   async eliminarCarpeta(usuarioId, id) {
     const row = await contenidoRepo.carpetaAccesible(id, usuarioId)
     if (!row) throw fallo(404, 'No existe')
-    await exigirEdicion(row.proyecto_id, usuarioId)
+    await exigirEdicion(row.grupo_id, usuarioId)
     await database.withTransaction(async (tx) => {
       await contenidoRepo.borrarMateriasDeCarpeta(id, tx)
       await contenidoRepo.borrarCarpeta(id, tx)
@@ -316,15 +333,15 @@ export const contenidoService = {
   async importarAcarpeta(usuarioId, carpetaId, body) {
     const carpeta = await contenidoRepo.carpetaParaImport(carpetaId, usuarioId)
     if (!carpeta) throw fallo(404, 'La carpeta no existe')
-    await exigirEdicion(carpeta.proyecto_id, usuarioId)
+    await exigirEdicion(carpeta.grupo_id, usuarioId)
     const materias = materiasDesde(body)
     if (materias.length === 0) throw fallo(400, 'El archivo no contiene materias válidas')
     return database.withTransaction((tx) => insertarMaterias(carpeta, materias, usuarioId, tx))
   },
 
   // Importar una o varias carpetas NUEVAS (con sus materias).
-  async importarCarpetas(usuarioId, proyectoId, body) {
-    await exigirEdicion(proyectoId, usuarioId)
+  async importarCarpetas(usuarioId, grupoId, body) {
+    await exigirEdicion(grupoId, usuarioId)
     const entradas = Array.isArray(body?.carpetas) ? body.carpetas : [body]
     let totM = 0
     let totT = 0
@@ -335,9 +352,9 @@ export const contenidoService = {
         const materias = materiasDesde(ent)
         const nombre = String(ent?.carpeta || ent?.nombre || '').trim() || 'Carpeta importada'
         const id = await contenidoRepo.idUnico('carpeta-' + slugify(nombre), 'carpetas', tx)
-        const pos = await contenidoRepo.maxPosCarpeta(proyectoId, usuarioId, tx)
-        await contenidoRepo.insertarCarpeta(id, nombre, pos, usuarioId, proyectoId, tx)
-        const carpeta = { id, usuario_id: usuarioId, proyecto_id: proyectoId }
+        const pos = await contenidoRepo.maxPosCarpeta(grupoId, usuarioId, tx)
+        await contenidoRepo.insertarCarpeta(id, nombre, pos, usuarioId, grupoId, tx)
+        const carpeta = { id, usuario_id: usuarioId, grupo_id: grupoId }
         const conteo = await insertarMaterias(carpeta, materias, usuarioId, tx)
         totM += conteo.materias
         totT += conteo.temas
@@ -350,9 +367,9 @@ export const contenidoService = {
 
   // ----- Materias -----
   // Catálogo: materias del contexto con sus temas y conteo de preguntas.
-  async catalogo(usuarioId, proyectoId) {
-    const filas = proyectoId
-      ? await contenidoRepo.materiasProyecto(proyectoId)
+  async catalogo(usuarioId, grupoId) {
+    const filas = grupoId
+      ? await contenidoRepo.materiasGrupo(grupoId)
       : await contenidoRepo.materiasPersonal(usuarioId)
     if (filas.length === 0) return []
     // Todos los temas (con conteo) de estas materias en una sola consulta.
@@ -370,18 +387,18 @@ export const contenidoService = {
     }))
   },
 
-  async crearMateria(usuarioId, proyectoId, body) {
-    await exigirEdicion(proyectoId, usuarioId)
+  async crearMateria(usuarioId, grupoId, body) {
+    await exigirEdicion(grupoId, usuarioId)
     const nombre = String(body?.nombre || '').trim()
     if (!nombre) throw fallo(400, 'El nombre es obligatorio')
     // Si no se eligió emoji, se infiere uno acorde al nombre (o 📚 por defecto).
     const icono = String(body?.icono || '').trim() || emojiParaMateria(nombre)
     const carpetaId = String(body?.carpetaId || '').trim() || null
-    if (carpetaId && !(await contenidoRepo.carpetaEnContexto(carpetaId, proyectoId, usuarioId)))
+    if (carpetaId && !(await contenidoRepo.carpetaEnContexto(carpetaId, grupoId, usuarioId)))
       throw fallo(404, 'La carpeta no existe')
     const id = await contenidoRepo.idUnico(slugify(nombre), 'materias')
-    const pos = await contenidoRepo.maxPosMateria(proyectoId, usuarioId)
-    await contenidoRepo.insertarMateria(id, nombre, icono, pos, carpetaId, usuarioId, proyectoId)
+    const pos = await contenidoRepo.maxPosMateria(grupoId, usuarioId)
+    await contenidoRepo.insertarMateria(id, nombre, icono, pos, carpetaId, usuarioId, grupoId)
     return { id, nombre, icono, carpetaId, temas: [] }
   },
 
@@ -398,7 +415,7 @@ export const contenidoService = {
     if (!nombre) throw fallo(400, 'El nombre es obligatorio')
     const mat = await contenidoRepo.materiaAccesible(id, usuarioId)
     if (!mat) throw fallo(404, 'No existe')
-    await exigirEdicion(mat.proyecto_id, usuarioId)
+    await exigirEdicion(mat.grupo_id, usuarioId)
     await contenidoRepo.actualizarMateria(id, nombre, icono)
     return { id, nombre, icono }
   },
@@ -406,7 +423,7 @@ export const contenidoService = {
   async eliminarMateria(usuarioId, id) {
     const mat = await contenidoRepo.materiaAccesible(id, usuarioId)
     if (!mat) throw fallo(404, 'No existe')
-    await exigirEdicion(mat.proyecto_id, usuarioId)
+    await exigirEdicion(mat.grupo_id, usuarioId)
     await contenidoRepo.borrarMateria(id)
   },
 
@@ -414,6 +431,31 @@ export const contenidoService = {
     if (!(await contenidoRepo.materiaAccesible(id, usuarioId))) throw fallo(404, 'La materia no existe')
     const m = await contenidoRepo.materiaInfo(id)
     return { materias: [await exportarMateria(m)] }
+  },
+
+  // Exporta un solo tema (con su materia como envoltorio) en el mismo
+  // formato que una materia completa, para que el resto del código
+  // (analizar facetas, importar) no tenga que distinguir el caso.
+  async exportarTemaPorId(usuarioId, temaId) {
+    const tema = await contenidoRepo.temaAccesible(temaId, usuarioId)
+    if (!tema) throw fallo(404, 'El tema no existe')
+    const info = await contenidoRepo.temaInfo(temaId)
+    const m = await contenidoRepo.materiaInfo(tema.materia_id)
+    const preguntas = (await contenidoRepo.preguntasParaExport(temaId)).map((p) => ({
+      pregunta: p.pregunta,
+      opciones: JSON.parse(p.opciones),
+      respuestaCorrecta: p.respuesta_correcta,
+      explicacion: p.explicacion,
+      tipo: p.tipo,
+      materiaCaso: p.materia_caso,
+      temaCategoria: p.tema_categoria,
+      dificultad: p.dificultad,
+    }))
+    return {
+      materias: [
+        { id: m.id, nombre: m.nombre, icono: m.icono, temas: [{ id: info.id, nombre: info.nombre, preguntas }] },
+      ],
+    }
   },
 
   // Exporta todo el banco personal del usuario como JSON de intercambio.
@@ -429,7 +471,7 @@ export const contenidoService = {
     if (!materiaId || !nombre) throw fallo(400, 'materiaId y nombre son obligatorios')
     const mat = await contenidoRepo.materiaAccesible(materiaId, usuarioId)
     if (!mat) throw fallo(404, 'La materia no existe')
-    await exigirEdicion(mat.proyecto_id, usuarioId)
+    await exigirEdicion(mat.grupo_id, usuarioId)
     const id = await contenidoRepo.idUnico(`${materiaId}-${slugify(nombre)}`, 'temas')
     await contenidoRepo.insertarTema(id, materiaId, nombre)
     return { id, nombre, preguntas: 0 }
@@ -440,7 +482,7 @@ export const contenidoService = {
     if (!nombre) throw fallo(400, 'El nombre es obligatorio')
     const tema = await contenidoRepo.temaAccesible(id, usuarioId)
     if (!tema) throw fallo(404, 'No existe')
-    await exigirEdicion(tema.proyecto_id, usuarioId)
+    await exigirEdicion(tema.grupo_id, usuarioId)
     await contenidoRepo.actualizarTema(id, nombre)
     return { id, nombre }
   },
@@ -448,7 +490,7 @@ export const contenidoService = {
   async eliminarTema(usuarioId, id) {
     const tema = await contenidoRepo.temaAccesible(id, usuarioId)
     if (!tema) throw fallo(404, 'No existe')
-    await exigirEdicion(tema.proyecto_id, usuarioId)
+    await exigirEdicion(tema.grupo_id, usuarioId)
     await contenidoRepo.borrarTema(id)
   },
 
@@ -462,13 +504,16 @@ export const contenidoService = {
       respuestaCorrecta: r.respuesta_correcta,
       explicacion: r.explicacion,
       tipo: r.tipo,
+      materiaCaso: r.materia_caso,
+      temaCategoria: r.tema_categoria,
+      dificultad: r.dificultad,
     }))
   },
 
   async crearPregunta(usuarioId, temaId, body) {
     const tema = await contenidoRepo.temaAccesible(temaId, usuarioId)
     if (!tema) throw fallo(404, 'El tema no existe')
-    await exigirEdicion(tema.proyecto_id, usuarioId)
+    await exigirEdicion(tema.grupo_id, usuarioId)
     const d = normalizarPregunta(body || {})
     const err = validarPregunta(d)
     if (err) throw fallo(400, err)
@@ -481,8 +526,12 @@ export const contenidoService = {
         d.explicacion,
         preguntaHash(temaId, d.pregunta),
         d.tipo,
+        d.materiaCaso,
+        d.temaCategoria,
+        d.dificultad,
       )
-      return { id: Number(info.lastInsertRowid), totalTema: await contenidoRepo.contarTema(temaId) }
+      const mision = await misionesService.progresar(usuarioId, 'primera_pregunta')
+      return { id: Number(info.lastInsertRowid), totalTema: await contenidoRepo.contarTema(temaId), mision }
     } catch (e) {
       if (String(e.message).includes('UNIQUE')) throw fallo(409, 'Ya existe una pregunta con ese enunciado')
       throw e
@@ -492,7 +541,7 @@ export const contenidoService = {
   async editarPregunta(usuarioId, id, body) {
     const row = await contenidoRepo.pregAccesible(id, usuarioId)
     if (!row) throw fallo(404, 'No existe')
-    await exigirEdicion(row.proyecto_id, usuarioId)
+    await exigirEdicion(row.grupo_id, usuarioId)
     const d = normalizarPregunta(body || {})
     const err = validarPregunta(d)
     if (err) throw fallo(400, err)
@@ -505,6 +554,9 @@ export const contenidoService = {
         d.explicacion,
         preguntaHash(row.tema_id, d.pregunta),
         d.tipo,
+        d.materiaCaso,
+        d.temaCategoria,
+        d.dificultad,
       )
     } catch (e) {
       if (String(e.message).includes('UNIQUE')) throw fallo(409, 'Ya existe otra pregunta con ese enunciado')
@@ -515,7 +567,7 @@ export const contenidoService = {
   async eliminarPregunta(usuarioId, id) {
     const row = await contenidoRepo.pregAccesible(id, usuarioId)
     if (!row) throw fallo(404, 'No existe')
-    await exigirEdicion(row.proyecto_id, usuarioId)
+    await exigirEdicion(row.grupo_id, usuarioId)
     await contenidoRepo.borrarPregunta(id)
     return { ok: true, totalTema: await contenidoRepo.contarTema(row.tema_id) }
   },
@@ -543,7 +595,7 @@ export const contenidoService = {
   async analizarArchivo(usuarioId, temaId, buffer, extRaw) {
     const tema = await contenidoRepo.temaAccesible(temaId, usuarioId)
     if (!tema) throw fallo(404, 'El tema no existe')
-    await exigirEdicion(tema.proyecto_id, usuarioId)
+    await exigirEdicion(tema.grupo_id, usuarioId)
     const ext = '.' + String(extRaw || '').toLowerCase().replace(/^\./, '')
     if (!FORMATOS_SOPORTADOS.includes(ext))
       throw fallo(400, `Formato no soportado. Usa: ${FORMATOS_SOPORTADOS.join(', ')}`)
@@ -564,7 +616,7 @@ export const contenidoService = {
   async confirmarImportacion(usuarioId, temaId, body) {
     const tema = await contenidoRepo.temaAccesible(temaId, usuarioId)
     if (!tema) throw fallo(404, 'El tema no existe')
-    await exigirEdicion(tema.proyecto_id, usuarioId)
+    await exigirEdicion(tema.grupo_id, usuarioId)
     const preguntas = Array.isArray(body?.preguntas) ? body.preguntas : []
     if (preguntas.length === 0) throw fallo(400, 'No hay preguntas para importar')
 
@@ -584,6 +636,9 @@ export const contenidoService = {
           p.explicacion ?? null,
           preguntaHash(temaId, String(p.pregunta)),
           tipo,
+          textoOpcional(p.materiaCaso),
+          textoOpcional(p.temaCategoria),
+          textoOpcional(p.dificultad),
           tx,
         )
       }

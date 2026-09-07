@@ -1,5 +1,9 @@
-import { useState } from 'react'
-import { login, registro, entrarInvitado } from '../api.js'
+import { useState, useEffect, useRef } from 'react'
+import { login, registro, entrarInvitado, loginGoogle } from '../api.js'
+
+// Vacío/null si no se configuró VITE_GOOGLE_CLIENT_ID: el botón de Google
+// simplemente no se muestra (no es un dato secreto, es seguro exponerlo).
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || null
 
 // Pantalla de acceso: menú lateral a la izquierda con las dos opciones
 // (iniciar sesión / crear cuenta) y el formulario correspondiente a la derecha.
@@ -10,8 +14,54 @@ export default function AuthScreen({ onAutenticado }) {
   const [password2, setPassword2] = useState('')
   const [error, setError] = useState(null)
   const [cargando, setCargando] = useState(false)
+  const googleBtnRef = useRef(null)
 
   const esRegistro = modo === 'registro'
+
+  // Botón "Iniciar sesión con Google" (Google Identity Services). El script
+  // se carga en index.html; se espera aquí a que esté listo porque es async.
+  useEffect(() => {
+    if (!GOOGLE_CLIENT_ID) return
+    let cancelado = false
+
+    async function alRecibirCredencial(resp) {
+      setError(null)
+      setCargando(true)
+      try {
+        const usuario = await loginGoogle(resp.credential)
+        onAutenticado(usuario)
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setCargando(false)
+      }
+    }
+
+    function intentarRenderizar() {
+      if (cancelado) return
+      if (window.google?.accounts?.id && googleBtnRef.current) {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: alRecibirCredencial,
+        })
+        window.google.accounts.id.renderButton(googleBtnRef.current, {
+          theme: 'outline',
+          size: 'large',
+          width: 316,
+          text: 'continue_with',
+          locale: 'es',
+        })
+      } else {
+        setTimeout(intentarRenderizar, 150)
+      }
+    }
+    intentarRenderizar()
+
+    return () => {
+      cancelado = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function cambiarModo(nuevo) {
     setModo(nuevo)
@@ -84,6 +134,15 @@ export default function AuthScreen({ onAutenticado }) {
           </p>
 
           {error && <div className="auth-error">⚠️ {error}</div>}
+
+          {GOOGLE_CLIENT_ID && (
+            <>
+              <div ref={googleBtnRef} className="auth-google-btn" />
+              <div className="auth-separador">
+                <span>o con tu correo</span>
+              </div>
+            </>
+          )}
 
           <label className="auth-label">
             Correo

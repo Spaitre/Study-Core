@@ -1,6 +1,7 @@
 // Punto de entrada del backend: construye la app Express, monta los routers por
 // dominio y arranca el servidor. La lógica vive en services/, el SQL en
 // repositories/ y el acceso a datos en db/ (interfaz async, lista para Postgres).
+import './env.js'
 import express from 'express'
 import path from 'node:path'
 import fs from 'node:fs'
@@ -12,9 +13,12 @@ import { usuariosRepo } from './repositories/usuariosRepo.js'
 import authRoutes from './routes/auth.routes.js'
 import perfilRoutes from './routes/perfil.routes.js'
 import amigosRoutes from './routes/amigos.routes.js'
-import proyectosRoutes from './routes/proyectos.routes.js'
+import gruposRoutes from './routes/grupos.routes.js'
 import contenidoRoutes from './routes/contenido.routes.js'
 import sesionesRoutes from './routes/sesiones.routes.js'
+import progresoRoutes from './routes/progreso.routes.js'
+import bancoPublicoRoutes from './routes/bancoPublico.routes.js'
+import misionesRoutes from './routes/misiones.routes.js'
 import salasRoutes from './routes/salas.routes.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -35,9 +39,12 @@ app.use('/api', requireAuth)
 // Dominios protegidos.
 app.use('/api/perfil', perfilRoutes)
 app.use('/api/amigos', amigosRoutes)
-app.use('/api/proyectos', proyectosRoutes)
+app.use('/api/grupos', gruposRoutes)
 app.use('/api', contenidoRoutes) // carpetas/materias/temas/preguntas + import/export
 app.use('/api', sesionesRoutes) // sesiones + stats
+app.use('/api', progresoRoutes) // racha/XP/monedas + cajas de regalo
+app.use('/api/comunidad', bancoPublicoRoutes) // banco de contenido público (materias/carpetas)
+app.use('/api/misiones', misionesRoutes) // misiones de bienvenida
 app.use('/api/salas', salasRoutes) // multijugador (estado en memoria)
 
 // Producción: el mismo Express sirve el build del frontend (mismo origen, sin

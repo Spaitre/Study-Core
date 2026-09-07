@@ -1,7 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import ImportarPreguntasModal from './ImportarPreguntasModal.jsx'
 import GestionPreguntasModal from './GestionPreguntasModal.jsx'
-import { exportarMateria as apiExportarMateria, exportarCarpeta as apiExportarCarpeta } from '../api.js'
+import MisionesWidget from './MisionesWidget.jsx'
+import SugerenciaIAWidget from './SugerenciaIAWidget.jsx'
+import {
+  exportarMateria as apiExportarMateria,
+  exportarCarpeta as apiExportarCarpeta,
+  fetchPreguntasTema,
+} from '../api.js'
 
 // Descarga un objeto como archivo JSON.
 function descargarJSON(nombreArchivo, datos) {
@@ -270,6 +276,30 @@ export default function HomeScreen({
       setErrorForm(err.message)
     }
   }
+  // Exporta las preguntas de un tema a un archivo JSON.
+  async function exportarPreguntasTema(e, t) {
+    e.preventDefault()
+    e.stopPropagation()
+    setErrorForm(null)
+    try {
+      const preguntas = await fetchPreguntasTema(t.id)
+      descargarJSON(nombreArchivo(t.nombre, '-preguntas'), {
+        tema: t.nombre,
+        preguntas: preguntas.map((p) => ({
+          pregunta: p.pregunta,
+          opciones: p.opciones,
+          respuestaCorrecta: p.respuestaCorrecta,
+          explicacion: p.explicacion,
+          tipo: p.tipo,
+          materiaCaso: p.materiaCaso,
+          temaCategoria: p.temaCategoria,
+          dificultad: p.dificultad,
+        })),
+      })
+    } catch (err) {
+      setErrorForm(err.message)
+    }
+  }
   function exportarMateriaArchivo(e, m) {
     e.stopPropagation()
     exportarMateriaPorId(m.id, m.nombre)
@@ -421,6 +451,8 @@ export default function HomeScreen({
         </header>
       )}
 
+      <div className={`home-layout ${ocultarEncabezado ? 'sin-aside' : ''}`}>
+      <div className="home-main">
       {/* ---------- Carpetas ---------- */}
       <section className="panel">
         <div className="materias-cab">
@@ -807,15 +839,11 @@ export default function HomeScreen({
                     ✏️
                   </button>
                   <button
-                    className="btn-importar"
-                    title="Importar preguntas desde un archivo"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      e.stopPropagation()
-                      setImportarTema(t)
-                    }}
+                    className="btn-exportar"
+                    title="Exportar preguntas de este tema"
+                    onClick={(e) => exportarPreguntasTema(e, t)}
                   >
-                    📥
+                    ⬇️
                   </button>
                   <button
                     className="btn-eliminar"
@@ -832,6 +860,9 @@ export default function HomeScreen({
                     onClick={() => setGestion({ tema: t, modo: 'nueva' })}
                   >
                     ➕ Agregar pregunta
+                  </button>
+                  <button className="btn-preg destacado" onClick={() => setImportarTema(t)} title="Genera preguntas con IA a partir de tus apuntes">
+                    📥✨ Importar
                   </button>
                   <button
                     className="btn-preg"
@@ -917,6 +948,15 @@ export default function HomeScreen({
           Comenzar quiz →
         </button>
       </footer>
+      </div>
+
+      {!ocultarEncabezado && (
+        <aside className="home-aside">
+          <SugerenciaIAWidget />
+          <MisionesWidget />
+        </aside>
+      )}
+      </div>
 
       {/* Modal: elegir cuántas materias exportar */}
       {modalExport !== null && (

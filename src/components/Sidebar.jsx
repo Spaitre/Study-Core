@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import Avatar from './Avatar.jsx'
+import MarcoAvatar from './MarcoAvatar.jsx'
+import ProgresoWidget from './ProgresoWidget.jsx'
 
 // Link de donación (Stripe Payment Link). Abre la página de pago alojada por
 // Stripe; no requiere backend ni datos sensibles en el cliente.
@@ -8,12 +9,19 @@ const DONAR_URL = 'https://donate.stripe.com/bJedRa9JA3YRgkK3X58g000'
 // Menú lateral de la pantalla principal: foto + nombre arriba y las opciones de
 // navegación + cerrar sesión. En escritorio es una columna fija; en móvil se
 // convierte en un drawer que se abre con el botón ☰ (ver index.css).
-export default function Sidebar({ usuario, screen, solicitudes = 0, onNavigate, onLogout }) {
+export default function Sidebar({
+  usuario,
+  screen,
+  solicitudes = 0,
+  progreso,
+  onProgresoCambio,
+  onNavigate,
+  onLogout,
+}) {
   const [abierto, setAbierto] = useState(false)
   const items = [
     { id: 'home', icono: '🏠', label: 'Inicio' },
-    { id: 'proyectos', icono: '📂', label: 'Proyectos' },
-    { id: 'multijugador', icono: '🎮', label: 'Multijugador' },
+    { id: 'comunidad', icono: '🌐', label: 'Comunidad' },
     { id: 'amigos', icono: '🫂', label: 'Amigos', badge: solicitudes },
     { id: 'cuenta', icono: '👤', label: 'Cuenta' },
   ]
@@ -56,9 +64,10 @@ export default function Sidebar({ usuario, screen, solicitudes = 0, onNavigate, 
 
       <aside className={`sidebar ${abierto ? 'abierto' : ''}`}>
         <div className="sidebar-perfil">
-          <Avatar foto={usuario?.foto} size={84} />
+          <MarcoAvatar foto={usuario?.foto} marco={usuario?.marco} size={84} />
           <div className="sidebar-nombre">{usuario?.nombreUsuario || 'Usuario'}</div>
           <div className="sidebar-email">{usuario?.invitado ? '👤 Invitado' : usuario?.email}</div>
+          <ProgresoWidget progreso={progreso} onCambio={onProgresoCambio} />
         </div>
 
         <nav className="sidebar-nav">

@@ -4,10 +4,10 @@
 import { database } from '../db/index.js'
 
 // Acceso a contenido: un usuario puede tocar una carpeta/materia si es suya y
-// personal (proyecto_id NULL) o si pertenece a un proyecto del que es miembro.
+// personal (grupo_id NULL) o si pertenece a un grupo del que es miembro.
 // (Esperan dos veces el usuario_id.)
-const ACC_MATERIA = `((m.usuario_id = ? AND m.proyecto_id IS NULL) OR m.proyecto_id IN (SELECT proyecto_id FROM proyecto_miembros WHERE usuario_id = ?))`
-const ACC_CARPETA = `((usuario_id = ? AND proyecto_id IS NULL) OR proyecto_id IN (SELECT proyecto_id FROM proyecto_miembros WHERE usuario_id = ?))`
+const ACC_MATERIA = `((m.usuario_id = ? AND m.grupo_id IS NULL) OR m.grupo_id IN (SELECT grupo_id FROM grupo_miembros WHERE usuario_id = ?))`
+const ACC_CARPETA = `((usuario_id = ? AND grupo_id IS NULL) OR grupo_id IN (SELECT grupo_id FROM grupo_miembros WHERE usuario_id = ?))`
 
 // Tablas permitidas para idUnico (id global con sufijo si choca).
 const TABLAS_ID = new Set(['carpetas', 'materias', 'temas'])
@@ -27,34 +27,38 @@ export const contenidoRepo = {
     return database.all(
       `SELECT c.id, c.nombre, COUNT(m.id) AS materias
        FROM carpetas c LEFT JOIN materias m ON m.carpeta_id = c.id
-       WHERE c.usuario_id = ? AND c.proyecto_id IS NULL
+       WHERE c.usuario_id = ? AND c.grupo_id IS NULL
        GROUP BY c.id ORDER BY c.posicion, c.nombre`,
       [usuarioId],
     )
   },
-  carpetasProyecto(proyectoId) {
+  carpetasGrupo(grupoId) {
     return database.all(
       `SELECT c.id, c.nombre, COUNT(m.id) AS materias
        FROM carpetas c LEFT JOIN materias m ON m.carpeta_id = c.id
-       WHERE c.proyecto_id = ?
+       WHERE c.grupo_id = ?
        GROUP BY c.id ORDER BY c.posicion, c.nombre`,
-      [proyectoId],
+      [grupoId],
     )
   },
   carpetaAccesible(id, uid, exec = database) {
-    return exec.get(`SELECT id, proyecto_id FROM carpetas WHERE id = ? AND ${ACC_CARPETA}`, [id, uid, uid])
+    return exec.get(`SELECT id, usuario_id, grupo_id FROM carpetas WHERE id = ? AND ${ACC_CARPETA}`, [
+      id,
+      uid,
+      uid,
+    ])
   },
   carpetaParaImport(id, uid) {
     return database.get(
-      `SELECT id, usuario_id, proyecto_id FROM carpetas WHERE id = ? AND ${ACC_CARPETA}`,
+      `SELECT id, usuario_id, grupo_id FROM carpetas WHERE id = ? AND ${ACC_CARPETA}`,
       [id, uid, uid],
     )
   },
   // ¿Existe la carpeta en el contexto dado? (para crear materia dentro).
-  carpetaEnContexto(id, proyectoId, usuarioId) {
-    return proyectoId
-      ? database.get('SELECT 1 FROM carpetas WHERE id = ? AND proyecto_id = ?', [id, proyectoId])
-      : database.get('SELECT 1 FROM carpetas WHERE id = ? AND usuario_id = ? AND proyecto_id IS NULL', [
+  carpetaEnContexto(id, grupoId, usuarioId) {
+    return grupoId
+      ? database.get('SELECT 1 FROM carpetas WHERE id = ? AND grupo_id = ?', [id, grupoId])
+      : database.get('SELECT 1 FROM carpetas WHERE id = ? AND usuario_id = ? AND grupo_id IS NULL', [
           id,
           usuarioId,
         ])
@@ -62,19 +66,19 @@ export const contenidoRepo = {
   carpetaInfo(id) {
     return database.get('SELECT id, nombre FROM carpetas WHERE id = ?', [id])
   },
-  async maxPosCarpeta(proyectoId, usuarioId, exec = database) {
-    const row = proyectoId
-      ? await exec.get('SELECT COALESCE(MAX(posicion),0)+1 AS p FROM carpetas WHERE proyecto_id = ?', [proyectoId])
+  async maxPosCarpeta(grupoId, usuarioId, exec = database) {
+    const row = grupoId
+      ? await exec.get('SELECT COALESCE(MAX(posicion),0)+1 AS p FROM carpetas WHERE grupo_id = ?', [grupoId])
       : await exec.get(
-          'SELECT COALESCE(MAX(posicion),0)+1 AS p FROM carpetas WHERE usuario_id = ? AND proyecto_id IS NULL',
+          'SELECT COALESCE(MAX(posicion),0)+1 AS p FROM carpetas WHERE usuario_id = ? AND grupo_id IS NULL',
           [usuarioId],
         )
     return row.p
   },
-  insertarCarpeta(id, nombre, pos, usuarioId, proyectoId, exec = database) {
+  insertarCarpeta(id, nombre, pos, usuarioId, grupoId, exec = database) {
     return exec.run(
-      'INSERT INTO carpetas (id, nombre, posicion, usuario_id, proyecto_id) VALUES (?, ?, ?, ?, ?)',
-      [id, nombre, pos, usuarioId, proyectoId],
+      'INSERT INTO carpetas (id, nombre, posicion, usuario_id, grupo_id) VALUES (?, ?, ?, ?, ?)',
+      [id, nombre, pos, usuarioId, grupoId],
     )
   },
   actualizarCarpetaNombre(id, nombre, exec = database) {
@@ -98,33 +102,37 @@ export const contenidoRepo = {
   // ----- Materias -----
   materiasPersonal(usuarioId) {
     return database.all(
-      'SELECT id, nombre, icono, carpeta_id FROM materias WHERE usuario_id = ? AND proyecto_id IS NULL ORDER BY posicion, nombre',
+      'SELECT id, nombre, icono, carpeta_id FROM materias WHERE usuario_id = ? AND grupo_id IS NULL ORDER BY posicion, nombre',
       [usuarioId],
     )
   },
-  materiasProyecto(proyectoId) {
+  materiasGrupo(grupoId) {
     return database.all(
-      'SELECT id, nombre, icono, carpeta_id FROM materias WHERE proyecto_id = ? ORDER BY posicion, nombre',
-      [proyectoId],
+      'SELECT id, nombre, icono, carpeta_id FROM materias WHERE grupo_id = ? ORDER BY posicion, nombre',
+      [grupoId],
     )
   },
   materiaAccesible(id, uid) {
-    // Reutiliza ACC_CARPETA (mismas columnas usuario_id/proyecto_id en materias).
-    return database.get(`SELECT id, proyecto_id FROM materias WHERE id = ? AND ${ACC_CARPETA}`, [id, uid, uid])
+    // Reutiliza ACC_CARPETA (mismas columnas usuario_id/grupo_id en materias).
+    return database.get(`SELECT id, usuario_id, grupo_id FROM materias WHERE id = ? AND ${ACC_CARPETA}`, [
+      id,
+      uid,
+      uid,
+    ])
   },
-  async maxPosMateria(proyectoId, usuarioId, exec = database) {
-    const row = proyectoId
-      ? await exec.get('SELECT COALESCE(MAX(posicion),0)+1 AS p FROM materias WHERE proyecto_id = ?', [proyectoId])
+  async maxPosMateria(grupoId, usuarioId, exec = database) {
+    const row = grupoId
+      ? await exec.get('SELECT COALESCE(MAX(posicion),0)+1 AS p FROM materias WHERE grupo_id = ?', [grupoId])
       : await exec.get(
-          'SELECT COALESCE(MAX(posicion),0)+1 AS p FROM materias WHERE usuario_id = ? AND proyecto_id IS NULL',
+          'SELECT COALESCE(MAX(posicion),0)+1 AS p FROM materias WHERE usuario_id = ? AND grupo_id IS NULL',
           [usuarioId],
         )
     return row.p
   },
-  insertarMateria(id, nombre, icono, pos, carpetaId, usuarioId, proyectoId, exec = database) {
+  insertarMateria(id, nombre, icono, pos, carpetaId, usuarioId, grupoId, exec = database) {
     return exec.run(
-      'INSERT INTO materias (id, nombre, icono, posicion, carpeta_id, usuario_id, proyecto_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [id, nombre, icono, pos, carpetaId, usuarioId, proyectoId],
+      'INSERT INTO materias (id, nombre, icono, posicion, carpeta_id, usuario_id, grupo_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [id, nombre, icono, pos, carpetaId, usuarioId, grupoId],
     )
   },
   actualizarMateria(id, nombre, icono, exec = database) {
@@ -138,6 +146,9 @@ export const contenidoRepo = {
   },
   materiaInfo(id) {
     return database.get('SELECT id, nombre, icono FROM materias WHERE id = ?', [id])
+  },
+  temaInfo(id) {
+    return database.get('SELECT id, nombre, materia_id FROM temas WHERE id = ?', [id])
   },
 
   // ----- Temas -----
@@ -166,7 +177,7 @@ export const contenidoRepo = {
   },
   temaAccesible(id, uid, exec = database) {
     return exec.get(
-      `SELECT t.id, t.materia_id, m.proyecto_id
+      `SELECT t.id, t.materia_id, m.usuario_id, m.grupo_id
        FROM temas t JOIN materias m ON m.id = t.materia_id
        WHERE t.id = ? AND ${ACC_MATERIA}`,
       [id, uid, uid],
@@ -185,7 +196,7 @@ export const contenidoRepo = {
   // ----- Preguntas -----
   pregAccesible(id, uid, exec = database) {
     return exec.get(
-      `SELECT p.id, p.tema_id, m.proyecto_id
+      `SELECT p.id, p.tema_id, m.grupo_id
        FROM preguntas p JOIN temas t ON t.id = p.tema_id JOIN materias m ON m.id = t.materia_id
        WHERE p.id = ? AND ${ACC_MATERIA}`,
       [id, uid, uid],
@@ -193,31 +204,45 @@ export const contenidoRepo = {
   },
   preguntasDeTema(temaId) {
     return database.all(
-      'SELECT id, pregunta, opciones, respuesta_correcta, explicacion, tipo FROM preguntas WHERE tema_id = ? ORDER BY id',
+      `SELECT id, pregunta, opciones, respuesta_correcta, explicacion, tipo,
+              materia_caso, tema_categoria, dificultad
+       FROM preguntas WHERE tema_id = ? ORDER BY id`,
       [temaId],
     )
   },
-  insertarPregunta(temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo, exec = database) {
+  insertarPregunta(
+    temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo,
+    materiaCaso, temaCategoria, dificultad, exec = database,
+  ) {
     return exec.run(
-      `INSERT INTO preguntas (tema_id, pregunta, opciones, respuesta_correcta, explicacion, hash, tipo)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo],
+      `INSERT INTO preguntas
+        (tema_id, pregunta, opciones, respuesta_correcta, explicacion, hash, tipo, materia_caso, tema_categoria, dificultad)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo, materiaCaso, temaCategoria, dificultad],
     )
   },
   // Inserta deduplicando por hash (OR IGNORE). Devuelve nº de filas insertadas (0/1).
-  async insertarPreguntaImport(temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo, exec = database) {
+  async insertarPreguntaImport(
+    temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo,
+    materiaCaso, temaCategoria, dificultad, exec = database,
+  ) {
     const info = await exec.run(
-      `INSERT OR IGNORE INTO preguntas (tema_id, pregunta, opciones, respuesta_correcta, explicacion, hash, tipo)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo],
+      `INSERT OR IGNORE INTO preguntas
+        (tema_id, pregunta, opciones, respuesta_correcta, explicacion, hash, tipo, materia_caso, tema_categoria, dificultad)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo, materiaCaso, temaCategoria, dificultad],
     )
     return info.changes
   },
-  actualizarPregunta(id, pregunta, opcionesJSON, rc, explicacion, hash, tipo, exec = database) {
+  actualizarPregunta(
+    id, pregunta, opcionesJSON, rc, explicacion, hash, tipo,
+    materiaCaso, temaCategoria, dificultad, exec = database,
+  ) {
     return exec.run(
-      `UPDATE preguntas SET pregunta = ?, opciones = ?, respuesta_correcta = ?, explicacion = ?, hash = ?, tipo = ?
+      `UPDATE preguntas SET pregunta = ?, opciones = ?, respuesta_correcta = ?, explicacion = ?, hash = ?, tipo = ?,
+              materia_caso = ?, tema_categoria = ?, dificultad = ?
        WHERE id = ?`,
-      [pregunta, opcionesJSON, rc, explicacion, hash, tipo, id],
+      [pregunta, opcionesJSON, rc, explicacion, hash, tipo, materiaCaso, temaCategoria, dificultad, id],
     )
   },
   borrarPregunta(id, exec = database) {
@@ -229,7 +254,9 @@ export const contenidoRepo = {
   },
   preguntasParaExport(temaId) {
     return database.all(
-      'SELECT pregunta, opciones, respuesta_correcta, explicacion FROM preguntas WHERE tema_id = ? ORDER BY id',
+      `SELECT pregunta, opciones, respuesta_correcta, explicacion, tipo,
+              materia_caso, tema_categoria, dificultad
+       FROM preguntas WHERE tema_id = ? ORDER BY id`,
       [temaId],
     )
   },
@@ -262,7 +289,7 @@ export const contenidoRepo = {
     return database.all(
       `SELECT p.*, t.nombre AS tema_nombre, m.nombre AS materia_nombre
        FROM preguntas p JOIN temas t ON t.id = p.tema_id JOIN materias m ON m.id = t.materia_id
-       WHERE m.usuario_id = ? AND m.proyecto_id IS NULL AND (p.pregunta LIKE ? OR p.explicacion LIKE ?)
+       WHERE m.usuario_id = ? AND m.grupo_id IS NULL AND (p.pregunta LIKE ? OR p.explicacion LIKE ?)
        ORDER BY m.nombre, t.nombre LIMIT 100`,
       [usuarioId, like, like],
     )

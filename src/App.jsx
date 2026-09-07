@@ -5,16 +5,18 @@ import {
   fetchYo,
   logout,
   fetchSolicitudes,
+  fetchProgreso,
 } from './api.js'
 import useContenido from './useContenido.js'
+import { suscribirLogros, logroDeMision } from './logros.js'
+import LogroToast from './components/LogroToast.jsx'
 import AuthScreen from './components/AuthScreen.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import HomeScreen from './components/HomeScreen.jsx'
 import CuentaScreen from './components/CuentaScreen.jsx'
 import AmigosScreen from './components/AmigosScreen.jsx'
-import ProyectosScreen from './components/ProyectosScreen.jsx'
-import ProyectoScreen from './components/ProyectoScreen.jsx'
-import MultijugadorScreen from './components/MultijugadorScreen.jsx'
+import ComunidadScreen from './components/ComunidadScreen.jsx'
+import GrupoScreen from './components/GrupoScreen.jsx'
 import SalaScreen from './components/SalaScreen.jsx'
 import QuizScreen from './components/QuizScreen.jsx'
 import ResultsScreen from './components/ResultsScreen.jsx'
@@ -22,9 +24,8 @@ import StatsScreen from './components/StatsScreen.jsx'
 
 const SCREENS = {
   HOME: 'home',
-  PROYECTOS: 'proyectos',
-  PROYECTO: 'proyecto',
-  MULTIJUGADOR: 'multijugador',
+  COMUNIDAD: 'comunidad',
+  GRUPO: 'grupo',
   SALA: 'sala',
   CUENTA: 'cuenta',
   AMIGOS: 'amigos',
@@ -40,8 +41,12 @@ export default function App() {
   const [usuario, setUsuario] = useState(undefined)
   // Nº de solicitudes de amistad pendientes (badge del menú lateral).
   const [solicitudes, setSolicitudes] = useState(0)
-  // Proyecto abierto actualmente (al entrar a un proyecto).
-  const [proyectoActual, setProyectoActual] = useState(null)
+  // Racha/XP/monedas/cajas (widget del sidebar).
+  const [progreso, setProgreso] = useState(null)
+  // Apartado activo dentro de Comunidad (grupos / banco / multijugador).
+  const [comunidadApartado, setComunidadApartado] = useState('grupos')
+  // Grupo abierto actualmente (al entrar a un grupo).
+  const [grupoActual, setGrupoActual] = useState(null)
   // Sala multijugador activa (al crear/unirse).
   const [salaActual, setSalaActual] = useState(null)
 
@@ -54,6 +59,11 @@ export default function App() {
   const [resultados, setResultados] = useState([])
   // Segundos por pregunta elegidos (null = sin tiempo). Por defecto 30 s.
   const [tiempoPorPregunta, setTiempoPorPregunta] = useState(30)
+  // Aviso flotante de logro (XP ganado / avatar desbloqueado). Un solo
+  // <LogroToast> para toda la app; se dispara desde src/logros.js sin
+  // pasar la función por props (crearPregunta, sesión, aceptar amigo...).
+  const [logro, setLogro] = useState(null)
+  useEffect(() => suscribirLogros(setLogro), [])
 
   // Google Analytics: la app es una sola URL, así que enviamos una "vista de
   // página" virtual cada vez que cambia de pantalla (o entra al login). En
@@ -77,9 +87,8 @@ export default function App() {
   // Cuenta de solicitudes pendientes para el badge (al entrar y al navegar).
   const enShell = [
     SCREENS.HOME,
-    SCREENS.PROYECTOS,
-    SCREENS.PROYECTO,
-    SCREENS.MULTIJUGADOR,
+    SCREENS.COMUNIDAD,
+    SCREENS.GRUPO,
     SCREENS.CUENTA,
     SCREENS.AMIGOS,
   ].includes(screen)
@@ -89,6 +98,20 @@ export default function App() {
       .then((s) => setSolicitudes(s.length))
       .catch(() => {})
   }, [usuario, screen])
+
+  async function cargarProgreso() {
+    try {
+      setProgreso(await fetchProgreso())
+    } catch (e) {
+      console.error('No se pudo cargar el progreso:', e)
+    }
+  }
+
+  // Carga inicial del progreso al autenticarse.
+  useEffect(() => {
+    if (!usuario) return
+    cargarProgreso()
+  }, [usuario])
 
   // Tras autenticarse: guarda el usuario (dispara la carga del catálogo).
   function onAutenticado(u) {
@@ -109,10 +132,11 @@ export default function App() {
       console.error('No se pudo cerrar sesión:', e)
     }
     setUsuario(null)
-    setProyectoActual(null)
+    setGrupoActual(null)
     setSalaActual(null)
     setPreguntas([])
     setResultados([])
+    setProgreso(null)
     setScreen(SCREENS.HOME)
   }
 
@@ -139,10 +163,15 @@ export default function App() {
     setScreen(SCREENS.RESULTS)
     // Persistir la sesión en SQLite (no bloquea la UI).
     try {
-      await guardarSesion({
+      const r = await guardarSesion({
         materiaId: materiaActual?.id ?? null,
         respuestas: resultadosFinales,
       })
+      // La sesión ya actualizó racha/XP/cajas en el servidor; refresca el widget.
+      cargarProgreso()
+      // Aviso flotante: XP de la sesión + el de la misión si se completó
+      // justo ahora (o el aviso de avatar desbloqueado, si tocó ese hito).
+      logroDeMision({ xpGanado: r.progreso?.misionXp, avatarDesbloqueado: r.progreso?.avatarDesbloqueado }, r.progreso?.xpGanado || 0)
     } catch (e) {
       console.error('No se pudo guardar la sesión:', e)
     }
@@ -154,9 +183,9 @@ export default function App() {
     setScreen(SCREENS.HOME)
   }
 
-  function abrirProyecto(p) {
-    setProyectoActual(p)
-    setScreen(SCREENS.PROYECTO)
+  function abrirGrupo(p) {
+    setGrupoActual(p)
+    setScreen(SCREENS.GRUPO)
   }
 
   // Mientras se verifica la cookie de sesión.
@@ -175,16 +204,19 @@ export default function App() {
 
   // Pantallas con menú lateral (zona principal).
   if (enShell) {
-    // El proyecto abierto resalta la sección "Proyectos" en el menú.
-    const seccion = screen === SCREENS.PROYECTO ? SCREENS.PROYECTOS : screen
+    // El grupo abierto resalta la sección "Comunidad" en el menú.
+    const seccion = screen === SCREENS.GRUPO ? SCREENS.COMUNIDAD : screen
     return (
       <div className="shell">
+        <LogroToast logro={logro} onCerrar={() => setLogro(null)} />
         <Sidebar
           usuario={usuario}
           screen={seccion}
           solicitudes={solicitudes}
+          progreso={progreso}
+          onProgresoCambio={cargarProgreso}
           onNavigate={(id) => {
-            setProyectoActual(null)
+            setGrupoActual(null)
             setScreen(id)
           }}
           onLogout={onLogout}
@@ -205,25 +237,25 @@ export default function App() {
               />
             ))}
 
-          {screen === SCREENS.PROYECTOS && (
-            <ProyectosScreen onAbrir={abrirProyecto} />
-          )}
-          {screen === SCREENS.PROYECTO && proyectoActual && (
-            <ProyectoScreen
-              proyecto={proyectoActual}
-              onIniciar={iniciarQuiz}
-              onVolver={() => {
-                setProyectoActual(null)
-                setScreen(SCREENS.PROYECTOS)
-              }}
-            />
-          )}
-
-          {screen === SCREENS.MULTIJUGADOR && (
-            <MultijugadorScreen
+          {screen === SCREENS.COMUNIDAD && (
+            <ComunidadScreen
+              usuario={usuario}
+              apartado={comunidadApartado}
+              onCambiarApartado={setComunidadApartado}
+              onAbrirGrupo={abrirGrupo}
               onEntrarSala={(sala) => {
                 setSalaActual(sala)
                 setScreen(SCREENS.SALA)
+              }}
+            />
+          )}
+          {screen === SCREENS.GRUPO && grupoActual && (
+            <GrupoScreen
+              grupo={grupoActual}
+              onIniciar={iniciarQuiz}
+              onVolver={() => {
+                setGrupoActual(null)
+                setScreen(SCREENS.COMUNIDAD)
               }}
             />
           )}
@@ -241,12 +273,14 @@ export default function App() {
   if (screen === SCREENS.SALA && salaActual) {
     return (
       <div className="app app-ancha">
+        <LogroToast logro={logro} onCerrar={() => setLogro(null)} />
         <SalaScreen
           codigo={salaActual.codigo}
           salaInicial={salaActual}
           onSalir={() => {
             setSalaActual(null)
-            setScreen(SCREENS.MULTIJUGADOR)
+            setComunidadApartado('multijugador')
+            setScreen(SCREENS.COMUNIDAD)
           }}
         />
       </div>
@@ -256,6 +290,7 @@ export default function App() {
   // Pantallas a pantalla completa (quiz / resultados / historial).
   return (
     <div className="app">
+      <LogroToast logro={logro} onCerrar={() => setLogro(null)} />
       {error && <div className="banner-error">⚠️ {error}</div>}
 
       {screen === SCREENS.QUIZ && (

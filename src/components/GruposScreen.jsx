@@ -2,18 +2,18 @@ import { useState, useEffect } from 'react'
 import Avatar from './Avatar.jsx'
 import PermisoSelector from './PermisoSelector.jsx'
 import {
-  fetchProyectos,
-  crearProyecto,
-  unirseProyecto,
-  editarProyecto,
+  fetchGrupos,
+  crearGrupo,
+  unirseGrupo,
+  editarGrupo,
   quitarMiembro,
-  eliminarProyecto,
-  salirProyecto,
+  eliminarGrupo,
+  salirGrupo,
   fetchAmigos,
 } from '../api.js'
 
-export default function ProyectosScreen({ onAbrir }) {
-  const [proyectos, setProyectos] = useState([])
+export default function GruposScreen({ onAbrir }) {
+  const [grupos, setGrupos] = useState([])
   const [amigos, setAmigos] = useState([])
   const [creando, setCreando] = useState(false)
   const [nombre, setNombre] = useState('')
@@ -22,14 +22,14 @@ export default function ProyectosScreen({ onAbrir }) {
   const [codigo, setCodigo] = useState('')
   const [editando, setEditando] = useState(null)
   const [copiado, setCopiado] = useState(null)
-  const [confirmar, setConfirmar] = useState(null) // { tipo, proyecto }
+  const [confirmar, setConfirmar] = useState(null) // { tipo, grupo }
   const [error, setError] = useState(null)
   const [aviso, setAviso] = useState(null)
 
   async function recargar() {
     try {
-      const [p, a] = await Promise.all([fetchProyectos(), fetchAmigos()])
-      setProyectos(p)
+      const [p, a] = await Promise.all([fetchGrupos(), fetchAmigos()])
+      setGrupos(p)
       setAmigos(a)
     } catch (e) {
       setError(e.message)
@@ -44,7 +44,7 @@ export default function ProyectosScreen({ onAbrir }) {
     e.preventDefault()
     setError(null)
     try {
-      await crearProyecto(nombre.trim(), { permisoEdicion: permiso, acceso: seleccion })
+      await crearGrupo(nombre.trim(), { permisoEdicion: permiso, acceso: seleccion })
       setNombre('')
       setPermiso('todos')
       setSeleccion([])
@@ -60,7 +60,7 @@ export default function ProyectosScreen({ onAbrir }) {
     setError(null)
     setAviso(null)
     try {
-      const p = await unirseProyecto(codigo.trim())
+      const p = await unirseGrupo(codigo.trim())
       setCodigo('')
       setAviso(`Te uniste a "${p.nombre}" 🎉`)
       recargar()
@@ -76,11 +76,11 @@ export default function ProyectosScreen({ onAbrir }) {
   }
 
   async function ejecutarConfirmacion() {
-    const { tipo, proyecto } = confirmar
+    const { tipo, grupo } = confirmar
     setConfirmar(null)
     try {
-      if (tipo === 'eliminar') await eliminarProyecto(proyecto.id)
-      else await salirProyecto(proyecto.id)
+      if (tipo === 'eliminar') await eliminarGrupo(grupo.id)
+      else await salirGrupo(grupo.id)
       recargar()
     } catch (err) {
       setError(err.message)
@@ -88,10 +88,10 @@ export default function ProyectosScreen({ onAbrir }) {
   }
 
   return (
-    <div className="screen proyectos">
+    <div className="screen grupos">
       <header className="page-header">
-        <h1>Proyectos</h1>
-        <p className="subtitle">Carpetas compartidas con tus amigos</p>
+        <h2>👥 Grupos de estudio</h2>
+        <p className="subtitle">Estudia en equipo: contenido compartido, estadísticas y objetivos colectivos</p>
       </header>
 
       {error && <div className="banner-error">⚠️ {error}</div>}
@@ -99,7 +99,7 @@ export default function ProyectosScreen({ onAbrir }) {
 
       {/* Unirse por código */}
       <section className="panel">
-        <h2>Unirse a un proyecto</h2>
+        <h2>Unirse a un grupo</h2>
         <form className="agregar-form" onSubmit={unirse}>
           <input
             className="cuenta-input"
@@ -112,25 +112,25 @@ export default function ProyectosScreen({ onAbrir }) {
             Unirme
           </button>
         </form>
-        <p className="cuenta-ayuda">Pide el código al creador del proyecto.</p>
+        <p className="cuenta-ayuda">Pide el código al creador del grupo.</p>
       </section>
 
-      {/* Tus proyectos */}
+      {/* Tus grupos */}
       <section className="panel">
-        <div className="proyectos-top">
-          <h2>Tus proyectos</h2>
+        <div className="grupos-top">
+          <h2>Tus grupos</h2>
           <button className="btn-primary" onClick={() => setCreando((v) => !v)}>
-            {creando ? 'Cancelar' : '+ Nuevo proyecto'}
+            {creando ? 'Cancelar' : '+ Nuevo grupo'}
           </button>
         </div>
 
         {creando && (
-          <form className="proyecto-form" onSubmit={crear}>
+          <form className="grupo-form" onSubmit={crear}>
             <input
               className="cuenta-input"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
-              placeholder="Nombre del proyecto"
+              placeholder="Nombre del grupo"
               maxLength={60}
               required
             />
@@ -143,23 +143,23 @@ export default function ProyectosScreen({ onAbrir }) {
               personas={amigos}
             />
             <button className="btn-primary" type="submit" disabled={!nombre.trim()}>
-              Crear proyecto
+              Crear grupo
             </button>
           </form>
         )}
 
-        {proyectos.length === 0 ? (
-          <p className="vacio">No tienes proyectos todavía. Crea uno o únete con un código.</p>
+        {grupos.length === 0 ? (
+          <p className="vacio">No tienes grupos todavía. Crea uno o únete con un código.</p>
         ) : (
-          <ul className="proyecto-lista">
-            {proyectos.map((p) => (
-              <li key={p.id} className="proyecto-bloque">
-                <div className="proyecto-item">
-                  <button className="proyecto-abrir" onClick={() => onAbrir(p)}>
-                    <span className="proyecto-icono">📂</span>
-                    <span className="proyecto-info">
-                      <span className="proyecto-nombre">{p.nombre}</span>
-                      <span className="proyecto-meta">
+          <ul className="grupo-lista">
+            {grupos.map((p) => (
+              <li key={p.id} className="grupo-bloque">
+                <div className="grupo-item">
+                  <button className="grupo-abrir" onClick={() => onAbrir(p)}>
+                    <span className="grupo-icono">📂</span>
+                    <span className="grupo-info">
+                      <span className="grupo-nombre">{p.nombre}</span>
+                      <span className="grupo-meta">
                         {p.miembros.length} {p.miembros.length === 1 ? 'miembro' : 'miembros'}
                         {p.esPropietario ? ' · eres el propietario' : ''}
                         {p.permisoEdicion === 'solo_propietario' && !p.esPropietario
@@ -167,7 +167,7 @@ export default function ProyectosScreen({ onAbrir }) {
                           : ''}
                       </span>
                     </span>
-                    <span className="proyecto-miembros-mini">
+                    <span className="grupo-miembros-mini">
                       {p.miembros.slice(0, 4).map((m) => (
                         <span key={m.id} className="mini-avatar" title={m.nombreUsuario}>
                           <Avatar foto={m.foto} size={28} />
@@ -178,7 +178,7 @@ export default function ProyectosScreen({ onAbrir }) {
 
                   <button
                     className="btn-codigo"
-                    title="Copiar código del proyecto"
+                    title="Copiar código del grupo"
                     onClick={() => copiarCodigo(p.codigo)}
                   >
                     🔑 {p.codigo} {copiado === p.codigo ? '✓' : '📋'}
@@ -194,7 +194,7 @@ export default function ProyectosScreen({ onAbrir }) {
                       </button>
                       <button
                         className="btn-mini-peligro"
-                        onClick={() => setConfirmar({ tipo: 'eliminar', proyecto: p })}
+                        onClick={() => setConfirmar({ tipo: 'eliminar', grupo: p })}
                       >
                         Eliminar
                       </button>
@@ -202,7 +202,7 @@ export default function ProyectosScreen({ onAbrir }) {
                   ) : (
                     <button
                       className="btn-mini-peligro"
-                      onClick={() => setConfirmar({ tipo: 'salir', proyecto: p })}
+                      onClick={() => setConfirmar({ tipo: 'salir', grupo: p })}
                     >
                       Salir
                     </button>
@@ -210,8 +210,8 @@ export default function ProyectosScreen({ onAbrir }) {
                 </div>
 
                 {editando === p.id && p.esPropietario && (
-                  <EditarProyecto
-                    proyecto={p}
+                  <EditarGrupo
+                    grupo={p}
                     amigos={amigos}
                     onGuardado={() => {
                       setEditando(null)
@@ -230,12 +230,12 @@ export default function ProyectosScreen({ onAbrir }) {
         <div className="modal-overlay" onClick={() => setConfirmar(null)}>
           <div className="modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
             <h3 className="modal-titulo">
-              {confirmar.tipo === 'eliminar' ? 'Eliminar proyecto' : 'Salir del proyecto'}
+              {confirmar.tipo === 'eliminar' ? 'Eliminar grupo' : 'Salir del grupo'}
             </h3>
             <p className="modal-mensaje">
               {confirmar.tipo === 'eliminar'
-                ? `¿Seguro que quieres eliminar "${confirmar.proyecto.nombre}"? Se borrará todo su contenido compartido para todos los miembros. Esta acción no se puede deshacer.`
-                : `¿Seguro que quieres salir de "${confirmar.proyecto.nombre}"? Perderás el acceso hasta que vuelvas a unirte con el código.`}
+                ? `¿Seguro que quieres eliminar "${confirmar.grupo.nombre}"? Se borrará todo su contenido compartido para todos los miembros. Esta acción no se puede deshacer.`
+                : `¿Seguro que quieres salir de "${confirmar.grupo.nombre}"? Perderás el acceso hasta que vuelvas a unirte con el código.`}
             </p>
             <div className="modal-acciones">
               <button className="btn-mini" onClick={() => setConfirmar(null)}>
@@ -252,24 +252,24 @@ export default function ProyectosScreen({ onAbrir }) {
   )
 }
 
-// Panel de edición de un proyecto (solo propietario): nombre, permiso (con lista
+// Panel de edición de un grupo (solo propietario): nombre, permiso (con lista
 // selectiva) y miembros. Al guardar se cierra el panel.
-function EditarProyecto({ proyecto, amigos, onGuardado }) {
-  const [nombre, setNombre] = useState(proyecto.nombre)
-  const [permiso, setPermiso] = useState(proyecto.permisoEdicion)
-  const [seleccion, setSeleccion] = useState(proyecto.acceso || [])
+function EditarGrupo({ grupo, amigos, onGuardado }) {
+  const [nombre, setNombre] = useState(grupo.nombre)
+  const [permiso, setPermiso] = useState(grupo.permisoEdicion)
+  const [seleccion, setSeleccion] = useState(grupo.acceso || [])
   const [error, setError] = useState(null)
 
   // Personas elegibles: amigos + miembros que ya se unieron (sin el propietario).
   const porId = new Map()
   for (const a of amigos) porId.set(a.id, a)
-  for (const m of proyecto.miembros) if (m.id !== proyecto.propietarioId) porId.set(m.id, m)
+  for (const m of grupo.miembros) if (m.id !== grupo.propietarioId) porId.set(m.id, m)
   const personas = [...porId.values()]
 
   async function guardar() {
     setError(null)
     try {
-      await editarProyecto(proyecto.id, {
+      await editarGrupo(grupo.id, {
         nombre: nombre.trim(),
         permisoEdicion: permiso,
         acceso: seleccion,
@@ -281,19 +281,19 @@ function EditarProyecto({ proyecto, amigos, onGuardado }) {
   }
 
   async function quitar(uid) {
-    await quitarMiembro(proyecto.id, uid)
+    await quitarMiembro(grupo.id, uid)
     onGuardado()
   }
 
   return (
-    <div className="proyecto-editar">
+    <div className="grupo-editar">
       {error && <div className="banner-error">⚠️ {error}</div>}
 
-      <label className="cuenta-ayuda">Nombre del proyecto</label>
+      <label className="cuenta-ayuda">Nombre del grupo</label>
       <input className="cuenta-input" value={nombre} onChange={(e) => setNombre(e.target.value)} />
 
       <PermisoSelector
-        idBase={`edit-${proyecto.id}`}
+        idBase={`edit-${grupo.id}`}
         permiso={permiso}
         setPermiso={setPermiso}
         seleccion={seleccion}
@@ -303,7 +303,7 @@ function EditarProyecto({ proyecto, amigos, onGuardado }) {
 
       <label className="cuenta-ayuda">Miembros</label>
       <ul className="amigo-lista">
-        {proyecto.miembros.map((m) => (
+        {grupo.miembros.map((m) => (
           <li key={m.id} className="amigo-item">
             <Avatar foto={m.foto} size={36} />
             <div className="amigo-info">
@@ -311,7 +311,7 @@ function EditarProyecto({ proyecto, amigos, onGuardado }) {
               <span className="amigo-email">{m.email}</span>
             </div>
             <div className="amigo-acciones">
-              {m.id === proyecto.propietarioId ? (
+              {m.id === grupo.propietarioId ? (
                 <span className="estado-pendiente">Propietario</span>
               ) : (
                 <button className="btn-mini-peligro" onClick={() => quitar(m.id)}>

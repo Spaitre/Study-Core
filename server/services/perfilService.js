@@ -1,5 +1,10 @@
-// Servicio de perfil: nombre de usuario (único, 1–20) y foto (avatar o data URL).
+// Servicio de perfil: nombre de usuario (único, 1–20), foto (avatar o data
+// URL) y marco de avatar equipado (cosmético ganado en cajas de regalo).
 import { usuariosRepo } from '../repositories/usuariosRepo.js'
+import { progresoRepo } from '../repositories/progresoRepo.js'
+import { avataresRepo } from '../repositories/avataresRepo.js'
+import { COSMETICOS } from './cosmeticosCatalogo.js'
+import { AVATARES_BLOQUEADOS } from './avataresCatalogo.js'
 import { AVATARES } from './authService.js'
 import { fallo } from './ApiError.js'
 
@@ -16,8 +21,9 @@ export const perfilService = {
     return { disponible: !ocupado }
   },
 
-  // Actualiza nombre y/o foto. Lanza ApiError en validación. Devuelve el perfil.
-  async actualizar(usuarioId, { nombreUsuario, foto }) {
+  // Actualiza nombre, foto y/o marco equipado. Lanza ApiError en validación.
+  // Devuelve el perfil.
+  async actualizar(usuarioId, { nombreUsuario, foto, marco }) {
     if (nombreUsuario !== undefined) {
       const nombre = String(nombreUsuario).trim()
       if (nombre.length < 1 || nombre.length > 20)
@@ -32,8 +38,20 @@ export const perfilService = {
         if (f.length > 1_500_000) throw fallo(400, 'La imagen es demasiado grande (máx ~1 MB)')
       } else if (!AVATARES.includes(f)) {
         throw fallo(400, 'Avatar inválido')
+      } else if (AVATARES_BLOQUEADOS.includes(f)) {
+        const propios = await avataresRepo.claves(usuarioId)
+        if (!propios.includes(f)) throw fallo(403, 'Todavía no has desbloqueado ese avatar')
       }
       await usuariosRepo.actualizarFoto(usuarioId, f)
+    }
+    if (marco !== undefined) {
+      if (marco !== null) {
+        const def = COSMETICOS.find((c) => c.clave === marco && c.tipo === 'marco')
+        if (!def) throw fallo(400, 'Marco inválido')
+        const propios = await progresoRepo.clavesCosmeticos(usuarioId)
+        if (!propios.includes(marco)) throw fallo(403, 'No has desbloqueado ese marco')
+      }
+      await usuariosRepo.actualizarMarco(usuarioId, marco)
     }
     return usuariosRepo.perfil(usuarioId)
   },

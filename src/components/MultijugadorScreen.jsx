@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { fetchMaterias, fetchCarpetas, fetchProyectos, crearSala, unirseSala } from '../api.js'
+import { fetchMaterias, fetchCarpetas, fetchGrupos, crearSala, unirseSala } from '../api.js'
 
 const TIEMPOS = [
   { s: 10, label: '10s' },
@@ -10,8 +10,8 @@ const TIEMPOS = [
 
 export default function MultijugadorScreen({ onEntrarSala }) {
   const [carpetas, setCarpetas] = useState([]) // carpetas propias
-  const [proyectoGrupos, setProyectoGrupos] = useState([]) // [{ proyecto, carpetas }]
-  const [fuente, setFuente] = useState(null) // null | { id, nombre, proyectoId }
+  const [carpetasPorGrupo, setCarpetasPorGrupo] = useState([]) // [{ grupo, carpetas }]
+  const [fuente, setFuente] = useState(null) // null | { id, nombre, grupoId }
   const [materias, setMaterias] = useState([])
   const [materiaId, setMateriaId] = useState(null)
   const [temasSel, setTemasSel] = useState([])
@@ -24,13 +24,13 @@ export default function MultijugadorScreen({ onEntrarSala }) {
   useEffect(() => {
     async function cargar() {
       try {
-        const [proyectos, propias] = await Promise.all([fetchProyectos(), fetchCarpetas()])
+        const [grupos, propias] = await Promise.all([fetchGrupos(), fetchCarpetas()])
         setCarpetas(propias)
-        // Carpetas de cada proyecto, agrupadas.
-        const grupos = await Promise.all(
-          proyectos.map((p) => fetchCarpetas(p.id).then((cc) => ({ proyecto: p, carpetas: cc }))),
+        // Carpetas de cada grupo, agrupadas.
+        const porGrupo = await Promise.all(
+          grupos.map((g) => fetchCarpetas(g.id).then((cc) => ({ grupo: g, carpetas: cc }))),
         )
-        setProyectoGrupos(grupos)
+        setCarpetasPorGrupo(porGrupo)
       } catch (e) {
         setError(e.message)
       }
@@ -38,7 +38,7 @@ export default function MultijugadorScreen({ onEntrarSala }) {
     cargar()
   }, [])
 
-  // Al elegir una carpeta (propia o de un proyecto), carga sus materias.
+  // Al elegir una carpeta (propia o de un grupo), carga sus materias.
   async function elegirFuente(f) {
     setError(null)
     setFuente(f)
@@ -46,7 +46,7 @@ export default function MultijugadorScreen({ onEntrarSala }) {
     setTemasSel([])
     setMaterias([])
     try {
-      const ms = await fetchMaterias(f.proyectoId || null)
+      const ms = await fetchMaterias(f.grupoId || null)
       setMaterias(ms.filter((m) => m.carpetaId === f.id))
     } catch (e) {
       setError(e.message)
@@ -117,7 +117,7 @@ export default function MultijugadorScreen({ onEntrarSala }) {
       <section className="panel">
         <h2>Crear una sala</h2>
 
-        {/* Paso 1: fuente (proyectos primero, luego personal). Se resalta la elegida. */}
+        {/* Paso 1: fuente (grupos primero, luego personal). Se resalta la elegida. */}
         <p className="mj-paso-label">1. Elige de dónde tomar las preguntas</p>
 
         {/* Carpetas propias */}
@@ -130,9 +130,9 @@ export default function MultijugadorScreen({ onEntrarSala }) {
               <button
                 key={`c-${c.id}`}
                 className={`mj-materia ${
-                  fuente && fuente.id === c.id && !fuente.proyectoId ? 'activo' : ''
+                  fuente && fuente.id === c.id && !fuente.grupoId ? 'activo' : ''
                 }`}
-                onClick={() => elegirFuente({ id: c.id, nombre: c.nombre, proyectoId: null })}
+                onClick={() => elegirFuente({ id: c.id, nombre: c.nombre, grupoId: null })}
               >
                 📁 {c.nombre}
               </button>
@@ -140,27 +140,27 @@ export default function MultijugadorScreen({ onEntrarSala }) {
           )}
         </div>
 
-        {/* Carpetas de proyectos, agrupadas por proyecto */}
-        {proyectoGrupos.length > 0 && (
+        {/* Carpetas de grupos de estudio, agrupadas por grupo */}
+        {carpetasPorGrupo.length > 0 && (
           <>
-            <p className="mj-grupo-titulo">Carpetas de proyectos</p>
-            {proyectoGrupos.map((g) => (
-              <div key={g.proyecto.id} className="mj-proyecto-grupo">
-                <p className="mj-grupo-label">📂 {g.proyecto.nombre}</p>
+            <p className="mj-grupo-titulo">Carpetas de grupos de estudio</p>
+            {carpetasPorGrupo.map((pg) => (
+              <div key={pg.grupo.id} className="mj-grupo-carpetas">
+                <p className="mj-grupo-label">👥 {pg.grupo.nombre}</p>
                 <div className="mj-materias">
-                  {g.carpetas.length === 0 ? (
+                  {pg.carpetas.length === 0 ? (
                     <p className="vacio">Sin carpetas.</p>
                   ) : (
-                    g.carpetas.map((c) => (
+                    pg.carpetas.map((c) => (
                       <button
                         key={`pc-${c.id}`}
                         className={`mj-materia ${
-                          fuente && fuente.id === c.id && fuente.proyectoId === g.proyecto.id
+                          fuente && fuente.id === c.id && fuente.grupoId === pg.grupo.id
                             ? 'activo'
                             : ''
                         }`}
                         onClick={() =>
-                          elegirFuente({ id: c.id, nombre: c.nombre, proyectoId: g.proyecto.id })
+                          elegirFuente({ id: c.id, nombre: c.nombre, grupoId: pg.grupo.id })
                         }
                       >
                         📁 {c.nombre}
@@ -231,7 +231,7 @@ export default function MultijugadorScreen({ onEntrarSala }) {
 
         {/* Opciones de la sala */}
         <div className="mj-tiempo">
-          <span className="proyecto-amigos-label">Tiempo por pregunta:</span>
+          <span className="mj-opcion-label">Tiempo por pregunta:</span>
           {TIEMPOS.map((t) => (
             <button
               key={t.s}
@@ -244,7 +244,7 @@ export default function MultijugadorScreen({ onEntrarSala }) {
         </div>
 
         <div className="mj-tiempo">
-          <span className="proyecto-amigos-label">Tu rol:</span>
+          <span className="mj-opcion-label">Tu rol:</span>
           <button
             className={`mj-tiempo-btn ${hostJuega ? 'activo' : ''}`}
             onClick={() => setHostJuega(true)}

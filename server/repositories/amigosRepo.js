@@ -37,6 +37,10 @@ export const amigosRepo = {
     )
   },
 
+  porId(id) {
+    return database.get('SELECT * FROM amistades WHERE id = ?', [id])
+  },
+
   // Relación existente entre dos usuarios (en cualquier dirección), si la hay.
   relacionEntre(a, b) {
     return database.get(
@@ -77,7 +81,7 @@ export const amigosRepo = {
     return r.changes
   },
 
-  // ¿Son amigos confirmados? (lo usa el servicio de proyectos para la lista blanca).
+  // ¿Son amigos confirmados? (lo usa el servicio de grupos para la lista blanca).
   async sonAmigos(a, b) {
     const row = await database.get(
       `SELECT 1 FROM amistades WHERE estado = 'aceptada'

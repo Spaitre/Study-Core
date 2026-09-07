@@ -36,8 +36,8 @@ router.post(
 router.post(
   '/:id/aceptar',
   ah(async (req, res) => {
-    await amigosService.aceptar(req.usuarioId, req.params.id)
-    res.json({ ok: true })
+    const { mision } = await amigosService.aceptar(req.usuarioId, req.params.id)
+    res.json({ ok: true, mision })
   }),
 )
 

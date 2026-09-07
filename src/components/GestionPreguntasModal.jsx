@@ -5,8 +5,28 @@ import {
   editarPregunta,
   eliminarPregunta,
 } from '../api.js'
+import { logroDeMision } from '../logros.js'
 
 const LETRAS = ['A', 'B', 'C', 'D', 'E', 'F']
+
+const TEMAS_CASO = ['Epidemiología', 'Etiología', 'Fisiopatología', 'Cuadro clínico', 'Tratamiento']
+const DIFICULTADES_CASO = ['Fácil', 'Medio', 'Difícil']
+
+// Opciones de un <select>: la lista fija + el valor actual si no coincide con
+// ninguna (para no perder ni disfrazar datos ya guardados con otra grafía).
+function opcionesSelect(valorActual, lista, etiquetaVacia) {
+  const extra = valorActual && !lista.includes(valorActual) ? [valorActual] : []
+  return (
+    <>
+      <option value="">{etiquetaVacia}</option>
+      {[...lista, ...extra].map((v) => (
+        <option key={v} value={v}>
+          {v}
+        </option>
+      ))}
+    </>
+  )
+}
 
 function borradorNuevo() {
   return {
@@ -16,6 +36,9 @@ function borradorNuevo() {
     opciones: ['', '', '', ''],
     respuestaCorrecta: 0,
     explicacion: '',
+    materiaCaso: '',
+    temaCategoria: '',
+    dificultad: '',
   }
 }
 
@@ -80,6 +103,9 @@ export default function GestionPreguntasModal({
       opciones: p.opciones.length ? p.opciones : ['', '', '', ''],
       respuestaCorrecta: p.respuestaCorrecta >= 0 ? p.respuestaCorrecta : 0,
       explicacion: p.explicacion || '',
+      materiaCaso: p.materiaCaso || '',
+      temaCategoria: p.temaCategoria || '',
+      dificultad: p.dificultad || '',
     })
     setError(null)
   }
@@ -103,6 +129,9 @@ export default function GestionPreguntasModal({
             opciones: [],
             respuestaCorrecta: -1,
             explicacion: borrador.explicacion,
+            materiaCaso: borrador.materiaCaso || null,
+            temaCategoria: borrador.temaCategoria || null,
+            dificultad: borrador.dificultad || null,
           }
         : {
             tipo: 'opcion',
@@ -110,10 +139,17 @@ export default function GestionPreguntasModal({
             opciones: borrador.opciones,
             respuestaCorrecta: borrador.respuestaCorrecta,
             explicacion: borrador.explicacion || null,
+            materiaCaso: borrador.materiaCaso || null,
+            temaCategoria: borrador.temaCategoria || null,
+            dificultad: borrador.dificultad || null,
           }
     try {
-      if (borrador.id) await editarPregunta(borrador.id, payload)
-      else await crearPregunta(tema.id, payload)
+      if (borrador.id) {
+        await editarPregunta(borrador.id, payload)
+      } else {
+        const r = await crearPregunta(tema.id, payload)
+        logroDeMision(r.mision)
+      }
       const lista = await cargar()
       onCambio(lista.length)
       setBorrador(null)
@@ -227,6 +263,29 @@ export default function GestionPreguntasModal({
               onChange={(e) => set('explicacion', e.target.value)}
             />
 
+            <div className="meta-caso">
+              <input
+                className="form-input"
+                value={borrador.materiaCaso}
+                placeholder="Materia (opcional)"
+                onChange={(e) => set('materiaCaso', e.target.value)}
+              />
+              <select
+                className="form-input"
+                value={borrador.temaCategoria}
+                onChange={(e) => set('temaCategoria', e.target.value)}
+              >
+                {opcionesSelect(borrador.temaCategoria, TEMAS_CASO, 'Tema (opcional)')}
+              </select>
+              <select
+                className="form-input"
+                value={borrador.dificultad}
+                onChange={(e) => set('dificultad', e.target.value)}
+              >
+                {opcionesSelect(borrador.dificultad, DIFICULTADES_CASO, 'Dificultad (opcional)')}
+              </select>
+            </div>
+
             {error && <p className="form-error">⚠️ {error}</p>}
 
             <div className="modal-acciones">
@@ -279,6 +338,11 @@ export default function GestionPreguntasModal({
                         {p.tipo === 'flashcard' ? '🃏' : '🔘'}
                       </span>
                       {p.pregunta}
+                      {(p.materiaCaso || p.dificultad) && (
+                        <span className="gestion-meta">
+                          {[p.materiaCaso, p.dificultad].filter(Boolean).join(' · ')}
+                        </span>
+                      )}
                     </div>
                     {borrarId === p.id ? (
                       <div className="gestion-acciones">

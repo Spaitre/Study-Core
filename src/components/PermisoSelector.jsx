@@ -1,6 +1,6 @@
 import Avatar from './Avatar.jsx'
 
-// Selector del permiso del proyecto (3 opciones). Si se elige 'selectivo',
+// Selector del permiso del grupo (3 opciones). Si se elige 'selectivo',
 // muestra una lista de personas para marcar quiénes pueden acceder/ver/modificar.
 // Si no se marca a nadie, cualquiera con el código tiene acceso.
 export default function PermisoSelector({ idBase, permiso, setPermiso, seleccion, setSeleccion, personas }) {
@@ -10,7 +10,7 @@ export default function PermisoSelector({ idBase, permiso, setPermiso, seleccion
 
   return (
     <div className="permiso-bloque">
-      <div className="proyecto-amigos-label">¿Quién puede modificar el proyecto?</div>
+      <div className="grupo-amigos-label">¿Quién puede modificar el grupo?</div>
       <div className="permiso-opciones">
         <label className={`permiso-opcion ${permiso === 'todos' ? 'activo' : ''}`}>
           <input
@@ -50,7 +50,7 @@ export default function PermisoSelector({ idBase, permiso, setPermiso, seleccion
             </p>
           ) : (
             <>
-              <div className="proyecto-amigos">
+              <div className="grupo-amigos">
                 {personas.map((a) => (
                   <label
                     key={a.id}

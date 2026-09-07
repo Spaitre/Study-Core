@@ -6,6 +6,7 @@ import {
   crearUsuario,
   crearInvitado,
   verificarCredenciales,
+  iniciarSesionGoogle,
   crearToken,
   usuarioPorToken,
   borrarToken,
@@ -17,13 +18,28 @@ import {
   AVATARES,
   COOKIE_NAME,
 } from '../services/authService.js'
+import { AVATARES_BLOQUEADOS } from '../services/avataresCatalogo.js'
+import { limitarPorIp } from '../rateLimiter.js'
+
+// Los invitados solo reciben un avatar libre (los bloqueados se desbloquean
+// jugando, no vienen gratis de fábrica).
+const AVATARES_LIBRES = AVATARES.filter((a) => !AVATARES_BLOQUEADOS.includes(a))
 import { usuariosRepo } from '../repositories/usuariosRepo.js'
 
 const router = Router()
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
+const VENTANA_15MIN = 15 * 60 * 1000
+
+// Límite por IP (además del bloqueo por cuenta que ya existe): protege
+// contra fuerza bruta repartida entre varias cuentas y contra creación
+// masiva de cuentas/invitados desde un mismo origen.
+const limiteLogin = limitarPorIp('login', 30, VENTANA_15MIN)
+const limiteRegistro = limitarPorIp('registro', 15, VENTANA_15MIN)
+const limiteInvitado = limitarPorIp('invitado', 30, VENTANA_15MIN)
 
 router.post(
   '/registro',
+  limiteRegistro,
   ah(async (req, res) => {
     const email = String(req.body?.email || '').trim().toLowerCase()
     const password = String(req.body?.password || '')
@@ -41,11 +57,22 @@ router.post(
 
 router.post(
   '/login',
+  limiteLogin,
   ah(async (req, res) => {
     const email = String(req.body?.email || '').trim().toLowerCase()
     const password = String(req.body?.password || '')
     const u = await verificarCredenciales(email, password)
     if (!u) return res.status(401).json({ error: 'Correo o contraseña incorrectos' })
+    const { token, expira } = await crearToken(u.id)
+    setAuthCookie(res, token, expira)
+    res.json({ usuario: u })
+  }),
+)
+
+router.post(
+  '/google',
+  ah(async (req, res) => {
+    const u = await iniciarSesionGoogle(req.body?.idToken)
     const { token, expira } = await crearToken(u.id)
     setAuthCookie(res, token, expira)
     res.json({ usuario: u })
@@ -67,9 +94,10 @@ router.post(
 
 router.post(
   '/invitado',
+  limiteInvitado,
   ah(async (req, res) => {
     const nombre = await nombreInvitadoUnico()
-    const foto = AVATARES[Math.floor(Math.random() * AVATARES.length)]
+    const foto = AVATARES_LIBRES[Math.floor(Math.random() * AVATARES_LIBRES.length)]
     const usuario = await crearInvitado(nombre, foto)
     const { token, expira } = await crearToken(usuario.id)
     setAuthCookie(res, token, expira)

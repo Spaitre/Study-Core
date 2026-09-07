@@ -18,9 +18,9 @@ import {
 } from './api.js'
 
 // Maneja el catálogo (carpetas + materias + temas) y su CRUD para un contexto:
-// personal (proyectoId = null) o un proyecto (proyectoId = N). La misma lógica
-// sirve para la pantalla de inicio y para la pantalla de cada proyecto.
-export default function useContenido(proyectoId = null, activo = true) {
+// personal (grupoId = null) o un grupo (grupoId = N). La misma lógica
+// sirve para la pantalla de inicio y para la pantalla de cada grupo.
+export default function useContenido(grupoId = null, activo = true) {
   const [carpetas, setCarpetas] = useState([])
   const [materias, setMaterias] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -28,14 +28,14 @@ export default function useContenido(proyectoId = null, activo = true) {
 
   const recargar = useCallback(() => {
     setCargando(true)
-    return Promise.all([fetchCarpetas(proyectoId), fetchMaterias(proyectoId)])
+    return Promise.all([fetchCarpetas(grupoId), fetchMaterias(grupoId)])
       .then(([c, m]) => {
         setCarpetas(c)
         setMaterias(m)
       })
       .catch((e) => setError(e.message))
       .finally(() => setCargando(false))
-  }, [proyectoId])
+  }, [grupoId])
 
   useEffect(() => {
     if (!activo) return
@@ -44,7 +44,7 @@ export default function useContenido(proyectoId = null, activo = true) {
 
   // ----- Materias -----
   async function onCrearMateria(nombre, icono, carpetaId) {
-    const nueva = await crearMateria(nombre, icono, carpetaId, proyectoId)
+    const nueva = await crearMateria(nombre, icono, carpetaId, grupoId)
     setMaterias((prev) => [...prev, nueva])
     setCarpetas((prev) =>
       prev.map((c) => (c.id === carpetaId ? { ...c, materias: (c.materias || 0) + 1 } : c)),
@@ -117,7 +117,7 @@ export default function useContenido(proyectoId = null, activo = true) {
 
   // ----- Carpetas -----
   async function onCrearCarpeta(nombre) {
-    const nueva = await crearCarpeta(nombre, proyectoId)
+    const nueva = await crearCarpeta(nombre, grupoId)
     setCarpetas((prev) => [...prev, nueva])
     return nueva
   }
@@ -144,7 +144,7 @@ export default function useContenido(proyectoId = null, activo = true) {
   }
   // Importa una carpeta nueva (con sus materias) en este contexto y recarga.
   async function onImportarCarpeta(datos) {
-    const r = await importarCarpeta(datos, proyectoId)
+    const r = await importarCarpeta(datos, grupoId)
     await recargar()
     return r
   }

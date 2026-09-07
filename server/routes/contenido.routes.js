@@ -6,23 +6,23 @@ import { contenidoService, resolverContexto } from '../services/contenidoService
 
 const router = Router()
 
-// El contexto (personal o proyecto) llega por ?proyecto= o body.proyectoId.
-const ctxRaw = (req) => req.query.proyecto ?? req.body?.proyectoId
+// El contexto (personal o grupo) llega por ?grupo= o body.grupoId.
+const ctxRaw = (req) => req.query.grupo ?? req.body?.grupoId
 
 // ----- Carpetas -----
 router.get(
   '/carpetas',
   ah(async (req, res) => {
-    const { proyectoId } = await resolverContexto(req.usuarioId, ctxRaw(req))
-    res.json({ carpetas: await contenidoService.listarCarpetas(req.usuarioId, proyectoId) })
+    const { grupoId } = await resolverContexto(req.usuarioId, ctxRaw(req))
+    res.json({ carpetas: await contenidoService.listarCarpetas(req.usuarioId, grupoId) })
   }),
 )
 
 router.post(
   '/carpetas',
   ah(async (req, res) => {
-    const { proyectoId } = await resolverContexto(req.usuarioId, ctxRaw(req))
-    res.json({ carpeta: await contenidoService.crearCarpeta(req.usuarioId, proyectoId, req.body?.nombre) })
+    const { grupoId } = await resolverContexto(req.usuarioId, ctxRaw(req))
+    res.json({ carpeta: await contenidoService.crearCarpeta(req.usuarioId, grupoId, req.body?.nombre) })
   }),
 )
 
@@ -38,8 +38,8 @@ router.put(
 router.post(
   '/carpetas/importar',
   ah(async (req, res) => {
-    const { proyectoId } = await resolverContexto(req.usuarioId, ctxRaw(req))
-    res.json(await contenidoService.importarCarpetas(req.usuarioId, proyectoId, req.body))
+    const { grupoId } = await resolverContexto(req.usuarioId, ctxRaw(req))
+    res.json(await contenidoService.importarCarpetas(req.usuarioId, grupoId, req.body))
   }),
 )
 
@@ -77,16 +77,16 @@ router.delete(
 router.get(
   '/materias',
   ah(async (req, res) => {
-    const { proyectoId } = await resolverContexto(req.usuarioId, ctxRaw(req))
-    res.json({ materias: await contenidoService.catalogo(req.usuarioId, proyectoId) })
+    const { grupoId } = await resolverContexto(req.usuarioId, ctxRaw(req))
+    res.json({ materias: await contenidoService.catalogo(req.usuarioId, grupoId) })
   }),
 )
 
 router.post(
   '/materias',
   ah(async (req, res) => {
-    const { proyectoId } = await resolverContexto(req.usuarioId, ctxRaw(req))
-    res.json({ materia: await contenidoService.crearMateria(req.usuarioId, proyectoId, req.body || {}) })
+    const { grupoId } = await resolverContexto(req.usuarioId, ctxRaw(req))
+    res.json({ materia: await contenidoService.crearMateria(req.usuarioId, grupoId, req.body || {}) })
   }),
 )
 

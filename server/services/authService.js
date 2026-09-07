@@ -2,11 +2,23 @@
 // el middleware requireAuth. La lógica vive aquí; el acceso a datos lo hacen
 // usuariosRepo y tokensRepo. Sin dependencias de auth externas (node:crypto).
 import crypto from 'node:crypto'
+import { OAuth2Client } from 'google-auth-library'
 import { usuariosRepo } from '../repositories/usuariosRepo.js'
 import { tokensRepo } from '../repositories/tokensRepo.js'
+import { fallo } from './ApiError.js'
 
 const COOKIE_NAME = 'sc_token'
 const DIAS_VALIDEZ = 30
+// Login con Google: opcional. Sin GOOGLE_CLIENT_ID configurado, la ruta
+// correspondiente responde que no está disponible en vez de fallar al cargar.
+// Acepta también VITE_GOOGLE_CLIENT_ID para que baste con una sola variable
+// en .env (el front la necesita con ese prefijo; aquí no es obligatorio).
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || null
+const googleClient = GOOGLE_CLIENT_ID ? new OAuth2Client(GOOGLE_CLIENT_ID) : null
+// Bloqueo temporal de la cuenta tras varios intentos de login fallidos
+// seguidos (mitiga fuerza bruta sobre una cuenta conocida).
+const MAX_INTENTOS_LOGIN = 5
+const BLOQUEO_MS = 15 * 60 * 1000
 // En despliegue con HTTPS, exporta COOKIE_SECURE=1 para marcar la cookie Secure.
 const cookieSecure = process.env.COOKIE_SECURE === '1'
 
@@ -80,7 +92,8 @@ async function generarUsername(email) {
 export async function crearUsuario(email, password) {
   const { hash, salt } = hashPassword(password)
   const nombre = await generarUsername(email)
-  return usuariosRepo.crear({ email, hash, salt, nombre, foto: 'ajolote', invitado: 0 })
+  // 'gato' porque 'ajolote' es un avatar bloqueado (desbloqueable por misión).
+  return usuariosRepo.crear({ email, hash, salt, nombre, foto: 'gato', invitado: 0 })
 }
 
 // Crea una cuenta de invitado (sin registro): correo y contraseña aleatorios
@@ -91,10 +104,61 @@ export async function crearInvitado(nombreUsuario, foto) {
   return usuariosRepo.crear({ email, hash, salt, nombre: nombreUsuario, foto, invitado: 1 })
 }
 
+// Verifica un idToken de Google Identity Services y devuelve el perfil,
+// creando la cuenta si es la primera vez o vinculándola por correo si ya
+// existía una cuenta registrada con contraseña (se confía en que Google ya
+// verificó ese correo). No usa contraseña: a la cuenta se le asigna una
+// aleatoria e inutilizable, igual que a los invitados.
+export async function iniciarSesionGoogle(idToken) {
+  if (!googleClient) throw fallo(500, 'El login con Google no está configurado en el servidor')
+  if (!idToken) throw fallo(400, 'Falta el token de Google')
+
+  let payload
+  try {
+    const ticket = await googleClient.verifyIdToken({ idToken, audience: GOOGLE_CLIENT_ID })
+    payload = ticket.getPayload()
+  } catch {
+    throw fallo(401, 'Token de Google inválido')
+  }
+  if (!payload?.email) throw fallo(401, 'Google no proporcionó un correo')
+  if (!payload.email_verified) throw fallo(401, 'Ese correo de Google no está verificado')
+  const email = String(payload.email).trim().toLowerCase()
+
+  const existente = await usuariosRepo.porEmail(email)
+  const u = existente || (await crearUsuario(email, crypto.randomBytes(24).toString('hex')))
+  return usuariosRepo.perfil(u.id)
+}
+
+// Minutos redondeados hacia arriba hasta que expire un bloqueo (mínimo 1).
+function minutosRestantes(bloqueadoHasta) {
+  const ms = new Date(bloqueadoHasta).getTime() - Date.now()
+  return Math.max(1, Math.ceil(ms / 60000))
+}
+
 export async function verificarCredenciales(email, password) {
   const u = await usuariosRepo.porEmail(email)
   if (!u) return null
-  if (!verifyPassword(password, u.password_hash, u.password_salt)) return null
+
+  if (u.bloqueado_hasta && new Date(u.bloqueado_hasta) > new Date()) {
+    const min = minutosRestantes(u.bloqueado_hasta)
+    throw fallo(
+      429,
+      `Cuenta bloqueada temporalmente por demasiados intentos fallidos. Intenta de nuevo en ${min} minuto${min === 1 ? '' : 's'}.`,
+    )
+  }
+
+  if (!verifyPassword(password, u.password_hash, u.password_salt)) {
+    const intentos = (u.bloqueado_hasta ? 0 : u.intentos_fallidos) + 1
+    const bloqueaAhora = intentos >= MAX_INTENTOS_LOGIN
+    await usuariosRepo.registrarIntentoFallido(
+      u.id,
+      bloqueaAhora ? 0 : intentos,
+      bloqueaAhora ? new Date(Date.now() + BLOQUEO_MS).toISOString() : null,
+    )
+    return null
+  }
+
+  if (u.intentos_fallidos > 0 || u.bloqueado_hasta) await usuariosRepo.resetIntentosFallidos(u.id)
   return usuariosRepo.perfil(u.id)
 }
 

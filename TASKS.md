@@ -3,20 +3,21 @@
 > Lista de tareas del proyecto. Léela junto con `CLAUDE.md` al iniciar una conversación nueva.
 > Convención: al empezar una tarea muévela a **En progreso**; al terminarla, a **Completadas** (con fecha) y actualiza `CLAUDE.md` si cambió el estado del proyecto.
 >
-> Última actualización: 2026-06-23
+> Última actualización: 2026-09-03
 
 ---
 
 ## 🔜 Pendientes
 
 **Tiempo real / social**
-- [ ] **Tiempo real** para amigos y proyectos (hoy se refrescan por recarga/navegación). Evaluar polling ligero o WebSockets.
+- [ ] **Tiempo real** para amigos y grupos de estudio (hoy se refrescan por recarga/navegación). Evaluar polling ligero o WebSockets.
 - [ ] **Multijugador con WebSockets** si crece el uso (hoy es por sondeo ~1s; suficiente para amigos, no para cientos).
 - [ ] Permitir que el **host se reconecte** a su sala si refresca la página (hoy la sala sigue viva pero él deja de controlarla).
 
 **Cuentas**
 - [ ] **Cambio de contraseña** y recuperación de cuenta.
-- [ ] **Rate limiting** en `login`/`registro` (necesario antes de exponer a internet).
+- [ ] **Rate limiting por IP** en `login`/`registro`/`invitado` (ya existe bloqueo por cuenta tras intentos fallidos; falta el de IP, necesario antes de exponer a internet).
+- [ ] **"Cerrar todas las sesiones"** desde Cuenta (revocar todos los tokens activos).
 
 **Contenido**
 - [ ] UI para **mover materias entre carpetas** (reubicar una existente, no solo crear en la activa).
@@ -28,18 +29,28 @@
 **Hosting (acceso desde cualquier dispositivo)** — ver §15 de `CLAUDE.md`
 - [x] Servir el **build** del frontend desde el mismo Express (mismo origen) — Fase 7.
 - [x] Ruta de **SQLite por variable de entorno** (`DATA_DIR`/`DB_PATH`) — Fase 7.
-- [ ] **Desplegar** en Railway (config lista en `railway.json`: 1 instancia; falta el paso manual: crear proyecto, volumen en `DATA_DIR`, `COOKIE_SECURE=1`, dominio).
+- [x] **Desplegado** en Railway (auto-deploy desde GitHub `main`).
 - [ ] **Respaldo** periódico de `data/cerebro.db`.
 
 **Ideas opcionales**
 - [ ] Reintegrar **generación con IA** como proveedor intercambiable (Ollama local / API), si se decide.
-- [ ] Limpieza de **proyectos/contenido huérfano** de invitados borrados (hoy se conserva si cuelga de proyectos de otros).
+- [ ] Limpieza de **grupos/contenido huérfano** de invitados borrados (hoy se conserva si cuelga de grupos de otros).
+- [ ] Apartado de **Comunidad** (banco de preguntas público por especialidad + ranking global y por materia + moderación básica) — en fase de diseño, aún sin construir.
 
 ## 🚧 En progreso
 
 - (ninguna)
 
 ## ✅ Completadas
+
+**Grupos de estudio, cuentas y contenido (sep 2026)**
+- [x] **Proyectos colaborativos → Grupos de estudio**: renombrado completo (BD con `ALTER TABLE RENAME`, backend, frontend); sin pérdida de datos porque la funcionalidad no tenía uso real todavía.
+- [x] **Estadísticas colectivas** por grupo (preguntas respondidas + precisión promedio, sobre el contenido compartido).
+- [x] **Objetivos grupales**: reto con meta numérica (opcionalmente acotado a una materia) y barra de progreso calculada en vivo sobre el historial real de los miembros (sin contador que se pueda desincronizar).
+- [x] **Login con Google** (Google Identity Services + `google-auth-library`, sin backend OAuth completo; vincula por correo con cuentas existentes); opcional vía `VITE_GOOGLE_CLIENT_ID`.
+- [x] **Bloqueo temporal de cuenta** tras 5 intentos fallidos de login (15 min).
+- [x] Preguntas de **caso clínico** y **flashcard**: metadatos opcionales Materia/Tema/Dificultad, prompts nuevos para IA externa, parser que soporta "Caso:"/"Anverso:"/"Incisos:"/"Reverso:" multilínea; datalist reemplazado por `<select>` (bug de posicionamiento). Prompt de ENARM eliminado del modal de importar.
+- [x] **Exportar preguntas de un tema** a JSON; **pegar texto** directamente en el importador (sin guardar archivo).
 
 **Optimización — Fase 1: capa de acceso a datos (jun 2026)**
 - [x] Separar `server/index.js` (~1.700 líneas) en capas **rutas → servicios → repositorios → db/**, comportamiento idéntico, verificado por dominio con curl.

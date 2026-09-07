@@ -17,6 +17,11 @@ export const AVATARES = [
   { key: 'dragon', label: 'Dragón' },
 ]
 
+// Avatares que empiezan bloqueados: se desbloquean completando misiones (ver
+// server/services/misionesCatalogo.js). Deben coincidir con
+// server/services/avataresCatalogo.js.
+export const AVATARES_BLOQUEADOS = ['ajolote', 'zorro', 'buho', 'rana', 'pinguino']
+
 // Ojos reutilizables (parpadean).
 function Ojos({ cx1, cx2, cy, r = 5, brillo = true }) {
   return (

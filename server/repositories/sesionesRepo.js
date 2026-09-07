@@ -2,10 +2,11 @@
 import { database } from '../db/index.js'
 
 export const sesionesRepo = {
-  async insertarSesion(fechaISO, materiaId, total, aciertos, usuarioId, exec = database) {
+  async insertarSesion(fechaISO, materiaId, total, aciertos, usuarioId, origen, materiaNombre, exec = database) {
     const info = await exec.run(
-      'INSERT INTO sesiones (fecha, materia_id, total, aciertos, usuario_id) VALUES (?, ?, ?, ?, ?)',
-      [fechaISO, materiaId, total, aciertos, usuarioId],
+      `INSERT INTO sesiones (fecha, materia_id, total, aciertos, usuario_id, origen, materia_nombre)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [fechaISO, materiaId, total, aciertos, usuarioId, origen, materiaNombre],
     )
     return info.lastInsertRowid
   },
