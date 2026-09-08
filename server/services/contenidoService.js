@@ -116,9 +116,12 @@ function emojiParaMateria(nombre) {
   const tokens = slugify(nombre).split('-').filter(Boolean)
   const completo = tokens.join(' ')
   for (const [clave, emoji] of EMOJI_MATERIA) {
+    // El nombre puede traer la palabra completa ("Dermatología") o una
+    // abreviación ("Derma") — se compara en ambos sentidos. La abreviación
+    // exige mínimo 4 letras para no matchear con cualquier prefijo cortito.
     const coincide = clave.includes(' ')
       ? completo.includes(clave)
-      : tokens.some((t) => t.startsWith(clave))
+      : tokens.some((t) => t.startsWith(clave) || (t.length >= 4 && clave.startsWith(t)))
     if (coincide) return emoji
   }
   return EMOJI_MATERIA_DEFECTO

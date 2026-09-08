@@ -380,6 +380,9 @@ body {
 .carpeta-card.form-card {
   cursor: default;
   gap: 8px;
+  /* Ocupa toda la fila: si comparte columna con las tarjetas compactas de
+     al lado (minmax 150px), Cancelar/Crear no caben y se salen del cuadro. */
+  grid-column: 1 / -1;
 }
 .carpeta-card[draggable='true'] {
   cursor: grab;
@@ -603,6 +606,9 @@ body {
 .materia-card.form-card {
   flex-direction: column;
   justify-content: center;
+  /* Igual que .carpeta-card.form-card: fila completa para que los botones
+     no se aprieten contra el ancho compacto de las tarjetas vecinas. */
+  grid-column: 1 / -1;
 }
 .form-input {
   width: 100%;
