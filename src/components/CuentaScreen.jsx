@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import Avatar, { AVATARES, AVATARES_BLOQUEADOS } from './Avatar.jsx'
 import MarcoAvatar from './MarcoAvatar.jsx'
 import { MARCOS, INSIGNIAS, RAREZA_LABEL } from './cosmeticos.js'
-import { actualizarPerfil, nombreDisponible, fetchProgreso, fetchMisiones } from '../api.js'
+import { actualizarPerfil, nombreDisponible, fetchProgreso, fetchMisiones, fetchEstadisticasAdmin } from '../api.js'
 
 // Reduce la imagen subida a 256x256 (recorte centrado) y la devuelve como
 // data URL JPEG, para guardar algo ligero en la base.
@@ -42,6 +42,7 @@ export default function CuentaScreen({ usuario, onActualizar }) {
   const [cosmeticos, setCosmeticos] = useState([])
   const [marcoGuardando, setMarcoGuardando] = useState(false)
   const [misiones, setMisiones] = useState(null)
+  const [statsAdmin, setStatsAdmin] = useState(null)
   const fileRef = useRef(null)
 
   useEffect(() => {
@@ -49,7 +50,9 @@ export default function CuentaScreen({ usuario, onActualizar }) {
       .then((p) => setCosmeticos(p.cosmeticos || []))
       .catch(() => {})
     fetchMisiones().then(setMisiones).catch(() => {})
-  }, [])
+    if (usuario?.esAdmin) fetchEstadisticasAdmin().then(setStatsAdmin).catch(() => {})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usuario?.esAdmin])
 
   const avataresDesbloqueados = misiones?.avataresDesbloqueados || []
   function avatarDesbloqueado(key) {
@@ -153,6 +156,42 @@ export default function CuentaScreen({ usuario, onActualizar }) {
 
       {error && <div className="banner-error">⚠️ {error}</div>}
       {aviso && <div className="banner-ok">{aviso}</div>}
+
+      {usuario?.esAdmin && (
+        <section className="panel">
+          <h2>🛡️ Estadísticas de la app</h2>
+          {!statsAdmin ? (
+            <p className="cuenta-ayuda">Cargando…</p>
+          ) : (
+            <div className="admin-stats-grid">
+              <div className="admin-stat-card">
+                <span className="admin-stat-num">{statsAdmin.cuentasTotal}</span>
+                <span className="admin-stat-label">Cuentas totales</span>
+              </div>
+              <div className="admin-stat-card">
+                <span className="admin-stat-num">{statsAdmin.cuentasRegistradas}</span>
+                <span className="admin-stat-label">Registradas</span>
+              </div>
+              <div className="admin-stat-card">
+                <span className="admin-stat-num">{statsAdmin.cuentasInvitado}</span>
+                <span className="admin-stat-label">Invitados</span>
+              </div>
+              <div className="admin-stat-card">
+                <span className="admin-stat-num">{statsAdmin.grupos}</span>
+                <span className="admin-stat-label">Grupos de estudio</span>
+              </div>
+              <div className="admin-stat-card">
+                <span className="admin-stat-num">{statsAdmin.contenidoPublico}</span>
+                <span className="admin-stat-label">Banco público</span>
+              </div>
+              <div className="admin-stat-card">
+                <span className="admin-stat-num">{statsAdmin.sesionesJugadas}</span>
+                <span className="admin-stat-label">Sesiones jugadas</span>
+              </div>
+            </div>
+          )}
+        </section>
+      )}
 
       <section className="panel cuenta-resumen">
         <MarcoAvatar foto={foto} marco={usuario?.marco} size={96} />

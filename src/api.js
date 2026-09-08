@@ -371,6 +371,9 @@ export function fetchDetalleContenido(id) {
 export function fetchPreguntasPublicas(id) {
   return getJSON(`/api/comunidad/contenido/${encodeURIComponent(id)}/preguntas`).then((d) => d.preguntas)
 }
+export function fetchEstadisticasAdmin() {
+  return getJSON('/api/admin/estadisticas')
+}
 export function publicarContenido(datos) {
   return postJSON('/api/comunidad/contenido', datos)
 }

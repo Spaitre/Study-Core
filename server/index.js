@@ -20,6 +20,7 @@ import progresoRoutes from './routes/progreso.routes.js'
 import bancoPublicoRoutes from './routes/bancoPublico.routes.js'
 import misionesRoutes from './routes/misiones.routes.js'
 import salasRoutes from './routes/salas.routes.js'
+import adminRoutes from './routes/admin.routes.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
@@ -46,6 +47,7 @@ app.use('/api', progresoRoutes) // racha/XP/monedas + cajas de regalo
 app.use('/api/comunidad', bancoPublicoRoutes) // banco de contenido público (materias/carpetas)
 app.use('/api/misiones', misionesRoutes) // misiones de bienvenida
 app.use('/api/salas', salasRoutes) // multijugador (estado en memoria)
+app.use('/api/admin', adminRoutes) // estadísticas de la app (solo es_admin)
 
 // Producción: el mismo Express sirve el build del frontend (mismo origen, sin
 // CORS). Se activa si existe dist/ (lo genera `npm run build`); en desarrollo no

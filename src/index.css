@@ -2222,6 +2222,34 @@ body {
   margin: 10px 0 0;
   line-height: 1.5;
 }
+/* Panel de admin en Cuenta: auto-fit hace que se acomode solo según el
+   ancho disponible, 2 columnas en celular sin necesitar media queries. */
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+.admin-stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: var(--gris-fondo);
+  border-radius: 12px;
+  padding: 14px 8px;
+  text-align: center;
+}
+.admin-stat-num {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--morado);
+}
+.admin-stat-label {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  font-weight: 600;
+}
+
 .avatar-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
