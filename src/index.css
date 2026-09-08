@@ -2843,6 +2843,7 @@ body {
 /* Cabecera de la sección de materias (título + importar) */
 .materias-cab {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
@@ -2857,6 +2858,9 @@ body {
   gap: 8px;
   flex-shrink: 0;
   flex-wrap: nowrap;
+  /* Si no caben junto al título, bajan a su propia línea pero se quedan
+     pegados a la derecha (en vez de irse a la izquierda por defecto). */
+  margin-left: auto;
 }
 .export-todas {
   display: flex;
@@ -3304,6 +3308,12 @@ body {
 @media (max-width: 560px) {
   .opciones-grid {
     grid-template-columns: 1fr;
+  }
+  /* Exportar/Importar carpetas y materias: más chicos para que quepan
+     junto al título sin desbordar el panel en celular. */
+  .btn-importar-materia {
+    padding: 6px 8px;
+    font-size: 0.78rem;
   }
   .home-footer {
     flex-direction: column;

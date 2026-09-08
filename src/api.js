@@ -347,12 +347,8 @@ export function fetchMisiones() {
 }
 
 // ----- Banco de contenido público (Comunidad): materias/carpetas publicadas -----
-export function fetchFacetasPublicas() {
-  return getJSON('/api/comunidad/facetas')
-}
-// Los filtros de faceta (tipo/materia/tema/dificultad/categoría) son de
-// selección múltiple: cada uno viaja como un solo query param con sus
-// valores separados por coma.
+// El filtro de tipo es de selección múltiple: viaja como un solo query
+// param con sus valores separados por coma.
 export function fetchContenidoPublico(filtros = {}) {
   const params = new URLSearchParams()
   for (const [campo, valor] of Object.entries(filtros)) {

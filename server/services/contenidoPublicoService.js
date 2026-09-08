@@ -67,15 +67,10 @@ function paraCliente(fila) {
   }
 }
 
-// ¿La fila cumple todos los filtros activos? Selección múltiple: dentro de
-// una misma faceta es OR (basta con que tenga alguno de los valores
-// elegidos); entre facetas distintas es AND.
+// ¿La fila cumple los filtros activos? Solo tipo (selección múltiple) y
+// texto de búsqueda: los filtros son fijos, no varían según lo publicado.
 function cumpleFiltros(item, f) {
   if (f.tipo?.length && !f.tipo.includes(item.tipo)) return false
-  if (f.materia?.length && !f.materia.some((m) => item.materias.includes(m))) return false
-  if (f.tema?.length && !f.tema.some((t) => item.temas.includes(t))) return false
-  if (f.dificultad?.length && !f.dificultad.some((d) => item.dificultades.includes(d))) return false
-  if (f.categoria?.length && !f.categoria.some((c) => item.categorias.includes(c))) return false
   if (f.buscar) {
     const q = f.buscar.toLowerCase()
     const enTexto = item.nombre.toLowerCase().includes(q) || (item.descripcion || '').toLowerCase().includes(q)
@@ -89,28 +84,6 @@ export const contenidoPublicoService = {
   async listar(usuarioId, filtros = {}) {
     const filas = (await contenidoPublicoRepo.listarVisibles(usuarioId)).map(paraCliente)
     return filas.filter((f) => cumpleFiltros(f, filtros))
-  },
-
-  // Facetas disponibles para poblar la barra de filtros, calculadas sobre
-  // todo lo visible (no solo lo que ya pasó el filtro actual).
-  async facetas(usuarioId) {
-    const filas = (await contenidoPublicoRepo.listarVisibles(usuarioId)).map(paraCliente)
-    const materias = new Set()
-    const temas = new Set()
-    const dificultades = new Set()
-    const categorias = new Set()
-    for (const f of filas) {
-      f.materias.forEach((m) => materias.add(m))
-      f.temas.forEach((t) => temas.add(t))
-      f.dificultades.forEach((d) => dificultades.add(d))
-      f.categorias.forEach((c) => categorias.add(c))
-    }
-    return {
-      materias: [...materias].sort(),
-      temas: [...temas].sort(),
-      dificultades: [...dificultades].sort(),
-      categorias: [...categorias].sort(),
-    }
   },
 
   async detalle(usuarioId, id) {

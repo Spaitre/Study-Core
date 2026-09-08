@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { fetchFacetasPublicas, fetchContenidoPublico } from '../api.js'
+import { fetchContenidoPublico } from '../api.js'
 import PublicarContenidoModal from './PublicarContenidoModal.jsx'
 import DetalleContenidoModal from './DetalleContenidoModal.jsx'
 import ModeracionModal from './ModeracionModal.jsx'
@@ -18,7 +18,7 @@ function iconoTipo(it) {
 }
 
 function filtrosVacios() {
-  return { tipo: [], materia: [], tema: [], dificultad: [], categoria: [], buscar: '' }
+  return { tipo: [], buscar: '' }
 }
 
 // Lista de checkboxes para una faceta de selección múltiple (no se muestra
@@ -40,17 +40,9 @@ function FiltroCheckbox({ etiqueta, opciones, valores, onToggle }) {
   )
 }
 
-// Convierte una lista plana de valores de faceta (strings) al shape
-// {value, label} que espera FiltroCheckbox.
-function comoOpciones(valores) {
-  return valores.map((v) => ({ value: v, label: v }))
-}
-
-// Banco de contenido público: barra lateral de filtros de selección múltiple
-// (tipo, materia, tema, dificultad, categoría de caso clínico) + cuadrícula
-// de lo publicado.
+// Banco de contenido público: barra lateral con el filtro fijo de tipo
+// (materia/tema/carpeta) + búsqueda, y la cuadrícula de lo publicado.
 export default function BancoPublicoScreen({ usuario, onIniciarQuiz }) {
-  const [facetas, setFacetas] = useState({ materias: [], temas: [], dificultades: [], categorias: [] })
   const [filtros, setFiltros] = useState(filtrosVacios())
   const [items, setItems] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -59,14 +51,6 @@ export default function BancoPublicoScreen({ usuario, onIniciarQuiz }) {
   const [modalPublicar, setModalPublicar] = useState(false)
   const [modalModeracion, setModalModeracion] = useState(false)
   const [detalleId, setDetalleId] = useState(null)
-
-  function cargarFacetas() {
-    fetchFacetasPublicas().then(setFacetas).catch(() => {})
-  }
-
-  useEffect(() => {
-    cargarFacetas()
-  }, [])
 
   async function cargar() {
     setCargando(true)
@@ -101,7 +85,6 @@ export default function BancoPublicoScreen({ usuario, onIniciarQuiz }) {
   function alPublicar() {
     setModalPublicar(false)
     setAviso('¡Publicado! Ya es visible para todos.')
-    cargarFacetas()
     cargar()
   }
 
@@ -144,30 +127,6 @@ export default function BancoPublicoScreen({ usuario, onIniciarQuiz }) {
             opciones={TIPOS}
             valores={filtros.tipo}
             onToggle={(v) => toggle('tipo', v)}
-          />
-          <FiltroCheckbox
-            etiqueta="Materia"
-            opciones={comoOpciones(facetas.materias)}
-            valores={filtros.materia}
-            onToggle={(v) => toggle('materia', v)}
-          />
-          <FiltroCheckbox
-            etiqueta="Tema"
-            opciones={comoOpciones(facetas.temas)}
-            valores={filtros.tema}
-            onToggle={(v) => toggle('tema', v)}
-          />
-          <FiltroCheckbox
-            etiqueta="Dificultad"
-            opciones={comoOpciones(facetas.dificultades)}
-            valores={filtros.dificultad}
-            onToggle={(v) => toggle('dificultad', v)}
-          />
-          <FiltroCheckbox
-            etiqueta="Categoría"
-            opciones={comoOpciones(facetas.categorias)}
-            valores={filtros.categoria}
-            onToggle={(v) => toggle('categoria', v)}
           />
 
           {hayFiltrosActivos && (

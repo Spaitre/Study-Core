@@ -5,9 +5,8 @@ import { contenidoPublicoService } from '../services/contenidoPublicoService.js'
 
 const router = Router()
 
-// Cada faceta llega como un solo query param con valores separados por coma
-// (p. ej. ?materia=Cardiología,Neurología) porque son filtros de selección
-// múltiple en la barra lateral.
+// El filtro de tipo llega como un solo query param con valores separados
+// por coma (p. ej. ?tipo=materia,tema) porque es de selección múltiple.
 function aLista(v) {
   return v
     ? String(v)
@@ -18,22 +17,11 @@ function aLista(v) {
 }
 
 router.get(
-  '/facetas',
-  ah(async (req, res) => {
-    res.json(await contenidoPublicoService.facetas(req.usuarioId))
-  }),
-)
-
-router.get(
   '/contenido',
   ah(async (req, res) => {
-    const { materia, tema, dificultad, categoria, tipo, buscar } = req.query
+    const { tipo, buscar } = req.query
     res.json({
       contenido: await contenidoPublicoService.listar(req.usuarioId, {
-        materia: aLista(materia),
-        tema: aLista(tema),
-        dificultad: aLista(dificultad),
-        categoria: aLista(categoria),
         tipo: aLista(tipo),
         buscar,
       }),
