@@ -18,6 +18,7 @@ export default function ComunidadScreen({
   onCambiarApartado,
   onAbrirGrupo,
   onEntrarSala,
+  onIniciarQuizPublico,
 }) {
   return (
     <div className="screen comunidad">
@@ -39,7 +40,9 @@ export default function ComunidadScreen({
       </div>
 
       {apartado === 'grupos' && <GruposScreen onAbrir={onAbrirGrupo} />}
-      {apartado === 'banco' && <BancoPublicoScreen usuario={usuario} />}
+      {apartado === 'banco' && (
+        <BancoPublicoScreen usuario={usuario} onIniciarQuiz={onIniciarQuizPublico} />
+      )}
       {apartado === 'multijugador' && <MultijugadorScreen onEntrarSala={onEntrarSala} />}
     </div>
   )

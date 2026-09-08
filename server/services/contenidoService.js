@@ -175,7 +175,7 @@ function validarPregunta(d) {
   return null
 }
 
-export { preguntaHash }
+export { preguntaHash, barajarOpciones }
 
 // ----- Contexto y permisos -----
 // Resuelve el contexto (personal o grupo) desde ?grupo= / body.grupoId.

@@ -8,12 +8,19 @@ import {
   fetchCarpetas,
 } from '../api.js'
 
+const OPCIONES_TIEMPO = [
+  { valor: 30, etiqueta: '30 segundos', icono: '⏱️' },
+  { valor: 60, etiqueta: '1 minuto', icono: '🕐' },
+  { valor: null, etiqueta: 'Sin tiempo', icono: '∞' },
+]
+
 // Detalle de una materia/carpeta publicada: contenido, voto, comentarios,
-// importar a la cuenta propia y reportar.
-export default function DetalleContenidoModal({ id, onCerrar, onCambio }) {
+// importar a la cuenta propia, jugarla directo y reportar.
+export default function DetalleContenidoModal({ id, onCerrar, onCambio, onIniciarQuiz }) {
   const [detalle, setDetalle] = useState(null)
   const [error, setError] = useState(null)
   const [aviso, setAviso] = useState(null)
+  const [tiempo, setTiempo] = useState(30)
   const [comentario, setComentario] = useState('')
   const [enviandoComentario, setEnviandoComentario] = useState(false)
   const [votando, setVotando] = useState(false)
@@ -88,6 +95,11 @@ export default function DetalleContenidoModal({ id, onCerrar, onCambio }) {
     }
   }
 
+  function comenzarQuiz() {
+    onIniciarQuiz?.(id, detalle.nombre, tiempo)
+    onCerrar()
+  }
+
   async function importar() {
     setError(null)
     if (necesitaCarpeta && !carpetaDestino) {
@@ -132,6 +144,26 @@ export default function DetalleContenidoModal({ id, onCerrar, onCambio }) {
           preguntas
         </p>
         {detalle.descripcion && <p className="modal-mensaje">{detalle.descripcion}</p>}
+
+        {onIniciarQuiz && detalle.totalPreguntas > 0 && (
+          <div className="detalle-jugar">
+            <div className="tiempo-grid tiempo-grid-compacto">
+              {OPCIONES_TIEMPO.map((op) => (
+                <button
+                  key={op.etiqueta}
+                  className={`tiempo-card ${tiempo === op.valor ? 'active' : ''}`}
+                  onClick={() => setTiempo(op.valor)}
+                >
+                  <span className="tiempo-icono">{op.icono}</span>
+                  <span className="tiempo-etiqueta">{op.etiqueta}</span>
+                </button>
+              ))}
+            </div>
+            <button className="btn-primary" onClick={comenzarQuiz}>
+              ▶ Comenzar quiz →
+            </button>
+          </div>
+        )}
 
         <div className="detalle-contenido-acciones">
           <button

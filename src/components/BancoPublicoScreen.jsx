@@ -49,7 +49,7 @@ function comoOpciones(valores) {
 // Banco de contenido público: barra lateral de filtros de selección múltiple
 // (tipo, materia, tema, dificultad, categoría de caso clínico) + cuadrícula
 // de lo publicado.
-export default function BancoPublicoScreen({ usuario }) {
+export default function BancoPublicoScreen({ usuario, onIniciarQuiz }) {
   const [facetas, setFacetas] = useState({ materias: [], temas: [], dificultades: [], categorias: [] })
   const [filtros, setFiltros] = useState(filtrosVacios())
   const [items, setItems] = useState([])
@@ -210,7 +210,12 @@ export default function BancoPublicoScreen({ usuario }) {
       )}
       {modalModeracion && <ModeracionModal onCerrar={() => setModalModeracion(false)} />}
       {detalleId != null && (
-        <DetalleContenidoModal id={detalleId} onCerrar={() => setDetalleId(null)} onCambio={cargar} />
+        <DetalleContenidoModal
+          id={detalleId}
+          onCerrar={() => setDetalleId(null)}
+          onCambio={cargar}
+          onIniciarQuiz={onIniciarQuiz}
+        />
       )}
     </section>
   )

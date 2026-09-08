@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import {
   fetchPreguntas,
+  fetchPreguntasPublicas,
   guardarSesion,
   fetchYo,
   logout,
@@ -158,6 +159,27 @@ export default function App() {
     }
   }
 
+  // Jugar contenido del banco público directo, sin importarlo antes a la
+  // cuenta propia (ver contenidoPublicoService.preguntasParaQuiz). La sesión
+  // se guarda con origen 'publico' porque el materiaId no es del usuario.
+  async function iniciarQuizPublico(contenidoId, nombre, tiempo) {
+    setError(null)
+    try {
+      const preg = await fetchPreguntasPublicas(contenidoId)
+      if (preg.length === 0) {
+        setError('Este contenido no tiene preguntas.')
+        return
+      }
+      setTiempoPorPregunta(tiempo)
+      setMateriaActual({ id: null, nombre, origen: 'publico' })
+      setPreguntas(preg)
+      setResultados([])
+      setScreen(SCREENS.QUIZ)
+    } catch (e) {
+      setError(e.message)
+    }
+  }
+
   async function terminarQuiz(resultadosFinales) {
     setResultados(resultadosFinales)
     setScreen(SCREENS.RESULTS)
@@ -166,6 +188,8 @@ export default function App() {
       const r = await guardarSesion({
         materiaId: materiaActual?.id ?? null,
         respuestas: resultadosFinales,
+        origen: materiaActual?.origen === 'publico' ? 'publico' : 'personal',
+        materiaNombre: materiaActual?.origen === 'publico' ? materiaActual.nombre : null,
       })
       // La sesión ya actualizó racha/XP/cajas en el servidor; refresca el widget.
       cargarProgreso()
@@ -243,6 +267,7 @@ export default function App() {
               apartado={comunidadApartado}
               onCambiarApartado={setComunidadApartado}
               onAbrirGrupo={abrirGrupo}
+              onIniciarQuizPublico={iniciarQuizPublico}
               onEntrarSala={(sala) => {
                 setSalaActual(sala)
                 setScreen(SCREENS.SALA)

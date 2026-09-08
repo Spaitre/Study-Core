@@ -48,6 +48,13 @@ router.get(
   }),
 )
 
+router.get(
+  '/contenido/:id/preguntas',
+  ah(async (req, res) => {
+    res.json({ preguntas: await contenidoPublicoService.preguntasParaQuiz(Number(req.params.id)) })
+  }),
+)
+
 router.post(
   '/contenido',
   ah(async (req, res) => {

@@ -368,6 +368,9 @@ export function fetchContenidoPublico(filtros = {}) {
 export function fetchDetalleContenido(id) {
   return getJSON(`/api/comunidad/contenido/${encodeURIComponent(id)}`)
 }
+export function fetchPreguntasPublicas(id) {
+  return getJSON(`/api/comunidad/contenido/${encodeURIComponent(id)}/preguntas`).then((d) => d.preguntas)
+}
 export function publicarContenido(datos) {
   return postJSON('/api/comunidad/contenido', datos)
 }

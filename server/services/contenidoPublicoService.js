@@ -4,7 +4,7 @@
 import { contenidoPublicoRepo } from '../repositories/contenidoPublicoRepo.js'
 import { contenidoRepo } from '../repositories/contenidoRepo.js'
 import { usuariosRepo } from '../repositories/usuariosRepo.js'
-import { contenidoService } from './contenidoService.js'
+import { contenidoService, barajarOpciones } from './contenidoService.js'
 import { fallo } from './ApiError.js'
 
 // Publicar exige ser el DUEÑO del contenido, no solo tener acceso a él: un
@@ -118,6 +118,35 @@ export const contenidoPublicoService = {
     if (!fila) throw fallo(404, 'No encontrado')
     const comentarios = await contenidoPublicoRepo.comentarios(id)
     return { ...paraCliente(fila), datos: JSON.parse(fila.datosJson), comentarios }
+  },
+
+  // Arma las preguntas para jugar este contenido AHORA MISMO, sin
+  // importarlo antes a la cuenta propia: lee la instantánea publicada
+  // (mismo formato que exportar/importar) y la aplana a la forma que espera
+  // QuizScreen, barajando opciones igual que el banco personal.
+  async preguntasParaQuiz(id) {
+    const fila = await contenidoPublicoRepo.obtener(id)
+    if (!fila || fila.estado !== 'visible') throw fallo(404, 'No encontrado')
+    const datos = JSON.parse(fila.datos_json)
+    const preguntas = []
+    for (const m of datos.materias || []) {
+      for (const t of m.temas || []) {
+        for (const p of t.preguntas || []) {
+          preguntas.push({
+            id: `pub-${id}-${preguntas.length}`,
+            pregunta: p.pregunta,
+            opciones: p.opciones,
+            respuestaCorrecta: p.respuestaCorrecta,
+            explicacion: p.explicacion,
+            tipo: p.tipo,
+            temaId: t.id,
+            temaNombre: t.nombre,
+            materiaNombre: m.nombre,
+          })
+        }
+      }
+    }
+    return preguntas.map(barajarOpciones)
   },
 
   async publicar(usuarioId, body) {

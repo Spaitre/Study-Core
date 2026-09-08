@@ -1787,6 +1787,31 @@ body {
   gap: 8px;
   margin: 10px 0;
 }
+/* Jugar el contenido publicado de una: destacado porque es la acción
+   principal, por encima de votar/importar/reportar. */
+.detalle-jugar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: var(--radio);
+  padding: 14px;
+  margin: 10px 0;
+}
+.tiempo-grid-compacto {
+  gap: 8px;
+}
+.tiempo-grid-compacto .tiempo-card {
+  padding: 10px 6px;
+  border-radius: 10px;
+}
+.tiempo-grid-compacto .tiempo-icono {
+  font-size: 1.2rem;
+}
+.tiempo-grid-compacto .tiempo-etiqueta {
+  font-size: 0.8rem;
+}
 .detalle-contenido-materias {
   display: flex;
   flex-direction: column;
