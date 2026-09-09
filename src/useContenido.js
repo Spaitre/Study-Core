@@ -5,6 +5,7 @@ import {
   crearMateria,
   crearTema,
   reordenarMaterias,
+  reordenarTemas,
   eliminarMateria,
   eliminarTema,
   editarMateria,
@@ -102,6 +103,13 @@ export default function useContenido(grupoId = null, activo = true) {
       ),
     )
   }
+  function onReordenarTemas(materiaId, nuevas) {
+    setMaterias((prev) => prev.map((m) => (m.id === materiaId ? { ...m, temas: nuevas } : m)))
+    reordenarTemas(
+      materiaId,
+      nuevas.map((t) => t.id),
+    ).catch((e) => console.error('No se pudo guardar el orden de temas:', e))
+  }
   function onActualizarConteoTema(materiaId, temaId, total) {
     setMaterias((prev) =>
       prev.map((m) =>
@@ -163,6 +171,7 @@ export default function useContenido(grupoId = null, activo = true) {
       onCrearTema,
       onEliminarTema,
       onEditarTema,
+      onReordenarTemas,
       onActualizarConteoTema,
       onCrearCarpeta,
       onEditarCarpeta,

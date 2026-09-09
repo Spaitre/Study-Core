@@ -332,6 +332,16 @@ export async function reordenarMaterias(ids) {
   if (!res.ok) throw new Error(`No se pudo guardar el orden (${res.status})`)
   return res.json()
 }
+export async function reordenarTemas(materiaId, ids) {
+  const res = await fetch('/api/temas/orden', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ materiaId, ids }),
+    ...CRED,
+  })
+  if (!res.ok) throw new Error(`No se pudo guardar el orden (${res.status})`)
+  return res.json()
+}
 
 // ----- Progreso (racha, XP, monedas, cajas de regalo) -----
 export function fetchProgreso() {

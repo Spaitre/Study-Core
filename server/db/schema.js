@@ -102,6 +102,20 @@ db.exec(
    ) WHERE posicion IS NULL`,
 )
 
+// Migración: mismo orden personalizado (drag & drop) pero para temas.
+try {
+  db.exec('ALTER TABLE temas ADD COLUMN posicion INTEGER')
+} catch {
+  // la columna ya existe
+}
+// Backfill alfabético, dentro de cada materia (no global).
+db.exec(
+  `UPDATE temas SET posicion = (
+     SELECT COUNT(*) FROM temas t2
+     WHERE t2.materia_id = temas.materia_id AND t2.nombre <= temas.nombre
+   ) WHERE posicion IS NULL`,
+)
+
 // Migración: tipo de pregunta ('opcion' por defecto; 'flashcard' para tarjetas).
 try {
   db.exec("ALTER TABLE preguntas ADD COLUMN tipo TEXT NOT NULL DEFAULT 'opcion'")

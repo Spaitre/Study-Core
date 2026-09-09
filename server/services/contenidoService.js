@@ -476,8 +476,20 @@ export const contenidoService = {
     if (!mat) throw fallo(404, 'La materia no existe')
     await exigirEdicion(mat.grupo_id, usuarioId)
     const id = await contenidoRepo.idUnico(`${materiaId}-${slugify(nombre)}`, 'temas')
-    await contenidoRepo.insertarTema(id, materiaId, nombre)
+    const pos = await contenidoRepo.maxPosTema(materiaId)
+    await contenidoRepo.insertarTema(id, materiaId, nombre, pos)
     return { id, nombre, preguntas: 0 }
+  },
+
+  async reordenarTemas(usuarioId, materiaId, ids) {
+    if (!materiaId) throw fallo(400, 'Falta materiaId')
+    if (!Array.isArray(ids) || ids.length === 0) throw fallo(400, 'ids vacíos')
+    const mat = await contenidoRepo.materiaAccesible(materiaId, usuarioId)
+    if (!mat) throw fallo(404, 'La materia no existe')
+    await exigirEdicion(mat.grupo_id, usuarioId)
+    await database.withTransaction(async (tx) => {
+      for (let i = 0; i < ids.length; i++) await contenidoRepo.reordenarTema(i + 1, ids[i], materiaId, tx)
+    })
   },
 
   async renombrarTema(usuarioId, id, body) {

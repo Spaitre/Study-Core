@@ -48,6 +48,7 @@ export default function HomeScreen({
   onEliminarTema,
   onEditarMateria,
   onEditarTema,
+  onReordenarTemas,
   onActualizarConteoTema,
   onCrearCarpeta,
   onEditarCarpeta,
@@ -86,11 +87,13 @@ export default function HomeScreen({
   const [editTemaId, setEditTemaId] = useState(null)
   const [editNombreTema, setEditNombreTema] = useState('')
 
-  // Arrastre para reordenar (materias y carpetas).
+  // Arrastre para reordenar (materias, carpetas y temas).
   const [arrastrandoId, setArrastrandoId] = useState(null)
   const [sobreId, setSobreId] = useState(null)
   const [dragCarpeta, setDragCarpeta] = useState(null)
   const [sobreCarpeta, setSobreCarpeta] = useState(null)
+  const [dragTema, setDragTema] = useState(null)
+  const [sobreTema, setSobreTema] = useState(null)
 
   const [confirmar, setConfirmar] = useState(null)
   const [importarTema, setImportarTema] = useState(null)
@@ -373,6 +376,16 @@ export default function HomeScreen({
       m.carpetaId === carpetaId ? lista[k++] : m,
     )
     onReordenarMaterias(nuevoFull)
+  }
+  function alSoltarTema(destinoId) {
+    if (!dragTema || dragTema === destinoId || !materia) return
+    const lista = [...materia.temas]
+    const desde = lista.findIndex((t) => t.id === dragTema)
+    const hasta = lista.findIndex((t) => t.id === destinoId)
+    if (desde === -1 || hasta === -1) return
+    const [movido] = lista.splice(desde, 1)
+    lista.splice(hasta, 0, movido)
+    onReordenarTemas(materia.id, lista)
   }
 
   // ---------- Temas ----------
@@ -822,7 +835,25 @@ export default function HomeScreen({
             ) : (
               <div key={t.id} className="tema-bloque">
                 <label
-                  className={`tema-item ${temasSel.includes(t.id) ? 'active' : ''}`}
+                  draggable
+                  onDragStart={() => setDragTema(t.id)}
+                  onDragOver={(e) => {
+                    e.preventDefault()
+                    if (sobreTema !== t.id) setSobreTema(t.id)
+                  }}
+                  onDrop={() => {
+                    alSoltarTema(t.id)
+                    setDragTema(null)
+                    setSobreTema(null)
+                  }}
+                  onDragEnd={() => {
+                    setDragTema(null)
+                    setSobreTema(null)
+                  }}
+                  title="Arrastra para reordenar"
+                  className={`tema-item ${temasSel.includes(t.id) ? 'active' : ''}${
+                    dragTema === t.id ? ' arrastrando' : ''
+                  }${sobreTema === t.id && dragTema !== t.id ? ' sobre' : ''}`}
                 >
                   <input
                     type="checkbox"

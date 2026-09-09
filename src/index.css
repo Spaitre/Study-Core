@@ -563,6 +563,14 @@ body {
   border-color: var(--azul);
   background: #eff6ff;
 }
+.tema-item.arrastrando {
+  opacity: 0.4;
+  cursor: grabbing;
+}
+.tema-item.sobre {
+  border-color: var(--morado);
+  box-shadow: -3px 0 0 0 var(--morado);
+}
 .tema-item input {
   width: 20px;
   height: 20px;

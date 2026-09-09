@@ -88,6 +88,7 @@ Cada dato incluido debe tener una función.
 Evita casos tan obvios que revelen inmediatamente la respuesta.
 Cuando sea posible, construye el razonamiento:
 datos clínicos → interpretación → diagnóstico/mecanismo/tratamiento.
+Tiene que quedar claro cuál es la pregunta en cada pregunta.
 4. EVITAR PREGUNTAS DEMASIADO FÁCILES
 NO generes preguntas donde la respuesta pueda obtenerse simplemente identificando una palabra idéntica entre el caso y la opción.
 Ejemplo que debes evitar:

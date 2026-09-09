@@ -128,6 +128,14 @@ router.post(
   }),
 )
 
+router.put(
+  '/temas/orden',
+  ah(async (req, res) => {
+    await contenidoService.reordenarTemas(req.usuarioId, req.body?.materiaId, req.body?.ids)
+    res.json({ ok: true })
+  }),
+)
+
 router.get(
   '/temas/:id/preguntas',
   ah(async (req, res) => {

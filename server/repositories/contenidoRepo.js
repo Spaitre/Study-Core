@@ -161,17 +161,19 @@ export const contenidoRepo = {
     )
   },
   temasDeMateriaSimple(materiaId) {
-    return database.all('SELECT id, nombre FROM temas WHERE materia_id = ? ORDER BY nombre', [materiaId])
+    return database.all('SELECT id, nombre FROM temas WHERE materia_id = ? ORDER BY posicion, nombre', [
+      materiaId,
+    ])
   },
   // Temas (con conteo) de varias materias en una sola consulta. Incluye
-  // materia_id para agrupar; orden por nombre como en temasDeMateria.
+  // materia_id para agrupar; mismo orden personalizado que temasDeMateria.
   temasDeMaterias(materiaIds) {
     const ph = materiaIds.map(() => '?').join(',')
     return database.all(
       `SELECT t.materia_id, t.id, t.nombre, COUNT(p.id) AS total
        FROM temas t LEFT JOIN preguntas p ON p.tema_id = t.id
        WHERE t.materia_id IN (${ph})
-       GROUP BY t.id ORDER BY t.nombre`,
+       GROUP BY t.id ORDER BY t.posicion, t.nombre`,
       [...materiaIds],
     )
   },
@@ -183,8 +185,22 @@ export const contenidoRepo = {
       [id, uid, uid],
     )
   },
-  insertarTema(id, materiaId, nombre, exec = database) {
-    return exec.run('INSERT INTO temas (id, materia_id, nombre) VALUES (?, ?, ?)', [id, materiaId, nombre])
+  async maxPosTema(materiaId, exec = database) {
+    const row = await exec.get('SELECT COALESCE(MAX(posicion),0)+1 AS p FROM temas WHERE materia_id = ?', [
+      materiaId,
+    ])
+    return row.p
+  },
+  insertarTema(id, materiaId, nombre, pos, exec = database) {
+    return exec.run('INSERT INTO temas (id, materia_id, nombre, posicion) VALUES (?, ?, ?, ?)', [
+      id,
+      materiaId,
+      nombre,
+      pos,
+    ])
+  },
+  reordenarTema(pos, id, materiaId, exec = database) {
+    return exec.run('UPDATE temas SET posicion = ? WHERE id = ? AND materia_id = ?', [pos, id, materiaId])
   },
   actualizarTema(id, nombre, exec = database) {
     return exec.run('UPDATE temas SET nombre = ? WHERE id = ?', [nombre, id])
