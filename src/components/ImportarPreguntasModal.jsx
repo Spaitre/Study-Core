@@ -88,7 +88,10 @@ Cada dato incluido debe tener una función.
 Evita casos tan obvios que revelen inmediatamente la respuesta.
 Cuando sea posible, construye el razonamiento:
 datos clínicos → interpretación → diagnóstico/mecanismo/tratamiento.
-Tiene que quedar claro cuál es la pregunta en cada pregunta.
+Tiene que quedar claro cuál es la pregunta en cada pregunta: el bloque
+"Caso:" debe terminar SIEMPRE con una oración que termine en signo de
+interrogación (¿...?). Nunca entregues un caso que termine en punto sin
+una pregunta explícita.
 4. EVITAR PREGUNTAS DEMASIADO FÁCILES
 NO generes preguntas donde la respuesta pueda obtenerse simplemente identificando una palabra idéntica entre el caso y la opción.
 Ejemplo que debes evitar:
@@ -336,7 +339,7 @@ Cada pregunta debe contener únicamente:
 Utiliza exactamente esta estructura:
 Pregunta 1
 Caso:
-[Presenta el caso clínico o situación clínica necesaria para responder la pregunta.]
+[Presenta el caso clínico y termina con una pregunta explícita terminada en "?", ejemplo: "...¿Cuál es el diagnóstico más probable?"]
 Incisos:
 A) [Opción A]
 B) [Opción B]
