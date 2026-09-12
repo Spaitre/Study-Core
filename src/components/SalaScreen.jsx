@@ -235,6 +235,10 @@ export default function SalaScreen({ codigo, salaInicial, onSalir }) {
         {sala.pregunta.enunciado}
       </div>
 
+      {sala.pregunta.imagen && (
+        <img className="pregunta-imagen" src={sala.pregunta.imagen} alt="" />
+      )}
+
       {esRevelar && (
         <div className={`feedback ${sala.espectador ? 'ok' : sala.tuCorrecta ? 'ok' : 'mal'}`}>
           <div className="feedback-titulo">

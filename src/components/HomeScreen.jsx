@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import ImportarPreguntasModal from './ImportarPreguntasModal.jsx'
 import GestionPreguntasModal from './GestionPreguntasModal.jsx'
+import NotasTemaModal from './NotasTemaModal.jsx'
 import MisionesWidget from './MisionesWidget.jsx'
 import SugerenciaIAWidget from './SugerenciaIAWidget.jsx'
 import {
@@ -50,6 +51,7 @@ export default function HomeScreen({
   onEditarTema,
   onReordenarTemas,
   onActualizarConteoTema,
+  onActualizarNotasTema,
   onCrearCarpeta,
   onEditarCarpeta,
   onEliminarCarpeta,
@@ -99,6 +101,8 @@ export default function HomeScreen({
   const [importarTema, setImportarTema] = useState(null)
   // Modal de gestión de preguntas: { tema, modo } o null.
   const [gestion, setGestion] = useState(null)
+  // Modal de apuntes del tema: tema o null.
+  const [notasTema, setNotasTema] = useState(null)
 
   // Materias de la carpeta seleccionada.
   const materiasCarpeta = materias.filter((m) => m.carpetaId === carpetaId)
@@ -901,6 +905,13 @@ export default function HomeScreen({
                   >
                     📝 Gestionar ({t.preguntas})
                   </button>
+                  <button
+                    className="btn-preg"
+                    onClick={() => setNotasTema(t)}
+                    title="Sube tus apuntes (Word/TXT) para revisarlos antes del quiz"
+                  >
+                    {t.tieneNotas ? '📄 Apuntes' : '📎 Agregar apuntes'}
+                  </button>
                 </div>
               </div>
             ),
@@ -1148,6 +1159,16 @@ export default function HomeScreen({
           onCerrar={() => setGestion(null)}
           onCambio={(total) =>
             onActualizarConteoTema(materiaId, gestion.tema.id, total)
+          }
+        />
+      )}
+
+      {notasTema && (
+        <NotasTemaModal
+          tema={notasTema}
+          onCerrar={() => setNotasTema(null)}
+          onCambio={(tieneNotas) =>
+            onActualizarNotasTema(materiaId, notasTema.id, tieneNotas)
           }
         />
       )}

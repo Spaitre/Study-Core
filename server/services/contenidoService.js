@@ -6,7 +6,7 @@ import { database } from '../db/index.js'
 import { contenidoRepo } from '../repositories/contenidoRepo.js'
 import { esMiembro, puedeEditarGrupo } from './gruposService.js'
 import { misionesService } from './misionesService.js'
-import { extraerTexto, FORMATOS_SOPORTADOS } from '../importar/extraer.js'
+import { extraerTexto, extraerNotasHtml, FORMATOS_SOPORTADOS } from '../importar/extraer.js'
 import { parsearPreguntas } from '../importar/parsear.js'
 import { fallo } from './ApiError.js'
 
@@ -138,6 +138,7 @@ function rowToPregunta(r) {
     temaId: r.tema_id,
     temaNombre: r.tema_nombre,
     materiaNombre: r.materia_nombre,
+    imagen: r.imagen || null,
   }
 }
 
@@ -167,14 +168,31 @@ function normalizarPregunta(p) {
   const materiaCaso = textoOpcional(p?.materiaCaso)
   const temaCategoria = textoOpcional(p?.temaCategoria)
   const dificultad = textoOpcional(p?.dificultad)
-  return { tipo, pregunta, opciones, rc, explicacion, materiaCaso, temaCategoria, dificultad }
+  // Imagen opcional (radiografía, ECG, foto clínica...): el navegador ya la
+  // redimensiona/comprime antes de mandarla (ver src/imagenes.js).
+  const imagen = typeof p?.imagen === 'string' && p.imagen ? p.imagen : null
+  return { tipo, pregunta, opciones, rc, explicacion, materiaCaso, temaCategoria, dificultad, imagen }
 }
+
+// Tope de seguridad del lado del servidor sobre el tamaño de la imagen ya
+// codificada en base64 (el navegador la comprime antes de subir; esto es
+// solo una segunda barrera, no el control principal de tamaño).
+const IMAGEN_MAX_BYTES = 2_000_000
+
+// Tope del archivo de apuntes que se sube por tema (antes de extraer texto).
+const NOTAS_MAX_BYTES = 5_000_000
+
+// Los apuntes solo aceptan Word/TXT: a diferencia del import de preguntas,
+// aquí el PDF no aporta (no conserva formato) y complica la validación.
+const NOTAS_FORMATOS_SOPORTADOS = ['.docx', '.txt']
 
 function validarPregunta(d) {
   if (!d.pregunta) return 'Falta el enunciado'
   if (d.tipo === 'opcion' && d.opciones.filter((o) => o.trim()).length < 2)
     return 'Se necesitan al menos 2 opciones con texto'
   if (d.tipo === 'flashcard' && !d.explicacion) return 'Falta el reverso de la flashcard'
+  if (d.imagen && !d.imagen.startsWith('data:image/')) return 'La imagen no es válida'
+  if (d.imagen && d.imagen.length > IMAGEN_MAX_BYTES) return 'La imagen es demasiado pesada'
   return null
 }
 
@@ -219,11 +237,12 @@ async function insertarMaterias(carpeta, materias, usuarioId, tx) {
     await contenidoRepo.insertarMateria(matId, nombre, icono, pos, carpeta.id, usuarioId, grupoId, tx)
     nMaterias++
     const temas = Array.isArray(m.temas) ? m.temas : []
+    let posTema = 0
     for (const t of temas) {
       const tNombre = String(t?.nombre || '').trim()
       if (!tNombre) continue
       const temaId = await contenidoRepo.idUnico(`${matId}-${slugify(tNombre)}`, 'temas', tx)
-      await contenidoRepo.insertarTema(temaId, matId, tNombre, tx)
+      await contenidoRepo.insertarTema(temaId, matId, tNombre, ++posTema, tx)
       nTemas++
       const preguntas = Array.isArray(t.preguntas) ? t.preguntas : []
       for (const p of preguntas) {
@@ -234,6 +253,10 @@ async function insertarMaterias(carpeta, materias, usuarioId, tx) {
         const explicacion = p.explicacion != null ? String(p.explicacion) : null
         if (tipo === 'flashcard' && !explicacion) continue
         const rc = tipo === 'flashcard' ? -1 : Number.isInteger(p.respuestaCorrecta) ? p.respuestaCorrecta : 0
+        const imagen =
+          typeof p.imagen === 'string' && p.imagen.startsWith('data:image/') && p.imagen.length <= IMAGEN_MAX_BYTES
+            ? p.imagen
+            : null
         nPreguntas += await contenidoRepo.insertarPreguntaImport(
           temaId,
           enun,
@@ -245,6 +268,7 @@ async function insertarMaterias(carpeta, materias, usuarioId, tx) {
           textoOpcional(p.materiaCaso),
           textoOpcional(p.temaCategoria),
           textoOpcional(p.dificultad),
+          imagen,
           tx,
         )
       }
@@ -273,6 +297,7 @@ async function exportarMateria(m) {
           materiaCaso: p.materia_caso,
           temaCategoria: p.tema_categoria,
           dificultad: p.dificultad,
+          imagen: p.imagen || null,
         })),
       })),
     ),
@@ -379,7 +404,12 @@ export const contenidoService = {
     const temasMap = new Map()
     for (const t of await contenidoRepo.temasDeMaterias(filas.map((m) => m.id))) {
       if (!temasMap.has(t.materia_id)) temasMap.set(t.materia_id, [])
-      temasMap.get(t.materia_id).push({ id: t.id, nombre: t.nombre, preguntas: t.total })
+      temasMap.get(t.materia_id).push({
+        id: t.id,
+        nombre: t.nombre,
+        preguntas: t.total,
+        tieneNotas: !!t.notas_nombre,
+      })
     }
     return filas.map((m) => ({
       id: m.id,
@@ -453,6 +483,7 @@ export const contenidoService = {
       materiaCaso: p.materia_caso,
       temaCategoria: p.tema_categoria,
       dificultad: p.dificultad,
+      imagen: p.imagen || null,
     }))
     return {
       materias: [
@@ -509,6 +540,43 @@ export const contenidoService = {
     await contenidoRepo.borrarTema(id)
   },
 
+  // ----- Apuntes del tema (DOCX/TXT → HTML, para revisar antes del quiz) -----
+  async subirNotas(usuarioId, temaId, buffer, extRaw, nombreArchivo) {
+    const tema = await contenidoRepo.temaAccesible(temaId, usuarioId)
+    if (!tema) throw fallo(404, 'El tema no existe')
+    await exigirEdicion(tema.grupo_id, usuarioId)
+    const ext = '.' + String(extRaw || '').toLowerCase().replace(/^\./, '')
+    if (!NOTAS_FORMATOS_SOPORTADOS.includes(ext))
+      throw fallo(400, `Formato no soportado. Usa: ${NOTAS_FORMATOS_SOPORTADOS.join(', ')}`)
+    if (!buffer || !buffer.length) throw fallo(400, 'No se recibió el archivo')
+    if (buffer.length > NOTAS_MAX_BYTES) throw fallo(400, 'El archivo supera los 5 MB')
+    let html
+    try {
+      html = await extraerNotasHtml(buffer, ext)
+    } catch (e) {
+      console.error('[Cerebro] Error extrayendo apuntes:', e)
+      throw fallo(400, 'No se pudo procesar el archivo')
+    }
+    if (!html || html.trim().length < 5)
+      throw fallo(400, 'No se pudo extraer contenido del archivo (¿está vacío o escaneado?).')
+    const nombre = String(nombreArchivo || '').trim().slice(0, 150) || 'Apuntes'
+    await contenidoRepo.actualizarNotasTema(temaId, html, nombre)
+    return { notasNombre: nombre }
+  },
+
+  async obtenerNotas(usuarioId, temaId) {
+    if (!(await contenidoRepo.temaAccesible(temaId, usuarioId))) throw fallo(404, 'El tema no existe')
+    const row = await contenidoRepo.notasDeTema(temaId)
+    return { notasHtml: row?.notas_html || null, notasNombre: row?.notas_nombre || null }
+  },
+
+  async eliminarNotas(usuarioId, temaId) {
+    const tema = await contenidoRepo.temaAccesible(temaId, usuarioId)
+    if (!tema) throw fallo(404, 'El tema no existe')
+    await exigirEdicion(tema.grupo_id, usuarioId)
+    await contenidoRepo.actualizarNotasTema(temaId, null, null)
+  },
+
   // ----- Preguntas -----
   async preguntasDeTema(usuarioId, temaId) {
     if (!(await contenidoRepo.temaAccesible(temaId, usuarioId))) throw fallo(404, 'El tema no existe')
@@ -522,6 +590,7 @@ export const contenidoService = {
       materiaCaso: r.materia_caso,
       temaCategoria: r.tema_categoria,
       dificultad: r.dificultad,
+      imagen: r.imagen || null,
     }))
   },
 
@@ -544,6 +613,7 @@ export const contenidoService = {
         d.materiaCaso,
         d.temaCategoria,
         d.dificultad,
+        d.imagen,
       )
       const mision = await misionesService.progresar(usuarioId, 'primera_pregunta')
       return { id: Number(info.lastInsertRowid), totalTema: await contenidoRepo.contarTema(temaId), mision }
@@ -572,6 +642,7 @@ export const contenidoService = {
         d.materiaCaso,
         d.temaCategoria,
         d.dificultad,
+        d.imagen,
       )
     } catch (e) {
       if (String(e.message).includes('UNIQUE')) throw fallo(409, 'Ya existe otra pregunta con ese enunciado')
@@ -654,6 +725,7 @@ export const contenidoService = {
           textoOpcional(p.materiaCaso),
           textoOpcional(p.temaCategoria),
           textoOpcional(p.dificultad),
+          null, // este import viene de texto/IA: nunca trae imagen
           tx,
         )
       }

@@ -217,6 +217,39 @@ export async function analizarTexto(temaId, texto) {
   return data
 }
 
+// Apuntes del tema: sube un archivo (PDF/DOCX/TXT) y el servidor lo
+// convierte a HTML (con formato conservado si es .docx) para mostrarlo antes
+// del quiz.
+export async function subirNotasTema(temaId, file) {
+  const ext = file.name.split('.').pop().toLowerCase()
+  const buf = await file.arrayBuffer()
+  const res = await fetch(
+    `/api/temas/${encodeURIComponent(temaId)}/notas?ext=${ext}&nombre=${encodeURIComponent(file.name)}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/octet-stream' },
+      body: buf,
+      ...CRED,
+    },
+  )
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.error || `Error ${res.status}`)
+  return data
+}
+
+export function fetchNotasTema(temaId) {
+  return getJSON(`/api/temas/${encodeURIComponent(temaId)}/notas`)
+}
+
+export async function eliminarNotasTema(temaId) {
+  const res = await fetch(`/api/temas/${encodeURIComponent(temaId)}/notas`, {
+    method: 'DELETE',
+    ...CRED,
+  })
+  if (!res.ok) throw new Error(`Error ${res.status}`)
+  return res.json()
+}
+
 // Paso 2: confirma e inserta las preguntas revisadas.
 export async function confirmarImportacion(temaId, preguntas) {
   const res = await fetch(

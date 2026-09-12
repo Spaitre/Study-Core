@@ -510,6 +510,14 @@ body {
 .gestion-badge {
   margin-right: 4px;
 }
+.gestion-imagen-mini {
+  width: 22px;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 4px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
 .gestion-meta {
   display: block;
   margin-top: 2px;
@@ -895,6 +903,93 @@ body {
   background: var(--rojo);
   color: #fff;
 }
+.pregunta-imagen-editor {
+  display: flex;
+}
+.pregunta-imagen-previa {
+  position: relative;
+  display: inline-block;
+}
+.pregunta-imagen-previa img {
+  max-width: 220px;
+  max-height: 160px;
+  border-radius: 10px;
+  display: block;
+  object-fit: contain;
+  background: var(--gris-fondo);
+}
+.pregunta-imagen-previa .btn-quitar-op {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: var(--sombra);
+}
+
+/* ---------- Modal de apuntes del tema ---------- */
+.modal-notas {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.notas-barra {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.notas-archivo {
+  flex: 1;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.notas-contenido {
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 16px 20px;
+  background: #fff;
+  color: var(--texto);
+  line-height: 1.6;
+  overflow-y: auto;
+  max-height: 55vh;
+}
+.notas-contenido :first-child {
+  margin-top: 0;
+}
+.notas-contenido h1,
+.notas-contenido h2,
+.notas-contenido h3 {
+  color: var(--morado);
+  margin: 18px 0 8px;
+}
+.notas-contenido p {
+  margin: 0 0 10px;
+}
+.notas-contenido table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 10px 0;
+  font-size: 0.9rem;
+}
+.notas-contenido th,
+.notas-contenido td {
+  border: 1px solid var(--borde);
+  padding: 6px 10px;
+  text-align: left;
+}
+.notas-contenido ul,
+.notas-contenido ol {
+  margin: 0 0 10px;
+  padding-left: 22px;
+}
+
 .edit-opciones {
   display: flex;
   flex-direction: column;
@@ -1086,6 +1181,16 @@ body {
   line-height: 1.45;
   box-shadow: var(--sombra);
   animation: aparecer 0.3s ease;
+}
+.pregunta-imagen {
+  display: block;
+  max-width: 100%;
+  max-height: 360px;
+  margin: 0 auto;
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  object-fit: contain;
+  background: #fff;
 }
 
 .opciones-grid {

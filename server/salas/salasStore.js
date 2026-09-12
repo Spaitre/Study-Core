@@ -40,6 +40,7 @@ function snapshotPreguntas(rows, max = 20) {
       opciones: barajadas,
       correcta: barajadas.indexOf(correcta),
       explicacion: r.explicacion,
+      imagen: r.imagen || null,
     }
   })
 }
@@ -104,7 +105,7 @@ function vista(sala, uid) {
     return {
       ...base,
       idx: sala.idx,
-      pregunta: { enunciado: q.enunciado, opciones: q.opciones },
+      pregunta: { enunciado: q.enunciado, opciones: q.opciones, imagen: q.imagen },
       deadline: sala.preguntaInicio + sala.tiempo * 1000,
       tiempo: sala.tiempo,
       tuRespondida: sala.respuestas.has(uid),
@@ -119,7 +120,7 @@ function vista(sala, uid) {
     return {
       ...base,
       idx: sala.idx,
-      pregunta: { enunciado: q.enunciado, opciones: q.opciones },
+      pregunta: { enunciado: q.enunciado, opciones: q.opciones, imagen: q.imagen },
       correcta: q.correcta,
       explicacion: q.explicacion,
       tuOpcion: r ? r.opcion : null,

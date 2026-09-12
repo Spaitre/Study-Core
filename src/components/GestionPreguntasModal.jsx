@@ -6,6 +6,7 @@ import {
   eliminarPregunta,
 } from '../api.js'
 import { logroDeMision } from '../logros.js'
+import { reducirImagen } from '../imagenes.js'
 
 const LETRAS = ['A', 'B', 'C', 'D', 'E', 'F']
 
@@ -39,6 +40,7 @@ function borradorNuevo() {
     materiaCaso: '',
     temaCategoria: '',
     dificultad: '',
+    imagen: null,
   }
 }
 
@@ -56,6 +58,7 @@ export default function GestionPreguntasModal({
   )
   const [guardando, setGuardando] = useState(false)
   const [borrarId, setBorrarId] = useState(null)
+  const [subiendoImagen, setSubiendoImagen] = useState(false)
 
   async function cargar() {
     try {
@@ -106,8 +109,28 @@ export default function GestionPreguntasModal({
       materiaCaso: p.materiaCaso || '',
       temaCategoria: p.temaCategoria || '',
       dificultad: p.dificultad || '',
+      imagen: p.imagen || null,
     })
     setError(null)
+  }
+
+  async function subirImagen(e) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      setError('El archivo debe ser una imagen')
+      return
+    }
+    setSubiendoImagen(true)
+    setError(null)
+    try {
+      set('imagen', await reducirImagen(file))
+    } catch {
+      setError('No se pudo procesar la imagen')
+    } finally {
+      setSubiendoImagen(false)
+    }
   }
 
   async function guardar() {
@@ -132,6 +155,7 @@ export default function GestionPreguntasModal({
             materiaCaso: borrador.materiaCaso || null,
             temaCategoria: borrador.temaCategoria || null,
             dificultad: borrador.dificultad || null,
+            imagen: borrador.imagen || null,
           }
         : {
             tipo: 'opcion',
@@ -142,6 +166,7 @@ export default function GestionPreguntasModal({
             materiaCaso: borrador.materiaCaso || null,
             temaCategoria: borrador.temaCategoria || null,
             dificultad: borrador.dificultad || null,
+            imagen: borrador.imagen || null,
           }
     try {
       if (borrador.id) {
@@ -251,6 +276,32 @@ export default function GestionPreguntasModal({
               </div>
             )}
 
+            <div className="pregunta-imagen-editor">
+              {borrador.imagen ? (
+                <div className="pregunta-imagen-previa">
+                  <img src={borrador.imagen} alt="" />
+                  <button
+                    className="btn-quitar-op"
+                    title="Quitar imagen"
+                    onClick={() => set('imagen', null)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ) : (
+                <label className="btn-mini">
+                  {subiendoImagen ? 'Procesando…' : '🖼️ Agregar imagen (opcional)'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    disabled={subiendoImagen}
+                    onChange={subirImagen}
+                  />
+                </label>
+              )}
+            </div>
+
             <textarea
               className="form-input"
               rows={2}
@@ -337,6 +388,7 @@ export default function GestionPreguntasModal({
                       <span className="gestion-badge">
                         {p.tipo === 'flashcard' ? '🃏' : '🔘'}
                       </span>
+                      {p.imagen && <img className="gestion-imagen-mini" src={p.imagen} alt="" />}
                       {p.pregunta}
                       {(p.materiaCaso || p.dificultad) && (
                         <span className="gestion-meta">

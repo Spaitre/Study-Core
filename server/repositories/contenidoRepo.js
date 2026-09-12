@@ -150,6 +150,16 @@ export const contenidoRepo = {
   temaInfo(id) {
     return database.get('SELECT id, nombre, materia_id FROM temas WHERE id = ?', [id])
   },
+  notasDeTema(id) {
+    return database.get('SELECT notas_html, notas_nombre FROM temas WHERE id = ?', [id])
+  },
+  actualizarNotasTema(id, notasHtml, notasNombre, exec = database) {
+    return exec.run('UPDATE temas SET notas_html = ?, notas_nombre = ? WHERE id = ?', [
+      notasHtml,
+      notasNombre,
+      id,
+    ])
+  },
 
   // ----- Temas -----
   temasDeMateria(materiaId) {
@@ -170,7 +180,7 @@ export const contenidoRepo = {
   temasDeMaterias(materiaIds) {
     const ph = materiaIds.map(() => '?').join(',')
     return database.all(
-      `SELECT t.materia_id, t.id, t.nombre, COUNT(p.id) AS total
+      `SELECT t.materia_id, t.id, t.nombre, t.notas_nombre, COUNT(p.id) AS total
        FROM temas t LEFT JOIN preguntas p ON p.tema_id = t.id
        WHERE t.materia_id IN (${ph})
        GROUP BY t.id ORDER BY t.posicion, t.nombre`,
@@ -221,44 +231,44 @@ export const contenidoRepo = {
   preguntasDeTema(temaId) {
     return database.all(
       `SELECT id, pregunta, opciones, respuesta_correcta, explicacion, tipo,
-              materia_caso, tema_categoria, dificultad
+              materia_caso, tema_categoria, dificultad, imagen
        FROM preguntas WHERE tema_id = ? ORDER BY id`,
       [temaId],
     )
   },
   insertarPregunta(
     temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo,
-    materiaCaso, temaCategoria, dificultad, exec = database,
+    materiaCaso, temaCategoria, dificultad, imagen, exec = database,
   ) {
     return exec.run(
       `INSERT INTO preguntas
-        (tema_id, pregunta, opciones, respuesta_correcta, explicacion, hash, tipo, materia_caso, tema_categoria, dificultad)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo, materiaCaso, temaCategoria, dificultad],
+        (tema_id, pregunta, opciones, respuesta_correcta, explicacion, hash, tipo, materia_caso, tema_categoria, dificultad, imagen)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo, materiaCaso, temaCategoria, dificultad, imagen],
     )
   },
   // Inserta deduplicando por hash (OR IGNORE). Devuelve nº de filas insertadas (0/1).
   async insertarPreguntaImport(
     temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo,
-    materiaCaso, temaCategoria, dificultad, exec = database,
+    materiaCaso, temaCategoria, dificultad, imagen, exec = database,
   ) {
     const info = await exec.run(
       `INSERT OR IGNORE INTO preguntas
-        (tema_id, pregunta, opciones, respuesta_correcta, explicacion, hash, tipo, materia_caso, tema_categoria, dificultad)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo, materiaCaso, temaCategoria, dificultad],
+        (tema_id, pregunta, opciones, respuesta_correcta, explicacion, hash, tipo, materia_caso, tema_categoria, dificultad, imagen)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [temaId, pregunta, opcionesJSON, rc, explicacion, hash, tipo, materiaCaso, temaCategoria, dificultad, imagen],
     )
     return info.changes
   },
   actualizarPregunta(
     id, pregunta, opcionesJSON, rc, explicacion, hash, tipo,
-    materiaCaso, temaCategoria, dificultad, exec = database,
+    materiaCaso, temaCategoria, dificultad, imagen, exec = database,
   ) {
     return exec.run(
       `UPDATE preguntas SET pregunta = ?, opciones = ?, respuesta_correcta = ?, explicacion = ?, hash = ?, tipo = ?,
-              materia_caso = ?, tema_categoria = ?, dificultad = ?
+              materia_caso = ?, tema_categoria = ?, dificultad = ?, imagen = ?
        WHERE id = ?`,
-      [pregunta, opcionesJSON, rc, explicacion, hash, tipo, materiaCaso, temaCategoria, dificultad, id],
+      [pregunta, opcionesJSON, rc, explicacion, hash, tipo, materiaCaso, temaCategoria, dificultad, imagen, id],
     )
   },
   borrarPregunta(id, exec = database) {
@@ -271,7 +281,7 @@ export const contenidoRepo = {
   preguntasParaExport(temaId) {
     return database.all(
       `SELECT pregunta, opciones, respuesta_correcta, explicacion, tipo,
-              materia_caso, tema_categoria, dificultad
+              materia_caso, tema_categoria, dificultad, imagen
        FROM preguntas WHERE tema_id = ? ORDER BY id`,
       [temaId],
     )

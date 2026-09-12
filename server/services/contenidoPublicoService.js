@@ -115,6 +115,7 @@ export const contenidoPublicoService = {
             temaId: t.id,
             temaNombre: t.nombre,
             materiaNombre: m.nombre,
+            imagen: p.imagen || null,
           })
         }
       }

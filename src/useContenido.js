@@ -122,6 +122,18 @@ export default function useContenido(grupoId = null, activo = true) {
       ),
     )
   }
+  function onActualizarNotasTema(materiaId, temaId, tieneNotas) {
+    setMaterias((prev) =>
+      prev.map((m) =>
+        m.id === materiaId
+          ? {
+              ...m,
+              temas: m.temas.map((t) => (t.id === temaId ? { ...t, tieneNotas } : t)),
+            }
+          : m,
+      ),
+    )
+  }
 
   // ----- Carpetas -----
   async function onCrearCarpeta(nombre) {
@@ -173,6 +185,7 @@ export default function useContenido(grupoId = null, activo = true) {
       onEditarTema,
       onReordenarTemas,
       onActualizarConteoTema,
+      onActualizarNotasTema,
       onCrearCarpeta,
       onEditarCarpeta,
       onEliminarCarpeta,

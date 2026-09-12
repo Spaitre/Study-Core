@@ -27,7 +27,10 @@ const app = express()
 // Detrás del proxy del hosting (Railway): confía en X-Forwarded-* para que la
 // cookie Secure y la detección de protocolo funcionen.
 app.set('trust proxy', 1)
-app.use(express.json({ limit: '5mb' }))
+// 20mb: una materia con varias preguntas con imagen (ver src/imagenes.js,
+// cada imagen queda en unos cientos de KB) puede pesar varios MB al
+// exportar/importar de un jalón; 5mb se quedaba corto para ese caso.
+app.use(express.json({ limit: '20mb' }))
 
 const PORT = process.env.PORT || 3001
 

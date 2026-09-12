@@ -179,6 +179,31 @@ router.patch(
   }),
 )
 
+// Apuntes del tema: el cuerpo es binario (no JSON) -> express.raw.
+router.post(
+  '/temas/:id/notas',
+  express.raw({ type: () => true, limit: '6mb' }),
+  ah(async (req, res) => {
+    const nombreArchivo = req.query.nombre ? decodeURIComponent(String(req.query.nombre)) : null
+    res.json(await contenidoService.subirNotas(req.usuarioId, req.params.id, req.body, req.query.ext, nombreArchivo))
+  }),
+)
+
+router.get(
+  '/temas/:id/notas',
+  ah(async (req, res) => {
+    res.json(await contenidoService.obtenerNotas(req.usuarioId, req.params.id))
+  }),
+)
+
+router.delete(
+  '/temas/:id/notas',
+  ah(async (req, res) => {
+    await contenidoService.eliminarNotas(req.usuarioId, req.params.id)
+    res.json({ ok: true })
+  }),
+)
+
 router.delete(
   '/temas/:id',
   ah(async (req, res) => {

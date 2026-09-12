@@ -195,6 +195,10 @@ export default function QuizScreen({
         {actual.pregunta}
       </div>
 
+      {actual.imagen && (
+        <img className="pregunta-imagen" src={actual.imagen} alt="" />
+      )}
+
       {esFlashcard ? (
         <div className="flashcard-zona">
           {!revelada ? (

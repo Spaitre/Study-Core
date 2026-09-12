@@ -143,6 +143,31 @@ try {
   // la columna ya existe
 }
 
+// Imagen opcional de la pregunta (radiografía, ECG, foto clínica...), como
+// data URL. Se redimensiona/comprime en el navegador antes de subir (ver
+// imagenAdataUrl en src/imagenes.js), así que aquí nunca llega el archivo
+// original sin procesar.
+try {
+  db.exec('ALTER TABLE preguntas ADD COLUMN imagen TEXT')
+} catch {
+  // la columna ya existe
+}
+
+// Apuntes opcionales de un tema (PDF/DOCX/TXT subido por el usuario), ya
+// convertidos a HTML en el servidor (ver server/importar/extraer.js) para
+// poder mostrarlos formateados antes del quiz. notas_nombre guarda el
+// nombre del archivo original, solo para mostrarlo en la UI.
+try {
+  db.exec('ALTER TABLE temas ADD COLUMN notas_html TEXT')
+} catch {
+  // la columna ya existe
+}
+try {
+  db.exec('ALTER TABLE temas ADD COLUMN notas_nombre TEXT')
+} catch {
+  // la columna ya existe
+}
+
 // Carpetas: agrupan materias (jerarquía carpeta → materia → tema).
 db.exec(`
   CREATE TABLE IF NOT EXISTS carpetas (

@@ -3,33 +3,7 @@ import Avatar, { AVATARES, AVATARES_BLOQUEADOS } from './Avatar.jsx'
 import MarcoAvatar from './MarcoAvatar.jsx'
 import { MARCOS, INSIGNIAS, RAREZA_LABEL } from './cosmeticos.js'
 import { actualizarPerfil, nombreDisponible, fetchProgreso, fetchMisiones, fetchEstadisticasAdmin } from '../api.js'
-
-// Reduce la imagen subida a 256x256 (recorte centrado) y la devuelve como
-// data URL JPEG, para guardar algo ligero en la base.
-function archivoADataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onerror = reject
-    reader.onload = () => {
-      const img = new Image()
-      img.onerror = reject
-      img.onload = () => {
-        const size = 256
-        const canvas = document.createElement('canvas')
-        canvas.width = size
-        canvas.height = size
-        const ctx = canvas.getContext('2d')
-        const min = Math.min(img.width, img.height)
-        const sx = (img.width - min) / 2
-        const sy = (img.height - min) / 2
-        ctx.drawImage(img, sx, sy, min, min, 0, 0, size, size)
-        resolve(canvas.toDataURL('image/jpeg', 0.85))
-      }
-      img.src = reader.result
-    }
-    reader.readAsDataURL(file)
-  })
-}
+import { recortarCuadrado } from '../imagenes.js'
 
 export default function CuentaScreen({ usuario, onActualizar }) {
   const [nombre, setNombre] = useState(usuario?.nombreUsuario || '')
@@ -121,7 +95,7 @@ export default function CuentaScreen({ usuario, onActualizar }) {
       return
     }
     try {
-      const dataUrl = await archivoADataUrl(file)
+      const dataUrl = await recortarCuadrado(file)
       setFoto(dataUrl)
       // Guardar automáticamente la nueva foto de perfil.
       const perfil = await actualizarPerfil({ foto: dataUrl })
