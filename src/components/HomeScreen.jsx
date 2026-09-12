@@ -8,6 +8,7 @@ import {
   exportarMateria as apiExportarMateria,
   exportarCarpeta as apiExportarCarpeta,
   fetchPreguntasTema,
+  fetchNotasTema,
 } from '../api.js'
 
 // Descarga un objeto como archivo JSON.
@@ -103,6 +104,8 @@ export default function HomeScreen({
   const [gestion, setGestion] = useState(null)
   // Modal de apuntes del tema: tema o null.
   const [notasTema, setNotasTema] = useState(null)
+  // Modal "¿incluir apuntes?" antes de compartir/descargar algo con apuntes.
+  const [preguntaNotas, setPreguntaNotas] = useState(null) // { mensaje, onElegir(incluir) } | null
 
   // Materias de la carpeta seleccionada.
   const materiasCarpeta = materias.filter((m) => m.carpetaId === carpetaId)
@@ -137,6 +140,20 @@ export default function HomeScreen({
   ]
 
   const materia = materias.find((m) => m.id === materiaId)
+
+  // Antes de compartir/descargar algo, si trae apuntes agregados se pregunta
+  // si se quieren incluir (por defecto no viajan; ver NotasTemaModal). Si no
+  // hay apuntes en el alcance, ejecuta directo sin interrumpir.
+  function conNotas(hayNotas, mensaje, ejecutar) {
+    if (!hayNotas) return ejecutar(false)
+    setPreguntaNotas({
+      mensaje,
+      onElegir: (incluir) => {
+        setPreguntaNotas(null)
+        ejecutar(incluir)
+      },
+    })
+  }
 
   // ---------- Carpetas ----------
   async function guardarCarpeta() {
@@ -261,23 +278,32 @@ export default function HomeScreen({
   async function confirmarExportCarpetas() {
     const ids = modalExportCarp
     if (!ids || ids.length === 0) return
-    setErrorForm(null)
-    try {
-      const partes = await Promise.all(ids.map((id) => apiExportarCarpeta(id)))
-      const c0 = carpetas.find((x) => x.id === ids[0])
-      const fname = ids.length === 1 ? nombreArchivo(c0?.nombre, '-carpeta') : 'carpetas-export.json'
-      descargarJSON(fname, { carpetas: partes })
-      setModalExportCarp(null)
-    } catch (err) {
-      setErrorForm(err.message)
-      setModalExportCarp(null)
-    }
+    const hayNotas = ids.some((cid) =>
+      materias.some((m) => m.carpetaId === cid && m.temas.some((t) => t.tieneNotas)),
+    )
+    conNotas(
+      hayNotas,
+      'Lo que vas a descargar incluye temas con apuntes agregados. ¿Quieres incluirlos en el archivo?',
+      async (incluir) => {
+        setErrorForm(null)
+        try {
+          const partes = await Promise.all(ids.map((id) => apiExportarCarpeta(id, incluir)))
+          const c0 = carpetas.find((x) => x.id === ids[0])
+          const fname = ids.length === 1 ? nombreArchivo(c0?.nombre, '-carpeta') : 'carpetas-export.json'
+          descargarJSON(fname, { carpetas: partes })
+          setModalExportCarp(null)
+        } catch (err) {
+          setErrorForm(err.message)
+          setModalExportCarp(null)
+        }
+      },
+    )
   }
   // Exporta una materia (con sus temas y preguntas) a un archivo JSON.
-  async function exportarMateriaPorId(id, nombre) {
+  async function exportarMateriaPorId(id, nombre, incluirNotas) {
     setErrorForm(null)
     try {
-      const datos = await apiExportarMateria(id)
+      const datos = await apiExportarMateria(id, incluirNotas)
       descargarJSON(nombreArchivo(nombre, ''), datos)
     } catch (err) {
       setErrorForm(err.message)
@@ -287,29 +313,44 @@ export default function HomeScreen({
   async function exportarPreguntasTema(e, t) {
     e.preventDefault()
     e.stopPropagation()
-    setErrorForm(null)
-    try {
-      const preguntas = await fetchPreguntasTema(t.id)
-      descargarJSON(nombreArchivo(t.nombre, '-preguntas'), {
-        tema: t.nombre,
-        preguntas: preguntas.map((p) => ({
-          pregunta: p.pregunta,
-          opciones: p.opciones,
-          respuestaCorrecta: p.respuestaCorrecta,
-          explicacion: p.explicacion,
-          tipo: p.tipo,
-          materiaCaso: p.materiaCaso,
-          temaCategoria: p.temaCategoria,
-          dificultad: p.dificultad,
-        })),
-      })
-    } catch (err) {
-      setErrorForm(err.message)
-    }
+    conNotas(
+      t.tieneNotas,
+      `"${t.nombre}" tiene apuntes agregados. ¿Quieres incluirlos en el archivo?`,
+      async (incluir) => {
+        setErrorForm(null)
+        try {
+          const preguntas = await fetchPreguntasTema(t.id)
+          const notas = incluir ? await fetchNotasTema(t.id) : null
+          descargarJSON(nombreArchivo(t.nombre, '-preguntas'), {
+            tema: t.nombre,
+            ...(notas?.notasHtml
+              ? { notasHtml: notas.notasHtml, notasNombre: notas.notasNombre }
+              : {}),
+            preguntas: preguntas.map((p) => ({
+              pregunta: p.pregunta,
+              opciones: p.opciones,
+              respuestaCorrecta: p.respuestaCorrecta,
+              explicacion: p.explicacion,
+              tipo: p.tipo,
+              materiaCaso: p.materiaCaso,
+              temaCategoria: p.temaCategoria,
+              dificultad: p.dificultad,
+            })),
+          })
+        } catch (err) {
+          setErrorForm(err.message)
+        }
+      },
+    )
   }
   function exportarMateriaArchivo(e, m) {
     e.stopPropagation()
-    exportarMateriaPorId(m.id, m.nombre)
+    const hayNotas = m.temas.some((t) => t.tieneNotas)
+    conNotas(
+      hayNotas,
+      `"${m.nombre}" tiene temas con apuntes agregados. ¿Quieres incluirlos en el archivo?`,
+      (incluir) => exportarMateriaPorId(m.id, m.nombre, incluir),
+    )
   }
   // Exporta varias materias seleccionadas en un solo archivo JSON.
   function toggleExport(id) {
@@ -318,17 +359,26 @@ export default function HomeScreen({
   async function confirmarExportMaterias() {
     const ids = modalExport
     if (!ids || ids.length === 0) return
-    setErrorForm(null)
-    try {
-      const partes = await Promise.all(ids.map((id) => apiExportarMateria(id)))
-      const materias = partes.flatMap((p) => p.materias)
-      const c = carpetas.find((x) => x.id === carpetaId)
-      descargarJSON(nombreArchivo(c?.nombre || 'materias', '-materias'), { materias })
-      setModalExport(null)
-    } catch (err) {
-      setErrorForm(err.message)
-      setModalExport(null)
-    }
+    const hayNotas = materias
+      .filter((m) => ids.includes(m.id))
+      .some((m) => m.temas.some((t) => t.tieneNotas))
+    conNotas(
+      hayNotas,
+      'Lo que vas a descargar incluye temas con apuntes agregados. ¿Quieres incluirlos en el archivo?',
+      async (incluir) => {
+        setErrorForm(null)
+        try {
+          const partes = await Promise.all(ids.map((id) => apiExportarMateria(id, incluir)))
+          const materias = partes.flatMap((p) => p.materias)
+          const c = carpetas.find((x) => x.id === carpetaId)
+          descargarJSON(nombreArchivo(c?.nombre || 'materias', '-materias'), { materias })
+          setModalExport(null)
+        } catch (err) {
+          setErrorForm(err.message)
+          setModalExport(null)
+        }
+      },
+    )
   }
   function abrirEditarMateria(e, m) {
     e.stopPropagation()
@@ -1136,6 +1186,29 @@ export default function HomeScreen({
                 }}
               >
                 Sí, eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal "¿incluir apuntes?" antes de compartir/descargar contenido con apuntes */}
+      {preguntaNotas && (
+        <div className="modal-overlay" onClick={() => preguntaNotas.onElegir(false)}>
+          <div
+            className="modal"
+            role="dialog"
+            aria-modal="true"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="modal-titulo">📄 ¿Incluir apuntes?</h3>
+            <p className="modal-mensaje">{preguntaNotas.mensaje}</p>
+            <div className="modal-acciones">
+              <button className="btn-mini" onClick={() => preguntaNotas.onElegir(false)}>
+                No, sin apuntes
+              </button>
+              <button className="btn-mini primary" onClick={() => preguntaNotas.onElegir(true)}>
+                Sí, incluir apuntes
               </button>
             </div>
           </div>

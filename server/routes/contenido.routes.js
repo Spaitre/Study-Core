@@ -54,7 +54,9 @@ router.post(
 router.get(
   '/carpetas/:id/export',
   ah(async (req, res) => {
-    res.json(await contenidoService.exportarCarpeta(req.usuarioId, req.params.id))
+    res.json(
+      await contenidoService.exportarCarpeta(req.usuarioId, req.params.id, req.query.incluirNotas === '1'),
+    )
   }),
 )
 
@@ -101,7 +103,9 @@ router.put(
 router.get(
   '/materias/:id/export',
   ah(async (req, res) => {
-    res.json(await contenidoService.exportarMateriaPorId(req.usuarioId, req.params.id))
+    res.json(
+      await contenidoService.exportarMateriaPorId(req.usuarioId, req.params.id, req.query.incluirNotas === '1'),
+    )
   }),
 )
 

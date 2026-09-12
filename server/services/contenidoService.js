@@ -6,7 +6,7 @@ import { database } from '../db/index.js'
 import { contenidoRepo } from '../repositories/contenidoRepo.js'
 import { esMiembro, puedeEditarGrupo } from './gruposService.js'
 import { misionesService } from './misionesService.js'
-import { extraerTexto, extraerNotasHtml, FORMATOS_SOPORTADOS } from '../importar/extraer.js'
+import { extraerTexto, extraerNotasHtml, sanitizarNotasHtml, FORMATOS_SOPORTADOS } from '../importar/extraer.js'
 import { parsearPreguntas } from '../importar/parsear.js'
 import { fallo } from './ApiError.js'
 
@@ -186,6 +186,12 @@ const NOTAS_MAX_BYTES = 5_000_000
 // aquí el PDF no aporta (no conserva formato) y complica la validación.
 const NOTAS_FORMATOS_SOPORTADOS = ['.docx', '.txt']
 
+// Tope de las notas que llegan ya como HTML dentro de un JSON de import
+// (export propio, carpeta compartida o contenido de Comunidad) — generoso
+// porque el HTML de mammoth pesa más que el .docx original, pero acotado
+// para no aceptar cualquier cosa de un archivo editado a mano.
+const NOTAS_HTML_MAX_BYTES = 8_000_000
+
 function validarPregunta(d) {
   if (!d.pregunta) return 'Falta el enunciado'
   if (d.tipo === 'opcion' && d.opciones.filter((o) => o.trim()).length < 2)
@@ -244,6 +250,13 @@ async function insertarMaterias(carpeta, materias, usuarioId, tx) {
       const temaId = await contenidoRepo.idUnico(`${matId}-${slugify(tNombre)}`, 'temas', tx)
       await contenidoRepo.insertarTema(temaId, matId, tNombre, ++posTema, tx)
       nTemas++
+      // Los apuntes solo viajan si quien exportó/publicó eligió incluirlos
+      // (ver exportarMateria/exportarTemaPorId); se re-sanean igual que si
+      // vinieran de un .docx propio, porque este JSON pudo ser editado a mano.
+      if (typeof t.notasHtml === 'string' && t.notasHtml.trim() && t.notasHtml.length <= NOTAS_HTML_MAX_BYTES) {
+        const notasNombre = String(t.notasNombre || 'Apuntes').trim().slice(0, 150) || 'Apuntes'
+        await contenidoRepo.actualizarNotasTema(temaId, sanitizarNotasHtml(t.notasHtml), notasNombre, tx)
+      }
       const preguntas = Array.isArray(t.preguntas) ? t.preguntas : []
       for (const p of preguntas) {
         const enun = String(p?.pregunta || '').trim()
@@ -277,8 +290,11 @@ async function insertarMaterias(carpeta, materias, usuarioId, tx) {
   return { materias: nMaterias, temas: nTemas, preguntas: nPreguntas }
 }
 
-// Forma de exportación de una materia (con temas y preguntas).
-async function exportarMateria(m) {
+// Forma de exportación de una materia (con temas y preguntas). Los apuntes
+// de cada tema solo se incluyen si `incluirNotas` es true (el usuario lo
+// eligió explícitamente al exportar/publicar; ver contenidoPublicoService y
+// las rutas de export en contenido.routes.js).
+async function exportarMateria(m, incluirNotas = false) {
   const temas = await contenidoRepo.temasDeMateriaSimple(m.id)
   return {
     id: m.id,
@@ -288,6 +304,9 @@ async function exportarMateria(m) {
       temas.map(async (t) => ({
         id: t.id,
         nombre: t.nombre,
+        ...(incluirNotas && t.notas_html
+          ? { notasHtml: t.notas_html, notasNombre: t.notas_nombre }
+          : {}),
         preguntas: (await contenidoRepo.preguntasParaExport(t.id)).map((p) => ({
           pregunta: p.pregunta,
           opciones: JSON.parse(p.opciones),
@@ -349,11 +368,13 @@ export const contenidoService = {
     })
   },
 
-  async exportarCarpeta(usuarioId, id) {
+  async exportarCarpeta(usuarioId, id, incluirNotas = false) {
     const carpeta = await contenidoRepo.carpetaAccesible(id, usuarioId)
     if (!carpeta) throw fallo(404, 'La carpeta no existe')
     const info = await contenidoRepo.carpetaInfo(id)
-    const materias = await Promise.all((await contenidoRepo.materiasDeCarpeta(id)).map(exportarMateria))
+    const materias = await Promise.all(
+      (await contenidoRepo.materiasDeCarpeta(id)).map((m) => exportarMateria(m, incluirNotas)),
+    )
     return { carpeta: info.nombre, materias }
   },
 
@@ -460,20 +481,21 @@ export const contenidoService = {
     await contenidoRepo.borrarMateria(id)
   },
 
-  async exportarMateriaPorId(usuarioId, id) {
+  async exportarMateriaPorId(usuarioId, id, incluirNotas = false) {
     if (!(await contenidoRepo.materiaAccesible(id, usuarioId))) throw fallo(404, 'La materia no existe')
     const m = await contenidoRepo.materiaInfo(id)
-    return { materias: [await exportarMateria(m)] }
+    return { materias: [await exportarMateria(m, incluirNotas)] }
   },
 
   // Exporta un solo tema (con su materia como envoltorio) en el mismo
   // formato que una materia completa, para que el resto del código
   // (analizar facetas, importar) no tenga que distinguir el caso.
-  async exportarTemaPorId(usuarioId, temaId) {
+  async exportarTemaPorId(usuarioId, temaId, incluirNotas = false) {
     const tema = await contenidoRepo.temaAccesible(temaId, usuarioId)
     if (!tema) throw fallo(404, 'El tema no existe')
     const info = await contenidoRepo.temaInfo(temaId)
     const m = await contenidoRepo.materiaInfo(tema.materia_id)
+    const notas = incluirNotas ? await contenidoRepo.notasDeTema(temaId) : null
     const preguntas = (await contenidoRepo.preguntasParaExport(temaId)).map((p) => ({
       pregunta: p.pregunta,
       opciones: JSON.parse(p.opciones),
@@ -487,7 +509,21 @@ export const contenidoService = {
     }))
     return {
       materias: [
-        { id: m.id, nombre: m.nombre, icono: m.icono, temas: [{ id: info.id, nombre: info.nombre, preguntas }] },
+        {
+          id: m.id,
+          nombre: m.nombre,
+          icono: m.icono,
+          temas: [
+            {
+              id: info.id,
+              nombre: info.nombre,
+              ...(notas?.notas_html
+                ? { notasHtml: notas.notas_html, notasNombre: notas.notas_nombre }
+                : {}),
+              preguntas,
+            },
+          ],
+        },
       ],
     }
   },
@@ -495,7 +531,7 @@ export const contenidoService = {
   // Exporta todo el banco personal del usuario como JSON de intercambio.
   async exportarBancoPersonal(usuarioId) {
     const materias = await contenidoRepo.materiasPersonal(usuarioId)
-    return { materias: await Promise.all(materias.map(exportarMateria)) }
+    return { materias: await Promise.all(materias.map((m) => exportarMateria(m, false))) }
   },
 
   // ----- Temas -----

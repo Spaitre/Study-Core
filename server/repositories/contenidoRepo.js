@@ -171,9 +171,10 @@ export const contenidoRepo = {
     )
   },
   temasDeMateriaSimple(materiaId) {
-    return database.all('SELECT id, nombre FROM temas WHERE materia_id = ? ORDER BY posicion, nombre', [
-      materiaId,
-    ])
+    return database.all(
+      'SELECT id, nombre, notas_html, notas_nombre FROM temas WHERE materia_id = ? ORDER BY posicion, nombre',
+      [materiaId],
+    )
   },
   // Temas (con conteo) de varias materias en una sola consulta. Incluye
   // materia_id para agrupar; mismo orden personalizado que temasDeMateria.

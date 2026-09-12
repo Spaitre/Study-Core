@@ -18,6 +18,7 @@ export default function PublicarContenidoModal({ onCerrar, onPublicado }) {
   const [temaId, setTemaId] = useState('') // tema elegido (tipo tema)
   const [carpetaId, setCarpetaId] = useState('') // carpeta elegida (tipo carpeta)
   const [descripcion, setDescripcion] = useState('')
+  const [incluirNotas, setIncluirNotas] = useState(false)
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
   const [publicando, setPublicando] = useState(false)
@@ -38,12 +39,27 @@ export default function PublicarContenidoModal({ onCerrar, onPublicado }) {
     setMateriaId('')
     setTemaId('')
     setCarpetaId('')
+    setIncluirNotas(false)
   }
 
   const materiaElegida = materias.find((m) => m.id === materiaId)
   const temasConPreguntas = (materiaElegida?.temas || []).filter((t) => t.preguntas > 0)
 
   const origenId = tipo === 'materia' ? materiaId : tipo === 'tema' ? temaId : carpetaId
+
+  // ¿Lo que se va a publicar trae algún tema con apuntes agregados? Solo en
+  // ese caso se ofrece la casilla — por defecto no se comparten.
+  const hayNotasEnAlcance =
+    tipo === 'materia'
+      ? (materiaElegida?.temas || []).some((t) => t.tieneNotas)
+      : tipo === 'tema'
+        ? !!(materiaElegida?.temas || []).find((t) => t.id === temaId)?.tieneNotas
+        : materias.some((m) => m.carpetaId === carpetaId && (m.temas || []).some((t) => t.tieneNotas))
+
+  useEffect(() => {
+    if (!hayNotasEnAlcance) setIncluirNotas(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hayNotasEnAlcance, origenId])
 
   async function publicar() {
     setError(null)
@@ -54,7 +70,12 @@ export default function PublicarContenidoModal({ onCerrar, onPublicado }) {
     }
     setPublicando(true)
     try {
-      const publicado = await publicarContenido({ tipo, origenId, descripcion: descripcion.trim() || null })
+      const publicado = await publicarContenido({
+        tipo,
+        origenId,
+        descripcion: descripcion.trim() || null,
+        incluirNotas,
+      })
       onPublicado(publicado)
     } catch (e) {
       setError(e.message)
@@ -151,6 +172,17 @@ export default function PublicarContenidoModal({ onCerrar, onPublicado }) {
                   ))}
                 </select>
               ))}
+
+            {hayNotasEnAlcance && (
+              <label className="checkbox-linea">
+                <input
+                  type="checkbox"
+                  checked={incluirNotas}
+                  onChange={(e) => setIncluirNotas(e.target.checked)}
+                />
+                📄 Incluir también los apuntes de texto que agregaste
+              </label>
+            )}
 
             <textarea
               className="form-input"

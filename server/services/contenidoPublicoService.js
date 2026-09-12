@@ -129,21 +129,24 @@ export const contenidoPublicoService = {
     const origenId = String(body?.origenId || '').trim()
     if (!origenId) throw fallo(400, 'Falta el origen a publicar')
     const descripcion = body?.descripcion ? String(body.descripcion).trim().slice(0, 500) || null : null
+    // El usuario elige explícitamente si sus apuntes viajan con lo publicado
+    // (ver checkbox en PublicarContenidoModal): por defecto no se comparten.
+    const incluirNotas = !!body?.incluirNotas
 
     let datos, nombre, icono
     if (tipo === 'materia') {
       await exigirDueno(await contenidoRepo.materiaAccesible(origenId, usuarioId), usuarioId, 'La materia no existe')
-      datos = await contenidoService.exportarMateriaPorId(usuarioId, origenId)
+      datos = await contenidoService.exportarMateriaPorId(usuarioId, origenId, incluirNotas)
       nombre = datos.materias[0]?.nombre || 'Materia'
       icono = datos.materias[0]?.icono || null
     } else if (tipo === 'tema') {
       await exigirDueno(await contenidoRepo.temaAccesible(origenId, usuarioId), usuarioId, 'El tema no existe')
-      datos = await contenidoService.exportarTemaPorId(usuarioId, origenId)
+      datos = await contenidoService.exportarTemaPorId(usuarioId, origenId, incluirNotas)
       nombre = datos.materias[0]?.temas[0]?.nombre || 'Tema'
       icono = null
     } else {
       await exigirDueno(await contenidoRepo.carpetaAccesible(origenId, usuarioId), usuarioId, 'La carpeta no existe')
-      datos = await contenidoService.exportarCarpeta(usuarioId, origenId)
+      datos = await contenidoService.exportarCarpeta(usuarioId, origenId, incluirNotas)
       nombre = datos.carpeta || 'Carpeta'
       icono = null
     }

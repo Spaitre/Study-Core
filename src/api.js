@@ -319,11 +319,11 @@ export function importarCarpeta(datos, grupoId = null) {
   return postJSON('/api/carpetas/importar', { ...datos, grupoId })
 }
 // Exportaciones (devuelven el JSON para descargar).
-export function exportarMateria(materiaId) {
-  return getJSON(`/api/materias/${encodeURIComponent(materiaId)}/export`)
+export function exportarMateria(materiaId, incluirNotas = false) {
+  return getJSON(`/api/materias/${encodeURIComponent(materiaId)}/export?incluirNotas=${incluirNotas ? '1' : '0'}`)
 }
-export function exportarCarpeta(carpetaId) {
-  return getJSON(`/api/carpetas/${encodeURIComponent(carpetaId)}/export`)
+export function exportarCarpeta(carpetaId, incluirNotas = false) {
+  return getJSON(`/api/carpetas/${encodeURIComponent(carpetaId)}/export?incluirNotas=${incluirNotas ? '1' : '0'}`)
 }
 export async function reordenarCarpetas(ids) {
   const res = await fetch('/api/carpetas/orden', {
