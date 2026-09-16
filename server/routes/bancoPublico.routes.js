@@ -81,6 +81,16 @@ router.post(
   }),
 )
 
+// Quitar tu propia publicación (a diferencia de /moderacion/:id/ocultar,
+// que es para un admin).
+router.post(
+  '/contenido/:id/eliminar',
+  ah(async (req, res) => {
+    await contenidoPublicoService.eliminarPropia(req.usuarioId, Number(req.params.id))
+    res.json({ ok: true })
+  }),
+)
+
 // ----- Moderación (solo cuentas con es_admin) -----
 router.get(
   '/moderacion',

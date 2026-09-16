@@ -5,6 +5,7 @@ import {
   comentarContenido,
   reportarContenido,
   importarContenido,
+  eliminarContenidoPublico,
   fetchCarpetas,
 } from '../api.js'
 
@@ -16,7 +17,7 @@ const OPCIONES_TIEMPO = [
 
 // Detalle de una materia/carpeta publicada: contenido, voto, comentarios,
 // importar a la cuenta propia, jugarla directo y reportar.
-export default function DetalleContenidoModal({ id, onCerrar, onCambio, onIniciarQuiz }) {
+export default function DetalleContenidoModal({ id, usuario, onCerrar, onCambio, onIniciarQuiz }) {
   const [detalle, setDetalle] = useState(null)
   const [error, setError] = useState(null)
   const [aviso, setAviso] = useState(null)
@@ -30,6 +31,8 @@ export default function DetalleContenidoModal({ id, onCerrar, onCambio, onInicia
   const [carpetas, setCarpetas] = useState([])
   const [carpetaDestino, setCarpetaDestino] = useState('')
   const [importando, setImportando] = useState(false)
+  const [confirmandoEliminar, setConfirmandoEliminar] = useState(false)
+  const [eliminando, setEliminando] = useState(false)
 
   async function cargar() {
     try {
@@ -47,6 +50,7 @@ export default function DetalleContenidoModal({ id, onCerrar, onCambio, onInicia
   // Una materia o un tema se agregan DENTRO de una carpeta propia; una
   // carpeta se importa completa, así que no necesita destino.
   const necesitaCarpeta = detalle && detalle.tipo !== 'carpeta'
+  const esDueno = !!(usuario && detalle && usuario.id === detalle.autorId)
 
   useEffect(() => {
     if (necesitaCarpeta) fetchCarpetas().then(setCarpetas).catch(() => {})
@@ -98,6 +102,19 @@ export default function DetalleContenidoModal({ id, onCerrar, onCambio, onInicia
   function comenzarQuiz() {
     onIniciarQuiz?.(id, detalle.nombre, tiempo)
     onCerrar()
+  }
+
+  async function eliminarPropio() {
+    setEliminando(true)
+    setError(null)
+    try {
+      await eliminarContenidoPublico(id)
+      onCambio?.()
+      onCerrar()
+    } catch (e) {
+      setError(e.message)
+      setEliminando(false)
+    }
   }
 
   async function importar() {
@@ -190,9 +207,19 @@ export default function DetalleContenidoModal({ id, onCerrar, onCambio, onInicia
           <button className="btn-mini primary" onClick={importar} disabled={importando}>
             {importando ? 'Agregando…' : '+ Agregar a mi cuenta'}
           </button>
-          <button className="btn-quitar-op" title="Reportar contenido" onClick={() => setReportando(true)}>
-            🚩
-          </button>
+          {esDueno ? (
+            <button
+              className="btn-quitar-op"
+              title="Quitar de Comunidad"
+              onClick={() => setConfirmandoEliminar(true)}
+            >
+              🗑️
+            </button>
+          ) : (
+            <button className="btn-quitar-op" title="Reportar contenido" onClick={() => setReportando(true)}>
+              🚩
+            </button>
+          )}
         </div>
 
         {aviso && <div className="banner-ok">{aviso}</div>}
@@ -248,6 +275,30 @@ export default function DetalleContenidoModal({ id, onCerrar, onCambio, onInicia
                 </button>
                 <button className="btn-peligro" onClick={confirmarReporte}>
                   Reportar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {confirmandoEliminar && (
+          <div className="modal-overlay" onClick={() => setConfirmandoEliminar(false)}>
+            <div className="modal" onClick={(e) => e.stopPropagation()}>
+              <h3 className="modal-titulo">🗑️ Quitar de Comunidad</h3>
+              <p className="modal-mensaje">
+                ¿Seguro que quieres quitar "{detalle.nombre}" del banco de preguntas? Ya no será
+                visible para nadie más (quien ya la haya agregado a su cuenta conserva su copia).
+              </p>
+              <div className="modal-acciones">
+                <button
+                  className="btn-mini"
+                  onClick={() => setConfirmandoEliminar(false)}
+                  disabled={eliminando}
+                >
+                  Cancelar
+                </button>
+                <button className="btn-peligro" onClick={eliminarPropio} disabled={eliminando}>
+                  {eliminando ? 'Quitando…' : 'Sí, quitar'}
                 </button>
               </div>
             </div>

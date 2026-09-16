@@ -171,6 +171,7 @@ export default function BancoPublicoScreen({ usuario, onIniciarQuiz }) {
       {detalleId != null && (
         <DetalleContenidoModal
           id={detalleId}
+          usuario={usuario}
           onCerrar={() => setDetalleId(null)}
           onCambio={cargar}
           onIniciarQuiz={onIniciarQuiz}

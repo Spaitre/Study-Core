@@ -430,6 +430,9 @@ export function reportarContenido(id, motivo) {
 export function importarContenido(id, opciones = {}) {
   return postJSON(`/api/comunidad/contenido/${encodeURIComponent(id)}/importar`, opciones)
 }
+export function eliminarContenidoPublico(id) {
+  return postJSON(`/api/comunidad/contenido/${encodeURIComponent(id)}/eliminar`, {})
+}
 export function fetchModeracionContenido() {
   return getJSON('/api/comunidad/moderacion').then((d) => d.contenido)
 }

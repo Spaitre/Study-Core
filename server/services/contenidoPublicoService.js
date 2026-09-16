@@ -194,6 +194,15 @@ export const contenidoPublicoService = {
     await contenidoPublicoRepo.reportar(id, usuarioId, motivo ? String(motivo).trim().slice(0, 200) : null)
   },
 
+  // Quita del banco público tu propia publicación (a diferencia de
+  // `ocultar`, que es la misma acción pero para un admin vía moderación).
+  async eliminarPropia(usuarioId, id) {
+    const fila = await contenidoPublicoRepo.obtener(id)
+    if (!fila || fila.estado !== 'visible') throw fallo(404, 'No encontrado')
+    if (fila.autor_id !== usuarioId) throw fallo(403, 'Solo puedes quitar tu propio contenido')
+    await contenidoPublicoRepo.ocultar(id)
+  },
+
   // Copia el snapshot publicado a la cuenta del usuario. Una materia o un
   // tema se agregan a una carpeta propia existente; una carpeta se importa
   // completa como carpeta nueva.
