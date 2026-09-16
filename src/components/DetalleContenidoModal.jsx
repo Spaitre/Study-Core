@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   fetchDetalleContenido,
   votarContenido,
@@ -33,6 +33,7 @@ export default function DetalleContenidoModal({ id, usuario, onCerrar, onCambio,
   const [importando, setImportando] = useState(false)
   const [confirmandoEliminar, setConfirmandoEliminar] = useState(false)
   const [eliminando, setEliminando] = useState(false)
+  const [temasSel, setTemasSel] = useState([])
 
   async function cargar() {
     try {
@@ -52,10 +53,33 @@ export default function DetalleContenidoModal({ id, usuario, onCerrar, onCambio,
   const necesitaCarpeta = detalle && detalle.tipo !== 'carpeta'
   const esDueno = !!(usuario && detalle && usuario.id === detalle.autorId)
 
+  // Todos los temas de lo publicado (una materia/carpeta puede traer
+  // varios), para poder elegir con cuáles jugar al hacerlo directo sin
+  // importar antes a la cuenta propia.
+  const todosTemas = (detalle?.datos?.materias ?? []).flatMap((m) => m.temas ?? [])
+
   useEffect(() => {
     if (necesitaCarpeta) fetchCarpetas().then(setCarpetas).catch(() => {})
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [necesitaCarpeta])
+
+  // Al cargar el detalle (una sola vez por id), selecciona todos los temas
+  // por defecto. No se repite en recargas posteriores (votar, comentar…)
+  // para no pisar una selección que el usuario ya haya ajustado a mano.
+  const temasInicializados = useRef(null)
+  useEffect(() => {
+    if (detalle && temasInicializados.current !== id) {
+      temasInicializados.current = id
+      setTemasSel(todosTemas.map((t) => t.id))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detalle, id])
+
+  function toggleTemaSel(temaId) {
+    setTemasSel((prev) =>
+      prev.includes(temaId) ? prev.filter((id) => id !== temaId) : [...prev, temaId],
+    )
+  }
 
   async function votar() {
     setVotando(true)
@@ -100,7 +124,10 @@ export default function DetalleContenidoModal({ id, usuario, onCerrar, onCambio,
   }
 
   function comenzarQuiz() {
-    onIniciarQuiz?.(id, detalle.nombre, tiempo)
+    // Si hay más de un tema, se manda la selección para filtrar; con uno
+    // solo no hace falta (siempre son todas sus preguntas).
+    const temaIds = todosTemas.length > 1 ? temasSel : null
+    onIniciarQuiz?.(id, detalle.nombre, tiempo, temaIds)
     onCerrar()
   }
 
@@ -164,6 +191,23 @@ export default function DetalleContenidoModal({ id, usuario, onCerrar, onCambio,
 
         {onIniciarQuiz && detalle.totalPreguntas > 0 && (
           <div className="detalle-jugar">
+            {todosTemas.length > 1 && (
+              <div className="filtro-grupo">
+                <h4>Elige los temas</h4>
+                <div className="filtro-checks">
+                  {todosTemas.map((t) => (
+                    <label key={t.id} className="checkbox-linea">
+                      <input
+                        type="checkbox"
+                        checked={temasSel.includes(t.id)}
+                        onChange={() => toggleTemaSel(t.id)}
+                      />
+                      {t.nombre} ({(t.preguntas ?? []).length} preguntas)
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="tiempo-grid tiempo-grid-compacto">
               {OPCIONES_TIEMPO.map((op) => (
                 <button
@@ -176,7 +220,11 @@ export default function DetalleContenidoModal({ id, usuario, onCerrar, onCambio,
                 </button>
               ))}
             </div>
-            <button className="btn-primary" onClick={comenzarQuiz}>
+            <button
+              className="btn-primary"
+              onClick={comenzarQuiz}
+              disabled={todosTemas.length > 1 && temasSel.length === 0}
+            >
               ▶ Comenzar quiz →
             </button>
           </div>

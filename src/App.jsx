@@ -162,10 +162,13 @@ export default function App() {
   // Jugar contenido del banco público directo, sin importarlo antes a la
   // cuenta propia (ver contenidoPublicoService.preguntasParaQuiz). La sesión
   // se guarda con origen 'publico' porque el materiaId no es del usuario.
-  async function iniciarQuizPublico(contenidoId, nombre, tiempo) {
+  async function iniciarQuizPublico(contenidoId, nombre, tiempo, temaIds) {
     setError(null)
     try {
-      const preg = await fetchPreguntasPublicas(contenidoId)
+      const todas = await fetchPreguntasPublicas(contenidoId)
+      // temaIds solo llega cuando el contenido tiene más de un tema y el
+      // usuario eligió con cuáles jugar (ver DetalleContenidoModal).
+      const preg = temaIds ? todas.filter((p) => temaIds.includes(p.temaId)) : todas
       if (preg.length === 0) {
         setError('Este contenido no tiene preguntas.')
         return
