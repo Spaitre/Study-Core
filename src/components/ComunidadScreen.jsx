@@ -7,8 +7,8 @@ import MultijugadorScreen from './MultijugadorScreen.jsx'
 // apartado activo vive en App (no aquí) para poder volver al mismo al salir
 // de una sala de multijugador (igual que con el grupo abierto).
 const APARTADOS = [
-  { id: 'grupos', icono: '👥', label: 'Grupos de estudio' },
   { id: 'banco', icono: '🗂️', label: 'Banco de preguntas' },
+  { id: 'grupos', icono: '👥', label: 'Grupos de estudio' },
   { id: 'multijugador', icono: '🎮', label: 'Multijugador' },
 ]
 
@@ -24,7 +24,7 @@ export default function ComunidadScreen({
     <div className="screen comunidad">
       <header className="page-header">
         <h1>🌐 Comunidad</h1>
-        <p className="subtitle">Aprende junto a otros estudiantes: grupos de estudio, banco de preguntas compartido, multijugador y, próximamente, rankings</p>
+        <p className="subtitle">Aprende junto a otros estudiantes: banco de preguntas compartido, grupos de estudio, multijugador y, próximamente, rankings</p>
       </header>
 
       <div className="comunidad-tabs">

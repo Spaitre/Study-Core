@@ -45,7 +45,7 @@ export default function App() {
   // Racha/XP/monedas/cajas (widget del sidebar).
   const [progreso, setProgreso] = useState(null)
   // Apartado activo dentro de Comunidad (grupos / banco / multijugador).
-  const [comunidadApartado, setComunidadApartado] = useState('grupos')
+  const [comunidadApartado, setComunidadApartado] = useState('banco')
   // Grupo abierto actualmente (al entrar a un grupo).
   const [grupoActual, setGrupoActual] = useState(null)
   // Sala multijugador activa (al crear/unirse).
