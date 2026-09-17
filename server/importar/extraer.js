@@ -62,10 +62,16 @@ export function sanitizarNotasHtml(html) {
       'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
       'ul', 'ol', 'li',
       'table', 'thead', 'tbody', 'tr', 'td', 'th',
-      'a',
+      'a', 'img',
     ],
-    allowedAttributes: { a: ['href'] },
+    allowedAttributes: { a: ['href'], img: ['src', 'alt'] },
     allowedSchemes: ['http', 'https', 'mailto'],
+    // Las imágenes de mammoth vienen como data URI (nunca una URL externa,
+    // que filtraría la IP del que ve las notas); se valida el prefijo aparte
+    // porque sanitize-html solo filtra el esquema ("data:"), no el subtipo.
+    allowedSchemesByTag: { img: ['data'] },
+    exclusiveFilter: (frame) =>
+      frame.tag === 'img' && !/^data:image\//.test(frame.attribs.src || ''),
   })
 }
 

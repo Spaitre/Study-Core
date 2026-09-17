@@ -989,6 +989,13 @@ body {
   margin: 0 0 10px;
   padding-left: 22px;
 }
+.notas-contenido img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 4px 0 10px;
+  display: block;
+}
 
 .edit-opciones {
   display: flex;
