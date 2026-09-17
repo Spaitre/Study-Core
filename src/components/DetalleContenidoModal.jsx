@@ -34,6 +34,7 @@ export default function DetalleContenidoModal({ id, usuario, onCerrar, onCambio,
   const [confirmandoEliminar, setConfirmandoEliminar] = useState(false)
   const [eliminando, setEliminando] = useState(false)
   const [temasSel, setTemasSel] = useState([])
+  const [verApuntes, setVerApuntes] = useState(null) // temaId | null
 
   async function cargar() {
     try {
@@ -57,6 +58,7 @@ export default function DetalleContenidoModal({ id, usuario, onCerrar, onCambio,
   // varios), para poder elegir con cuáles jugar al hacerlo directo sin
   // importar antes a la cuenta propia.
   const todosTemas = (detalle?.datos?.materias ?? []).flatMap((m) => m.temas ?? [])
+  const temaApuntes = todosTemas.find((t) => t.id === verApuntes) ?? null
 
   useEffect(() => {
     if (necesitaCarpeta) fetchCarpetas().then(setCarpetas).catch(() => {})
@@ -279,7 +281,25 @@ export default function DetalleContenidoModal({ id, usuario, onCerrar, onCambio,
               <strong>
                 {m.icono} {m.nombre}
               </strong>
-              <p className="cuenta-ayuda">{m.temas.map((t) => t.nombre).join(', ') || 'Sin temas'}</p>
+              {(m.temas ?? []).length === 0 ? (
+                <p className="cuenta-ayuda">Sin temas</p>
+              ) : (
+                <ul className="detalle-temas-lista">
+                  {m.temas.map((t) => (
+                    <li key={t.id}>
+                      {t.nombre}
+                      {t.notasHtml && (
+                        <button
+                          className="btn-mini detalle-ver-apuntes"
+                          onClick={() => setVerApuntes(t.id)}
+                        >
+                          📄 Apuntes
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           ))}
         </div>
@@ -305,6 +325,23 @@ export default function DetalleContenidoModal({ id, usuario, onCerrar, onCambio,
             Enviar
           </button>
         </div>
+
+        {temaApuntes && (
+          <div className="modal-overlay" onClick={() => setVerApuntes(null)}>
+            <div className="modal modal-notas" onClick={(e) => e.stopPropagation()}>
+              <h3 className="modal-titulo">📄 Apuntes</h3>
+              <p className="cuenta-ayuda">
+                Tema: <strong>{temaApuntes.nombre}</strong>
+              </p>
+              <div className="notas-contenido" dangerouslySetInnerHTML={{ __html: temaApuntes.notasHtml }} />
+              <div className="modal-acciones">
+                <button className="btn-mini primary" onClick={() => setVerApuntes(null)}>
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {reportando && (
           <div className="modal-overlay" onClick={() => setReportando(false)}>
