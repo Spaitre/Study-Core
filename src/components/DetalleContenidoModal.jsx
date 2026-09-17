@@ -17,7 +17,7 @@ const OPCIONES_TIEMPO = [
 
 // Detalle de una materia/carpeta publicada: contenido, voto, comentarios,
 // importar a la cuenta propia, jugarla directo y reportar.
-export default function DetalleContenidoModal({ id, usuario, onCerrar, onCambio, onIniciarQuiz }) {
+export default function DetalleContenidoModal({ id, usuario, onCerrar, onCambio, onIniciarQuiz, onImportado }) {
   const [detalle, setDetalle] = useState(null)
   const [error, setError] = useState(null)
   const [aviso, setAviso] = useState(null)
@@ -156,6 +156,7 @@ export default function DetalleContenidoModal({ id, usuario, onCerrar, onCambio,
     try {
       await importarContenido(id, necesitaCarpeta ? { carpetaDestinoId: carpetaDestino } : {})
       setAviso('¡Agregado a tu cuenta!')
+      await onImportado?.()
     } catch (e) {
       setError(e.message)
     } finally {

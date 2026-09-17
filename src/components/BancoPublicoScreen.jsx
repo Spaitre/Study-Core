@@ -42,7 +42,7 @@ function FiltroCheckbox({ etiqueta, opciones, valores, onToggle }) {
 
 // Banco de contenido público: barra lateral con el filtro fijo de tipo
 // (materia/tema/carpeta) + búsqueda, y la cuadrícula de lo publicado.
-export default function BancoPublicoScreen({ usuario, onIniciarQuiz }) {
+export default function BancoPublicoScreen({ usuario, onIniciarQuiz, onContenidoImportado }) {
   const [filtros, setFiltros] = useState(filtrosVacios())
   const [items, setItems] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -175,6 +175,7 @@ export default function BancoPublicoScreen({ usuario, onIniciarQuiz }) {
           onCerrar={() => setDetalleId(null)}
           onCambio={cargar}
           onIniciarQuiz={onIniciarQuiz}
+          onImportado={onContenidoImportado}
         />
       )}
     </section>

@@ -271,6 +271,7 @@ export default function App() {
               onCambiarApartado={setComunidadApartado}
               onAbrirGrupo={abrirGrupo}
               onIniciarQuizPublico={iniciarQuizPublico}
+              onContenidoImportado={personal.recargar}
               onEntrarSala={(sala) => {
                 setSalaActual(sala)
                 setScreen(SCREENS.SALA)
