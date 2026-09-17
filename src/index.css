@@ -822,6 +822,10 @@ body {
   gap: 10px;
   max-height: 320px;
   overflow-y: auto;
+  /* Mismo caso que .detalle-contenido-materias/.comentarios-lista/.filtro-checks:
+     sin esto, el flex-column con scroll propio de .modal-importar puede
+     colapsarla a 0px en vez de darle su propio scroll interno. */
+  flex-shrink: 0;
   padding-right: 4px;
 }
 .previa-item {
@@ -978,6 +982,10 @@ body {
   line-height: 1.6;
   overflow-y: auto;
   max-height: 55vh;
+  /* Mismo caso que .detalle-contenido-materias/.comentarios-lista/.filtro-checks:
+     sin esto, el flex-column con scroll propio de .modal-notas puede
+     colapsarla a 0px en vez de darle su propio scroll interno. */
+  flex-shrink: 0;
 }
 .notas-contenido :first-child {
   margin-top: 0;
@@ -1987,6 +1995,10 @@ body {
   max-height: 180px;
   overflow-y: auto;
   margin-bottom: 10px;
+  /* Evita que un ancestro flex-column con su propio overflow (el modal de
+     detalle de Comunidad) la colapse a 0px en vez de darle su propio
+     scroll — mismo caso que .detalle-contenido-materias y .filtro-checks. */
+  flex-shrink: 0;
 }
 .comentario-item {
   background: var(--gris-fondo);
